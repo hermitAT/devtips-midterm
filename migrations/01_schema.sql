@@ -1,0 +1,56 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE tags (
+  id SERIAL PRIMARY KEY NOT NULL,
+  tag VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE resources (
+  id SERIAL PRIMARY KEY NOT NULL,
+  url TEXT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  type ENUM ('text', 'image', 'video', 'audio') NOT NULL,
+  created_at DEFAULT NOW(),
+  edited_at TIMESTAMP,
+  creator_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE resources_tags (
+  id SERIAL PRIMARY KEY NOT NULL,
+  resource_id INTEGER REFERENCES resources(id) ON DELETE CASCADE,
+  tag_id INTEGER REFERENCES tags(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE comments (
+  id SERIAL PRIMARY KEY NOT NULL,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  resource_id INTEGER REFERENCES resources(id) ON DELETE CASCADE,
+  comment TEXT NOT NULL,
+  created_at DEFAULT NOW(),
+  edited_at TIMESTAMP
+);
+
+
+CREATE TABLE bookmarks (
+  id SERIAL PRIMARY KEY NOT NULL,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  resource_id INTEGER REFERENCES resources(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE likes (
+  id SERIAL PRIMARY KEY NOT NULL,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  resource_id INTEGER REFERENCES resources(id) ON DELETE CASCADE,
+  value BOOLEAN NOT NULL
+);
