@@ -1,3 +1,5 @@
+create TYPE type as enum('text', 'image', 'video', 'audio');
+
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS tags CASCADE;
 DROP TABLE IF EXISTS resources CASCADE;
@@ -26,8 +28,8 @@ CREATE TABLE resources (
   url TEXT NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
-  type ENUM ('text', 'image', 'video', 'audio') NOT NULL,
-  created_at DEFAULT NOW(),
+  type type NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
   edited_at TIMESTAMP,
   creator_id INTEGER REFERENCES users(id) ON DELETE CASCADE
 );
@@ -45,7 +47,7 @@ CREATE TABLE comments (
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   resource_id INTEGER REFERENCES resources(id) ON DELETE CASCADE,
   comment TEXT NOT NULL,
-  created_at DEFAULT NOW(),
+  created_at TIMESTAMP DEFAULT NOW(),
   edited_at TIMESTAMP
 );
 
