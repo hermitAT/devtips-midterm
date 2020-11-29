@@ -187,3 +187,24 @@ const searchByTags = function(string) {
 };
 exports.searchByTags = searchByTags;
 
+
+/**
+ * Function receives array (e.g. resource IDs)
+ * and offset (default is 20)
+ * Returns object like {1:[id1, id2...], 2:[id21, id22...]}
+ * @param {*} arr
+ * @param {*} offset
+ */
+const pager = function(arr, offset = 20) {
+
+  const pages = {};
+  let page = 1;
+  const lastPage = Math.ceil(arr.length / offset)
+  while (page <= lastPage) {
+    pages[page] = arr.slice(offset * (page -1) ,offset * page);
+    page++;
+  }
+  return pages;
+
+}
+exports.pager = pager;
