@@ -68,7 +68,10 @@ const newUser = (user) => {
 };
 exports.newUser = newUser;
 
+
 const editUser = (userDetails) => {
+  // edit user details, recieve full set of into on user (name, email, pw, id) within an array, and just apply those values to the UPDATE query
+  // return the newly updated user details and render the user/:id page
 
   queryString = `
     UPDATE users
