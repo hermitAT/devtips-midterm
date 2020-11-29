@@ -46,7 +46,7 @@ const getResourceTags = function(resource_id) {
   `;
   return query(queryString, [resource_id])
   .then(res => {
-    console.log(extract(res.rows, 'tag'));
+    extract(res.rows, 'tag');
   });
 
 }
@@ -111,7 +111,7 @@ const isLikedByUser = function(user_id, resource_id) {
   WHERE  user_id = $1 AND resource_id = $2
   `;
   return query(queryString, [user_id, resource_id])
-  .then(res => console.log((res.rows[0]) ? true : false));
+  .then(res => (res.rows[0]) ? true : false);
 
 }
 exports.isLikedByUser = isLikedByUser;
@@ -129,7 +129,7 @@ const isBookmarkedByUser = function(user_id, resource_id) {
   WHERE  user_id = $1 AND resource_id = $2
   `;
   return query(queryString, [user_id, resource_id])
-  .then(res => console.log((res.rows[0]) ? true : false));
+  .then(res => (res.rows[0]) ? true : false);
 
 }
 exports.isBookmarkedByUser = isBookmarkedByUser;
@@ -163,9 +163,8 @@ const searchByTags = function(string) {
   const tags = [];
   searchTags = string.trim().split(/[\s,]+/)
 
-  Promise.all(searchTags.map((el) => getTagId(el)))
+  return Promise.all(searchTags.map((el) => getTagId(el)))
     .then((res) => {
-      console.log(res)
       let code = 97;
       const [froms, wheres, ands] = [[], [], []];
       while (code < 97 + res.length) {
@@ -182,8 +181,9 @@ const searchByTags = function(string) {
       ${ands.join(' AND ')};
       `
       return query(queryString, res)
-      .then(res => extract(res.rows, 'resource_id'));
+      .then(res => extract(res.rows, 'resource_id'))
     })
 
 };
 exports.searchByTags = searchByTags;
+
