@@ -134,7 +134,10 @@ const isBookmarkedByUser = function(user_id, resource_id) {
 }
 exports.isBookmarkedByUser = isBookmarkedByUser;
 
-
+/**
+ * Transform word to a related tag ID if any
+ * @param {*} tag
+ */
 const getTagId = function(tag) {
   const queryString = `
   SELECT id
@@ -143,13 +146,22 @@ const getTagId = function(tag) {
   `;
   return query(queryString, [tag])
   .then(res => res.rows[0] ? res.rows[0].id : undefined);
-}
+};
+exports.getTagId = getTagId;
 
-
+/**
+ * The function receives string from the search field
+ * string splitted by space chars or commas and
+ * each word transformed to related tag ID
+ * then depending on number of tag IDs the search query formed
+ * Function returns array of resource IDs which have ALL
+ * tags user searched for (if any)
+ * @param {*} string
+ */
 const searchByTags = function(string) {
 
   const tags = [];
-  searchTags = string.trim().split(' ')
+  searchTags = string.trim().split(/[\s,]+/)
 
   Promise.all(searchTags.map((el) => getTagId(el)))
     .then((res) => {
@@ -174,5 +186,4 @@ const searchByTags = function(string) {
     })
 
 };
-
-searchByTags('js ajax css  ');
+exports.searchByTags = searchByTags;
