@@ -6,7 +6,6 @@
  */
 
 const express = require('express');
-const { login } = require('./helpers/user_helpers');
 const router = express.Router();
 
 module.exports = (db) => {
@@ -40,6 +39,22 @@ module.exports = (db) => {
     res.redirect('/');
   });
   // clear cookies in session upon logout, redirect to home page -> should this be a POST?
+
+
+  router.post('/register', (req, res) => {
+    const userObj = req.body;
+    db.addUser(userObj)
+      .then(user => {
+        if (!user) {
+          res.status(404).render('error', { error: "User not found!" });
+        }
+        req.session.user_id = user.id;
+        res.redirect('user', user);
+      })
+      .catch((err) => {
+        console.error('Query error', err.stack);
+      });
+  });
 
 
   router.get('/user/:id', (req, res) => {

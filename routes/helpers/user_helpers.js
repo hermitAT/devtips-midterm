@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const getUserWithEmail = (email) => {
+const findUserByEmail = (email) => {
 
   return db.query(`SELECT * FROM users WHERE email = $1;`, [email])
     .then(data => {
@@ -16,7 +16,7 @@ const getUserWithEmail = (email) => {
 // ^^ return a user object from the DB when a user with the given Email is found
 
 
-const getUserWithId = (id) => {
+const findUserByID = (id) => {
   return db.query(`SELECT * FROM users WHERE id = $1;`, [id])
     .then(data => {
       if (!data.rows[0]) {
@@ -31,7 +31,7 @@ const getUserWithId = (id) => {
 // ^^ return a user object from the DB for when a user with the given ID is found
 
 
-const addUser = (user) => {
+const newUser = (user) => {
   user.password = bcrypt.hashSync(user.password, 12);
   const values = [user.name, user.email, user.password];
 
@@ -62,8 +62,8 @@ const login = (email, password) => {
 // use bcrypt.compareSync to compare passwords, return user object upon successful validation
 
 module.exports = {
-  getUserWithEmail,
-  getUserWithId,
-  addUser,
+  findUserByID,
+  findUserByEmail,
+  newUser,
   login
 };
