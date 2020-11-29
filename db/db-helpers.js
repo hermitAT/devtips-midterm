@@ -142,7 +142,7 @@ const getTagId = function(tag) {
   WHERE  tag = $1;
   `;
   return query(queryString, [tag])
-  .then(res => res.rows)// ? console.log(res.rows[0].id) : undefined);
+  .then(res => res.rows[0] ? res.rows[0].id : undefined);
 }
 
 
@@ -150,11 +150,29 @@ const searchByTags = function(string) {
 
   const tags = [];
   searchTags = string.trim().split(' ')
-  for (const tag of searchTags) {
-    console.log(tag)
-    getTagId(tag).then((tag) => tags.push(tag));
-  }
-  console.log(tags)
+
+  Promise.all(searchTags.map((el) => getTagId(el)))
+    .then((res) => {
+      console.log(res)
+      let code = 97;
+      const [froms, wheres, ands] = [[], [], []];
+      while (code < 97 + res.length) {
+        froms.push(`resources_tags ${String.fromCharCode(code)}`);
+        wheres.push(`${String.fromCharCode(code)}.tag_id = $${code - 96}`);
+        ands.push((code != 97) ? `${String.fromCharCode(code - 1)}.resource_id = ${String.fromCharCode(code)}.resource_id`: ' ');
+        code++;
+      }
+
+      const queryString = `
+      SELECT a.resource_id
+      FROM ${froms.join(', ')}
+      WHERE ${wheres.join(' AND ')}
+      ${ands.join(' AND ')};
+      `
+      return query(queryString, res)
+      .then(res => extract(res.rows, 'resource_id'));
+    })
+
 };
 
-searchByTags('js ajax')
+searchByTags('js ajax css  ');
