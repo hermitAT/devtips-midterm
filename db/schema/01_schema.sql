@@ -1,4 +1,9 @@
-create TYPE type as enum('text', 'image', 'video', 'audio');
+DO $$ BEGIN
+  CREATE TYPE type as enum('text', 'image', 'video', 'audio');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
 
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS tags CASCADE;

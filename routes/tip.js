@@ -61,7 +61,7 @@ module.exports = (db) => {
     RETURNING *;
     `, values)
       .then(data => {
-        res.redirect(`/${data.rows[0].resource_id}`);
+        res.json(data.rows[0]);
       })
       .catch(err => res.send({ error: err }));
   };
@@ -79,7 +79,7 @@ module.exports = (db) => {
     RETURNING *;
     `, values)
       .then(data => {
-        res.redirect(`/${data.rows[0].resource_id}`);
+        res.json(data.rows[0]);
       })
       .catch(err => res.send({ error: err }));
   };
