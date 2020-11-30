@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
-const { query } = require('../index');
+const { query } = require('../');
 
 let queryString;
 
-const findUserByEmail = (email) => {
+const findUserByEmail = (db, email) => {
   // return a user object from the DB when a user with the given Email is found
 
   queryString = `
@@ -18,7 +18,7 @@ const findUserByEmail = (email) => {
 exports.findUserByEmail = findUserByEmail;
 
 
-const findUserByID = (id) => {
+const findUserByID = (db, id) => {
   // return a user object from the DB for when a user with the given ID is found
 
   queryString = `
@@ -33,7 +33,7 @@ const findUserByID = (id) => {
 exports.findUserByID = findUserByID;
 
 
-const findUserByName = (name) => {
+const findUserByName = (db, name) => {
   // return a user object from the DB for when a user with the given ID is found
 
   queryString = `
@@ -48,7 +48,7 @@ const findUserByName = (name) => {
 exports.findUserByName = findUserByName;
 
 
-const newUser = (user) => {
+const newUser = (db, user) => {
   // functionality to add a new user into the database, hashing the given password, and returning the new user object
   const { name, email, password } = user;
 
@@ -69,7 +69,7 @@ const newUser = (user) => {
 exports.newUser = newUser;
 
 
-const editUser = (userDetails) => {
+const editUser = (db, userDetails) => {
   // edit user details, recieve full set of into on user (name, email, pw, id) within an array, and just apply those values to the UPDATE query
   // return the newly updated user details and render the user/:id page
 

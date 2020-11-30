@@ -97,7 +97,7 @@ exports.getResourceCommentsCount = getResourceCommentsCount;
  * @param {*} user_id
  * @param {*} resource_id
  */
-const isLikedByUser = function (user_id, resource_id) {
+const isLikedByUser = function(user_id, resource_id) {
 
   const queryString = `
   SELECT id

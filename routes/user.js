@@ -8,6 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const helpers = require('../db/helpers/user-helpers');
 
 module.exports = (db) => {
 
@@ -26,7 +27,7 @@ module.exports = (db) => {
 
     // when it is determined that active user is authorized to view page, use ID to return the user object from the DB
     // pass it into the res.render fn
-    db.findUserByID(userID)
+    helpers.findUserByID(userID)
       .then(user => {
         if (!user) {
           res.status(404).render('error', { error: "No user with that ID!" });
@@ -48,7 +49,7 @@ module.exports = (db) => {
     const userDetails = [name, hashPassword, email, req.session.user_id];
 
     // update the user row within the database, and render user/:id with the updated information
-    db.editUser(userDetails)
+    helpers.editUser(userDetails)
       .then(user => {
         res.render('user', user);
       });

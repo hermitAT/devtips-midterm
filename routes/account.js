@@ -6,38 +6,21 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const router  = express.Router();
-const helpers = require('../db/helpers/user-fns');
+const helpers = require('../db/helpers/user-helpers');
 
 module.exports = (db) => {
   const login = (email, password) => {
     //^^ log the user into the system with a given email/password, using getUserWithEmail to find the given user in the DB
     // use bcrypt.compareSync to compare passwords, return user object upon successful validation
-    return helpers.findUserByEmail(email)
+    return helpers.findUserByEmail(db, email)
       .then(user => {
         if (bcrypt.compareSync(password, user.password)) {
+          console.log(user);
           return user;
         }
         return null;
       });
   };
-
-
-  router.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    login(email, password)
-      .then(user => {
-        if (!user) {
-          res.send({ error: "Unauthorized" });
-        }
-        req.session.user_id = user.id;
-        res.redirect('/user/:id', user);
-      })
-      .catch((err) => {
-        console.error('Query error', err.stack);
-      });
-  });
-  // ^^ more complicated user login, with given email/password, using hashed password and a redirection to the user/:id page.
-
 
   router.get('/login/:id', (req, res) => {
     req.session.user_id = req.params.id;
@@ -45,6 +28,22 @@ module.exports = (db) => {
   });
   // very simple user login, input ID and submit to login, set cookie to the ID of user
   // redirect to home page upon success
+
+  router.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    return login(db, email, password)
+      .then(user => {
+        if (!user) {
+          res.send({ error: "Unauthorized" });
+        }
+        req.session.user_id = user.id;
+        res.redirect('/');
+      })
+      .catch((err) => {
+        console.error('Query error', err.stack);
+      });
+  });
+  // ^^ more complicated user login, with given email/password, using hashed password and a redirection to the user/:id page.
 
 
   router.get('/logout', (req, res) => {
@@ -59,7 +58,7 @@ module.exports = (db) => {
     // return with the new user row from database, set cookie to new user.id and redirect to newly created user/:id page
 
     const userObj = req.body;
-    helpers.newUser(userObj)
+    helpers.newUser(db, userObj)
       .then(user => {
         if (!user) {
           res.send({ error: "User not found!" });
