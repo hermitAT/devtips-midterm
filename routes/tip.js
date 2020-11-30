@@ -9,7 +9,6 @@ const dbHelp = require('../db/db-helpers');
 
 module.exports = (db) => {
   router.get("/:tip_id", (req, res) => {
-    console.log(`Tip id: ${tipId}`);
 
     const tipId = req.params.tip_id;
 
@@ -21,7 +20,6 @@ module.exports = (db) => {
 
 
   router.post("/:tip_id", (req, res) => {
-    console.log(`Tip id: ${req.params.tip_id}`);
 
     const values = [res.body.title, res.body.description, res.body.type];
     const tipId = res.body.tip_id;
@@ -108,6 +106,7 @@ module.exports = (db) => {
     // once validation check is passed, delete all columns for the given resource_id
     db.query(`DELETE FROM resources WHERE resource_id = $1;`, tipId)
       .then(data => {
+        res.json({ success: true });
         res.redirect('/');
       })
       .catch(err => res.json({ success: false, error: err }));

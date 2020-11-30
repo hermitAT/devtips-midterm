@@ -8,6 +8,7 @@ const router  = express.Router();
 const bcrypt = require('bcrypt');
 
 module.exports = (db) => {
+
   /*
   * Return to login/register routes once we know we will be using some login/registration
   *
