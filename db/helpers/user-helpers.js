@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { query } = require('./');
+const { query } = require('../index');
 
 let queryString;
 

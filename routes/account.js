@@ -4,14 +4,15 @@
  */
 
 const express = require('express');
-const router  = express.Router();
 const bcrypt = require('bcrypt');
+const router  = express.Router();
+const helpers = require('../db/helpers/user-fns');
 
 module.exports = (db) => {
   const login = (email, password) => {
     //^^ log the user into the system with a given email/password, using getUserWithEmail to find the given user in the DB
     // use bcrypt.compareSync to compare passwords, return user object upon successful validation
-    return db.findUserByEmail(email)
+    return helpers.findUserByEmail(email)
       .then(user => {
         if (bcrypt.compareSync(password, user.password)) {
           return user;
@@ -58,7 +59,7 @@ module.exports = (db) => {
     // return with the new user row from database, set cookie to new user.id and redirect to newly created user/:id page
 
     const userObj = req.body;
-    db.newUser(userObj)
+    helpers.newUser(userObj)
       .then(user => {
         if (!user) {
           res.send({ error: "User not found!" });
