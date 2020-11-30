@@ -5,16 +5,68 @@
 
 const express = require('express');
 const router  = express.Router();
+const bcrypt = require('bcrypt');
 
 module.exports = (db) => {
-  router.get("/login", (req, res) => {
-    console.log(`Login goes here.`);
+  const login = (email, password) => {
+    //^^ log the user into the system with a given email/password, using getUserWithEmail to find the given user in the DB
+    // use bcrypt.compareSync to compare passwords, return user object upon successful validation
+    return db.findUserByEmail(email)
+      .then(user => {
+        if (bcrypt.compareSync(password, user.password)) {
+          return user;
+        }
+        return null;
+      });
+  };
+
+
+  router.get('/login', (req, res) => {
+    const { email, password } = req.body;
+    login(email, password)
+      .then(user => {
+        if (!user) {
+          res.error(401).render('error', { error: "Unauthorized" });
+        }
+        req.session.userid = user.id;
+        res.redirect('/user/:id', user);
+      });
   });
-  router.get("/logout", (req, res) => {
-    console.log(`Logout goes here.`);
+  // ^^ more complicated user login, with given email/password, using hashed password and a redirection to the user/:id page.
+
+
+  router.get('/login/:id', (req, res) => {
+    req.session.userid = req.params.id;
+    res.redirect('/');
   });
-  router.get("/register", (req, res) => {
-    console.log(`Register goes here.`);
+  // very simple user login, input ID and submit to login, set cookie to the ID of user
+  // redirect to home page upon success
+
+
+  router.get('/logout', (req, res) => {
+    req.session = null;
+    res.redirect('/');
+  });
+  // clear cookies in session upon logout, redirect to home page -> should this be a POST?
+
+
+  router.post('/register', (req, res) => {
+    // register a new user, recieve a user object from the request and pass it thru newUser helper function to add to database
+    // return with the new user row from database, set cookie to new user.id and redirect to newly created user/:id page
+
+    const userObj = req.body;
+    db.newUser(userObj)
+      .then(user => {
+        if (!user) {
+          res.status(404).render('error', { error: "User not found!" });
+        }
+        req.session.userid = user.id;
+        res.redirect('user', user);
+      })
+      .catch((err) => {
+        console.error('Query error', err.stack);
+      });
   });
   return router;
 };
+

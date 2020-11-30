@@ -11,66 +11,6 @@ const bcrypt = require('bcrypt');
 
 module.exports = (db) => {
 
-  const login = (email, password) => {
-    //^^ log the user into the system with a given email/password, using getUserWithEmail to find the given user in the DB
-    // use bcrypt.compareSync to compare passwords, return user object upon successful validation
-
-    return db.findUserByEmail(email)
-      .then(user => {
-        if (bcrypt.compareSync(password, user.password)) {
-          return user;
-        }
-        return null;
-      });
-  };
-
-  router.get('/login', (req, res) => {
-    const { email, password } = req.body;
-    login(email, password)
-      .then(user => {
-        if (!user) {
-          res.error(401).render('error', { error: "Unauthorized" });
-        }
-        req.session.userid = user.id;
-        res.redirect('/user/:id', user);
-      });
-  });
-  // ^^ more complicated user login, with given email/password, using hashed password and a redirection to the user/:id page.
-
-  router.get('/login/:id', (req, res) => {
-    req.session.userid = req.params.id;
-    res.redirect('/');
-  });
-  // very simple user login, input ID and submit to login, set cookie to the ID of user
-  // redirect to home page upon success
-
-
-  router.get('/logout', (req, res) => {
-    req.session = null;
-    res.redirect('/');
-  });
-  // clear cookies in session upon logout, redirect to home page -> should this be a POST?
-
-
-  router.post('/register', (req, res) => {
-    // register a new user, recieve a user object from the request and pass it thru newUser helper function to add to database
-    // return with the new user row from database, set cookie to new user.id and redirect to newly created user/:id page
-
-    const userObj = req.body;
-    db.newUser(userObj)
-      .then(user => {
-        if (!user) {
-          res.status(404).render('error', { error: "User not found!" });
-        }
-        req.session.userid = user.id;
-        res.redirect('user', user);
-      })
-      .catch((err) => {
-        console.error('Query error', err.stack);
-      });
-  });
-
-
   router.get('/user/:id', (req, res) => {
     const userID = req.session.user_id;
 
@@ -104,7 +44,8 @@ module.exports = (db) => {
     }
 
     const { name, password, email } = req.body;
-    const userDetails = [name, password, email, req.session.user_id];
+    const hashPassword = bcrypt.hashSync(password, 12);
+    const userDetails = [name, hashPassword, email, req.session.user_id];
 
     // update the user row within the database, and render user/:id with the updated information
     db.editUser(userDetails)
@@ -112,6 +53,5 @@ module.exports = (db) => {
         res.render('user', user);
       });
   });
-
   return router;
 };
