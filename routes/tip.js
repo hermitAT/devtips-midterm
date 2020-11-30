@@ -15,7 +15,7 @@ module.exports = (db) => {
 
     dbHelp.getResourceFullData([tipId])
       .then(data => res.json(data.rows[0]))
-      .catch(err => res.send({ error: err }));
+      .catch(err => res.json({ error: err }));
   });
   // send resource with particular :tip_id to server as JSON
 
@@ -28,7 +28,7 @@ module.exports = (db) => {
     const userId = req.session.user_id;
 
     if (!userId) {
-      res.send({ error: "Unauthorized!" });
+      res.json({ error: "Unauthorized!" });
     }
     // if no user is logged in, send error of unauthorized
 
@@ -37,10 +37,10 @@ module.exports = (db) => {
         const creator = data.rows[0]["creator_id"];
         // ^^ select the creator_id from the resource from the DB, get the value and compare to userId below as validation check
         if (creator !== userId) {
-          res.send({ error: "Unauthorized!" });
+          res.json({ error: "Unauthorized!" });
         }
       })
-      .catch(err => res.send({ error: err }));
+      .catch(err => res.json({ success: false, error: err }));
 
     // if validation passes, take new values for title, desc, type and set them and apply value Now() for edited_at
     db.query(`
@@ -49,7 +49,7 @@ module.exports = (db) => {
       WHERE id = $4
       RETURNING *`, values)
       .then(data => res.json(data.rows[0]))
-      .catch(err => res.send({ error: err }));
+      .catch(err => res.json({ success: false, error: err }));
   });
 
   router.post("/:tip_id/:like"), (req, res) => {
@@ -63,7 +63,7 @@ module.exports = (db) => {
       .then(data => {
         res.json(data.rows[0]);
       })
-      .catch(err => res.send({ error: err }));
+      .catch(err => res.json({ success: false, error: err }));
   };
   // recieve boolean from submission, apply it to new like and link resource_id and user_id to the new like.
   // redirect to the resource page? not sure where to go after updating the table.
@@ -81,7 +81,7 @@ module.exports = (db) => {
       .then(data => {
         res.json(data.rows[0]);
       })
-      .catch(err => res.send({ error: err }));
+      .catch(err => res.json({ success: false, error: err }));
   };
 
 
@@ -103,13 +103,14 @@ module.exports = (db) => {
           res.send({ error: "Unauthorized!" });
         }
       })
-      .catch(err => res.send({ error: err }));
+      .catch(err => res.json({ success: false, error: err }));
 
     // once validation check is passed, delete all columns for the given resource_id
     db.query(`DELETE FROM resources WHERE resource_id = $1;`, tipId)
       .then(data => {
         res.redirect('/');
-      });
+      })
+      .catch(err => res.json({ success: false, error: err }));
   };
 
   return router;
