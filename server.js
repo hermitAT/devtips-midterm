@@ -18,6 +18,8 @@ const dbParams = require('./lib/db.js');
 const db = new Pool(dbParams);
 db.connect();
 
+exports.db = db;
+
 // create cookie cookieSession
 app.use(cookieSession({
   name: 'session',

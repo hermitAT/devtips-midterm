@@ -1,5 +1,3 @@
-const db = require('../../db/db-helpers')
-
 /**
  * Calculate the time difference between the current moment and a given one.
  * Returns result as n minutes/hours/days/months/years ago,
@@ -31,58 +29,59 @@ const timeAgo = function(date) {
 /**
  * Load tips currently existing in db
  */
-const loadTips = function() {
+const loadTips = function(tipsID) {
 
-  // $.ajax('/tweets/', { method: 'GET' })
-  //   .then(function(res) {
-  //     renderTweets(res);
-  //   });
+  $.ajax(`/search/get-tips`, { method: 'POST', data: {tipsID} })
+    .then(tips => {
+      console.log(tips)
+      renderTips(tips);
+    });
 
-  db.searchByTags()
-    .then(res => console.log(res))
+};
+
+
+const loadTipsForUser = function(tipsID, userID) {
+  $.ajax(`/search/get-tips-for-user`, { method: 'POST', data: {tipsID, userID} })
+    .then(tips => {
+      console.log(tips)
+      renderTips(tips);
+    });
 
 };
 
 
 /**
- * Compose a new tweet element for the feed using
- * a particular tweet-related data from the server
- * @param {*} data
+ * Compose a new resource element for the feed using
+ * a particular resource-related data from the server
+ * @param {*} tip
  *  */
-const createTipElement = function(data) {
+const createTipElement = function(tip) {
 
-  const { user, content } = data;
+  const { user, content } = tip;
 
   return `
     <article>
-      <header>
-        <div class="author-name"><img src="${user.avatars}">${user.name}</div>
-        <div class="author-account" hidden>${user.handle}</div>
-      </header>
-      <p>${disarm(content.text)}</p>
-      <footer>
-        <div class="date-ago">${timeAgo(data.created_at)}</div>
-        <div><img hidden src="/images/tweet-footer-buttons.png"></div>
-      </footer>
+      <div>${tip.title} likes: ${tip.likes} created: ${timeAgo(tip.created_at)}</div>
     </article>
   `;
 };
 
 
 /**
- * Load a set of tweets received as an array of database objects
+ * Load a set of resources received as an array of database objects
  * @param {*} tweets - array of objects
  */
-const renderTips = function(tweets) {
-  for (const tweet of tweets) {
-    $('#tweet-feed').prepend(createTweetElement(tweet));
+const renderTips = function(tips) {
+  for (const tip of tips) {
+    $('#tip-feed').prepend(createTipElement(tip));
   }
 };
 
 
 $(document).ready(() => {
 
-  loadTips();
+  loadTips([4,5]);
+  loadTipsForUser([6,7], 12)
   //submitNewTweet();
 
 });
