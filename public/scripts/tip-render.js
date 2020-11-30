@@ -39,6 +39,7 @@ const loadTips = function() {
   //   });
 
   db.searchByTags()
+    .then(res => console.log(res))
 
 };
 
