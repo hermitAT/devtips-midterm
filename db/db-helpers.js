@@ -13,43 +13,8 @@ const extract = function(rows, column) {
 
 
 /**
- * Function receives an array of resource IDs
- * Returns all fields from resources table
- * related to each resource with their creator names
- * likes/dislikes, tags related to resource and comments count
- * @param {*} [resource_id1,...]
- */
-const getResourceFullData = function(arr) {
-
-  return Promise.all(arr.map(resource_id => {
-    const queryString = `
-    SELECT a.*, users.name AS creator_name,
-      (SELECT COUNT (likes.id)
-      FROM likes
-      WHERE value = true AND resource_id  = a.id) AS likes,
-      (SELECT COUNT (likes.id)
-      FROM likes
-      WHERE value = false AND resource_id  = a.id) AS dislikes,
-      (SELECT COUNT (comments.id)
-      FROM comments
-      WHERE resource_id  = a.id) AS comments_count,
-      (SELECT STRING_AGG(tag, ' ')
-      FROM resources_tags
-      JOIN tags ON tag_id = tags.id
-      WHERE resource_id  = a.id) AS tags
-    FROM resources a
-    JOIN users ON creator_id = users.id
-    WHERE a.id  = $1;
-    `;
-    return query(queryString, [resource_id])
-    .then(res => res.rows[0]);
-  }))
-}
-exports.getResourceFullData = getResourceFullData;
-
-
-/**
  * Function receives an array of resource IDs and User ID
+ * (may be skipped, user-specific queries will just return null)
  * Returns all fields from resources table
  * related to each resource with their creator names,
  * likes/dislikes, tags related to resource, comments count
@@ -57,7 +22,7 @@ exports.getResourceFullData = getResourceFullData;
  * they liked and/or bookmarked a resource
  * @param {*} [resource_id1,...]
  */
-const getResourceFullDataForUser = function(arr, userID) {
+const getResourceFullData = function(arr, userID) {
 
   return Promise.all(arr.map(resource_id => {
     const queryString = `
@@ -89,7 +54,7 @@ const getResourceFullDataForUser = function(arr, userID) {
     .then(res => res.rows[0]);
   }))
 }
-exports.getResourceFullDataForUser = getResourceFullDataForUser;
+exports.getResourceFullData = getResourceFullData;
 
 
 /**

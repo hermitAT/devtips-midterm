@@ -81,7 +81,7 @@ const renderTips = function(tips) {
 $(document).ready(() => {
 
   loadTips([4,5]);
-  loadTipsForUser([6,7], 12)
+  loadTips([6,7], 4)
   //submitNewTweet();
 
 });

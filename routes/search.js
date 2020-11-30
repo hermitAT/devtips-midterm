@@ -14,15 +14,15 @@ module.exports = (db) => {
     res.render('search')
   });
 
-  router.post("/get-tips", (req, res) => {
-    dbHelp.getResourceFullData(req.body.tipsID)
-      .then((tips) => res.json(tips))
-  });
+  //router.post("/get-tips", (req, res) => {
+  //  dbHelp.getResourceFullData(req.body.tipsID)
+  //    .then((tips) => res.json(tips))
+  //});
 
-  router.post("/get-tips-for-user", (req, res) => {
+  router.post("/get-tips", (req, res) => {
     const { tipsID, userID } = req.body;
     console.log(tipsID, userID)
-    dbHelp.getResourceFullDataForUser(tipsID, userID)
+    dbHelp.getResourceFullData(tipsID, userID)
       .then((tips) => res.json(tips))
   });
 
