@@ -15,7 +15,35 @@
     <script type="text/javascript" src="/scripts/app.js"></script>
   </head>
 
-  <body>
-    <h1>Home Page</h1>
-  </body>
+<head>
+  <title>Home Page</title>
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" />
+  <!-- Node-Skeleton CSS -->
+  <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+  <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+  <link rel="stylesheet" href="/vendor/tailwind-2.0.1.css" type="text/css" />
+    <!-- DevTips CSS -->
+    <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+
+  <!-- Javascript Libraries -->
+  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+
+  <!-- DevTips Javascript -->
+  <script type="text/javascript" src="/scripts/app.js"></script>
+</head>
+
+<body>
+  <nav id="nav nav-main" class="bg-blue-500 shadow-md" role="navigation">
+    <h1 class="logo p-5 text-white text-3xl font-semibold">DevTips</h1>
+    <div class="max-w-sm mx-auto">
+      <label class="block">
+        <span class="text-gray-700">Full name</span>
+        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="">
+      </label>
+    </div>
+  </nav>
+</body>
+
 </html>
