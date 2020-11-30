@@ -21,22 +21,25 @@ module.exports = (db) => {
   };
 
 
-  router.get('/login', (req, res) => {
+  router.post('/login', (req, res) => {
     const { email, password } = req.body;
     login(email, password)
       .then(user => {
         if (!user) {
-          res.error(401).render('error', { error: "Unauthorized" });
+          res.send({ error: "Unauthorized" });
         }
-        req.session.userid = user.id;
+        req.session.user_id = user.id;
         res.redirect('/user/:id', user);
+      })
+      .catch((err) => {
+        console.error('Query error', err.stack);
       });
   });
   // ^^ more complicated user login, with given email/password, using hashed password and a redirection to the user/:id page.
 
 
   router.get('/login/:id', (req, res) => {
-    req.session.userid = req.params.id;
+    req.session.user_id = req.params.id;
     res.redirect('/');
   });
   // very simple user login, input ID and submit to login, set cookie to the ID of user
@@ -58,9 +61,9 @@ module.exports = (db) => {
     db.newUser(userObj)
       .then(user => {
         if (!user) {
-          res.status(404).render('error', { error: "User not found!" });
+          res.send({ error: "User not found!" });
         }
-        req.session.userid = user.id;
+        req.session.user_id = user.id;
         res.redirect('user', user);
       })
       .catch((err) => {
