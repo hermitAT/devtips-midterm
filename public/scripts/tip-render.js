@@ -27,11 +27,32 @@ const timeAgo = function(date) {
 
 
 /**
+ * Function receives array (e.g. resource IDs)
+ * and offset (default is 20)
+ * Returns object like {1:[id1, id2...], 2:[id21, id22...]}
+ * @param {*} arr
+ * @param {*} offset
+ */
+const pager = function(arr, offset = 10) {
+
+  const pages = {};
+  let page = 1;
+  const lastPage = Math.ceil(arr.length / offset)
+  while (page <= lastPage) {
+    pages[page] = arr.slice(offset * (page -1) ,offset * page);
+    page++;
+  }
+  return pages;
+
+}
+
+
+/**
  * Load tips currently existing in db
  */
 const loadTips = function(tipsID) {
 
-  $.ajax(`/search/get-tips`, { method: 'POST', data: {tipsID} })
+  $.ajax(`/search/get-tips`, { method: 'POST', data: { tipsID } })
     .then(tips => {
       console.log(tips)
       renderTips(tips);
@@ -39,15 +60,23 @@ const loadTips = function(tipsID) {
 
 };
 
+const searchForm = function() {
 
-const loadTipsForUser = function(tipsID, userID) {
-  $.ajax(`/search/get-tips-for-user`, { method: 'POST', data: {tipsID, userID} })
-    .then(tips => {
-      console.log(tips)
-      renderTips(tips);
-    });
+  $('form').on('submit', function(e) {
+    e.preventDefault();
+    const search = $(this).serialize();
+    console.log(search)
+    $.ajax(`/search/`, { method: 'POST', data: search })
+    .then((tips) => {
+      const tipsPaged = pager(tips);
+      if (tipsPaged.length > 1) drawPager(tipsPaged);
+      loadTips(tipsPaged[1])
+    })
+  })
+}
 
-};
+
+const drawPager()
 
 
 /**
@@ -72,6 +101,7 @@ const createTipElement = function(tip) {
  * @param {*} tweets - array of objects
  */
 const renderTips = function(tips) {
+  $('#tip-feed').empty()
   for (const tip of tips) {
     $('#tip-feed').prepend(createTipElement(tip));
   }
@@ -80,8 +110,8 @@ const renderTips = function(tips) {
 
 $(document).ready(() => {
 
+
   loadTips([4,5]);
-  loadTips([6,7], 4)
-  //submitNewTweet();
+  searchForm();
 
 });
