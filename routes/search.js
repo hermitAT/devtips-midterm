@@ -17,14 +17,14 @@ module.exports = (db) => {
   });
 
   router.post("/", (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     dbHelp.searchByTags(req.body.search)
     .then((tips) => res.json(tips))
   });
 
   router.post("/get-tips", (req, res) => {
     const { tipsID } = req.body;
-    console.log(tipsID, userID)
+    //console.log(tipsID, userID)
     dbHelp.getResourceFullData(tipsID, userID)
       .then((tips) => res.json(tips))
   });

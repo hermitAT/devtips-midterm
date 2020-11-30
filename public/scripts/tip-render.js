@@ -28,7 +28,7 @@ const timeAgo = function(date) {
 
 /**
  * Function receives array (e.g. resource IDs)
- * and offset (default is 20)
+ * and offset (default is 10)
  * Returns object like {1:[id1, id2...], 2:[id21, id22...]}
  * @param {*} arr
  * @param {*} offset
@@ -60,23 +60,46 @@ const loadTips = function(tipsID) {
 
 };
 
+/**
+ * 1. Disable standard behaviour for the search form element
+ * 2. Take its content and send it to /search/ route with POST method
+ * 3. Receive an array of Resource IDs which fit search parameters
+ * 4. Clear pager element (buttons) and split the array to pages
+ * 5. If there are more than 1 page - draw pager buttons
+ * 6. Load the 1st page of results
+ */
 const searchForm = function() {
 
   $('form').on('submit', function(e) {
     e.preventDefault();
     const search = $(this).serialize();
-    console.log(search)
     $.ajax(`/search/`, { method: 'POST', data: search })
-    .then((tips) => {
-      const tipsPaged = pager(tips);
-      if (tipsPaged.length > 1) drawPager(tipsPaged);
-      loadTips(tipsPaged[1])
-    })
+      .then((tips) => {
+        $('#pager').empty();
+        const tipsPaged = pager(tips);
+        if (tipsPaged['2']) drawPager(tipsPaged);
+        loadTips(tipsPaged[1])
+      })
   })
 }
 
 
-const drawPager()
+/**
+ * Function receives an object of pages with Resource IDs
+ * Each page in the object creates button and associates
+ * loading its resource IDs with this button
+ * @param {*} tipsPaged
+ */
+const drawPager = function(tipsPaged) {
+
+  for (const page in tipsPaged) {
+    $('#pager').append(`<button>${page}</button>`)
+    $('#pager button:last-child').click(() => {
+      loadTips(tipsPaged[page])
+    })
+  }
+
+}
 
 
 /**
