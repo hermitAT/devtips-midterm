@@ -6,17 +6,16 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const router  = express.Router();
-const helpers = require('../db/helpers/user-helpers');
+const helpers = require('../db/helpers/account-help.js');
 
 module.exports = (db) => {
-  const login = (email, password) => {
+  const login = (db, email, password) => {
     //^^ log the user into the system with a given email/password, using getUserWithEmail to find the given user in the DB
     // use bcrypt.compareSync to compare passwords, return user object upon successful validation
     return helpers.findUserByEmail(db, email)
       .then(user => {
         if (bcrypt.compareSync(password, user.password)) {
-          console.log(user);
-          return user;
+          res.json({ user });
         }
         return null;
       });
@@ -34,7 +33,7 @@ module.exports = (db) => {
     return login(db, email, password)
       .then(user => {
         if (!user) {
-          res.send({ error: "Unauthorized" });
+          res.json({ error: "Unauthorized" });
         }
         req.session.user_id = user.id;
         res.redirect('/');

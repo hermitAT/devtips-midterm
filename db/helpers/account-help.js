@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const { query } = require('../');
 
 let queryString;
 
@@ -12,8 +11,15 @@ const findUserByEmail = (db, email) => {
     WHERE email = $1;
     `;
 
-  return query(queryString, [email])
-    .then(res => res.rows[0]);
+  return db.query(queryString, [email])
+    .then(data => {
+      return data.rows[0];
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
 };
 exports.findUserByEmail = findUserByEmail;
 
@@ -27,8 +33,15 @@ const findUserByID = (db, id) => {
     WHERE id = $1;
   `;
 
-  return query(queryString, [id])
-    .then(res => res.rows[0]);
+  return db.query(queryString, [id])
+    .then(data => {
+      return data.rows[0];
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
 };
 exports.findUserByID = findUserByID;
 
@@ -42,8 +55,15 @@ const findUserByName = (db, name) => {
     WHERE name = $1;
     `;
 
-  return query(queryString, [name])
-    .then(data => data.rows[0]);
+  return db.query(queryString, [name])
+    .then(data => {
+      return data.rows[0];
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
 };
 exports.findUserByName = findUserByName;
 
@@ -62,8 +82,15 @@ const newUser = (db, user) => {
       RETURNING *;
       `;
 
-    return query(queryString, values)
-      .then(data => data.rows[0]);
+    return db.query(queryString, values)
+      .then(data => {
+        return data.rows[0];
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({ error: err.message });
+      });
   }
 };
 exports.newUser = newUser;
@@ -80,7 +107,14 @@ const editUser = (db, userDetails) => {
     RETURNING *;
   `;
 
-  return query(queryString, userDetails)
-    .then(data => data.rows[0]);
+  return db.query(queryString, userDetails)
+    .then(data => {
+      return data.rows[0];
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
 };
 exports.editUser = editUser;

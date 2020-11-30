@@ -8,7 +8,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const helpers = require('../db/helpers/user-helpers');
+const helpers = require('../db/helpers/account-help.js');
 
 module.exports = (db) => {
 
