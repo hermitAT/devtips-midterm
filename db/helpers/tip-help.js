@@ -6,30 +6,12 @@ let queryString;
 *
 *
 */
-const creatorValidation = (tipID) => {
-
-  queryString = `
-    SELECT creator_id
-    FROM resources
-    WHERE id = $1;
-    `;
-
-  return query(queryString, tipID)
-    .then(data => data.rows[0])
-    .catch(err => console.error('Query error', err.stack));
-};
-exports.creatorValidation = creatorValidation;
-
-/*
-*
-*
-*/
 const editTip = (values) => {
 
   queryString = `
     UPDATE resources
-    SET title = $1, description = $2, type = $3, edited_at = Now()
-    WHERE id = $4
+    SET title = $1, description = $2, edited_at = Now()
+    WHERE id = $3
     RETURNING *;
     `;
 
@@ -38,6 +20,24 @@ const editTip = (values) => {
     .catch(err => console.error('Query error', err.stack));
 };
 exports.editTip = editTip;
+
+/*
+*
+*
+*/
+const deleteTip = (values) => {
+
+  queryString = `
+    DELETE FROM resources
+    WHERE id = $1
+    RETURNING *;
+  `;
+
+  return query(queryString, values)
+    .then(data => console.log("Success! Resource deleted!"))
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.deleteTip = deleteTip;
 
 /*
 *
@@ -129,22 +129,4 @@ const editComment = (values) => {
     .catch(err => console.error('Query error', err.stack));
 };
 exports.editComment = editComment;
-
-/*
-*
-*
-*/
-const deleteTip = (tipID) => {
-
-  queryString = `
-    DELETE FROM resources
-    WHERE id = $1
-    RETURNING *;
-  `;
-
-  return query(queryString, [tipID])
-    .then(data => console.log("Success! Resource deleted!"))
-    .catch(err => console.error('Query error', err.stack));
-};
-exports.deleteTip = deleteTip;
 

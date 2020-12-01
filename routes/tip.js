@@ -11,6 +11,22 @@ const tipHelp = require('../db/helpers/tip-help');
 const userID = 4;
 // There should be UID from cookie
 
+/*
+
+user authentication logic, to be implemented on all routes requiring it ~~~
+
+if (req.session.user_id === req.body.creator_id) {
+      <route logic & query goes here>
+}
+
+OR
+
+if (req.session.user_id !== req.body.creator_id) {
+      <send error to client re: unauthorized>
+}
+
+*/
+
 
 module.exports = () => {
 
@@ -50,10 +66,10 @@ module.exports = () => {
 
   /*
   * POST req to mark a tip as bookmarked by the active user
-  * user_id will come from login/cookie mechanism, not body, once implemented
+  * user_id will come from login/cookie mechanism, not hardcoded once implemented
   */
   router.post("/:tip_id/bookmark", (req, res) => {
-    const values = [req.body.user_id, req.params.tip_id];
+    const values = [userID, req.params.tip_id];
 
     tipHelp.addBookmark(values)
       .then(data => res.json(data))
@@ -62,10 +78,10 @@ module.exports = () => {
 
   /*
   * POST req to add a new like boolean value to the given :tip_id
-  * user_id will come from login/cookie mechanism, not body, once implemented
+  * user_id will come from login/cookie mechanism, not hardcoded, once implemented
   */
   router.post("/:tip_id/like", (req, res) => {
-    const values = [req.body.user_id, req.params.tip_id, req.body.value];
+    const values = [userID, req.params.tip_id, req.body.value];
 
     tipHelp.likeTip(values)
       .then(data => res.json(data))
@@ -77,7 +93,7 @@ module.exports = () => {
   * user_id will come from login/cookie mechanism, not body, once implemented
   */
   router.post('/:tip_id/comment', (req, res) => {
-    const values = [req.body.user_id, req.params.tip_id, req.body.comment];
+    const values = [userID, req.params.tip_id, req.body.comment];
 
     tipHelp.addComment(values)
       .then(data => res.json(data))
@@ -119,8 +135,8 @@ module.exports = () => {
   * must add user authentication !!!
   */
   router.post("/:tip_id", (req, res) => {
-
-    const values = [req.body.title, req.body.description, req.params.tip_id];
+    const tipId = req.params.tip_id;
+    const values = [req.body.title, req.body.description, tipId];
 
     tipHelp.editTip(values)
       .then(data => res.json(data))
