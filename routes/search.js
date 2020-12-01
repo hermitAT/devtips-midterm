@@ -22,12 +22,5 @@ module.exports = (db) => {
     .then((tips) => res.json(tips))
   });
 
-  router.post("/get-tips", (req, res) => {
-    const { tipsID } = req.body;
-    //console.log(tipsID, userID)
-    dbHelp.getResourceFullData(tipsID, userID)
-      .then((tips) => res.json(tips))
-  });
-
   return router;
 };
