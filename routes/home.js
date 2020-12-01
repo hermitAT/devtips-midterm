@@ -5,10 +5,20 @@
 
 const express = require('express');
 const router  = express.Router();
+const homeHelp = require('../db/helpers/home-help')
 
-module.exports = (db) => {
+module.exports = () => {
+
   router.get("/", (req, res) => {
     res.render('index');
   });
+
+  // Upload a new tip to DB
+  router.post("/", (req, res) => {
+
+    //
+
+  });
+
   return router;
 };

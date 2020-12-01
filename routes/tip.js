@@ -5,16 +5,17 @@
 
 const express = require('express');
 const router  = express.Router();
-const dbHelp = require('../db/db-helpers');
+const tipHelp = require('../db/helpers/tip-help');
 
 const userID = 4 // There should be UID from cookie
 
 
 module.exports = () => {
 
+  // load tips data for an array of Tip IDs
   router.post("/", (req, res) => {
     const { tipsID } = req.body;
-    dbHelp.getResourceFullData(tipsID, userID)
+    tipHelp.getResourceFullData(tipsID, userID)
       .then((tips) => res.json(tips))
   });
 
@@ -23,7 +24,7 @@ module.exports = () => {
     const tipId = req.params.tip_id;
     console.log(`tip_id: ${tipId}`);
     res.render('tip', { tipId });
-/*     dbHelp.getResourceFullData([tipId])
+/*     tipHelp.getResourceFullData([tipId])
       .then(data => res.json(data.rows[0]))
       .catch(err => res.json({ error: err })); */
   });

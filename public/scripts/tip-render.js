@@ -54,7 +54,7 @@ const pager = function(arr, offset = 10) {
  */
 const loadTips = function(tipsID) {
 
-  $.ajax(`/tips`, { method: 'POST', data: { tipsID } })
+  $.ajax(`/tip`, { method: 'POST', data: { tipsID } })
     .then(tips => {
       console.log(tips)
       renderTips(tips);
