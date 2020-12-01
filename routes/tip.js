@@ -57,7 +57,7 @@ module.exports = () => {
   * must add user authentication !!!
   */
   router.post("/:tip_id/delete", (req, res) => {
-    const tipId = req.params.tip_id;
+    const tipId = [req.params.tip_id];
 
     tipHelp.deleteTip(tipId)
       .then(data => res.redirect('/'))
@@ -135,8 +135,7 @@ module.exports = () => {
   * must add user authentication !!!
   */
   router.post("/:tip_id", (req, res) => {
-    const tipId = req.params.tip_id;
-    const values = [req.body.title, req.body.description, tipId];
+    const values = [req.body.title, req.body.description, req.params.tip_id];
 
     tipHelp.editTip(values)
       .then(data => res.json(data))

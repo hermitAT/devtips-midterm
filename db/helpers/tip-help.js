@@ -29,8 +29,7 @@ const deleteTip = (values) => {
 
   queryString = `
     DELETE FROM resources
-    WHERE id = $1
-    RETURNING *;
+    WHERE id = $1;
   `;
 
   return query(queryString, values)
