@@ -48,7 +48,9 @@ const pager = function(arr, offset = 10) {
 
 
 /**
- * Load tips currently existing in db
+ * Function receives an array of tip IDs to load
+ * and pass it to /tips POST route, result is sent
+ * to be rendered on a page
  */
 const loadTips = function(tipsID) {
 
@@ -134,7 +136,7 @@ const renderTips = function(tips) {
 $(document).ready(() => {
 
 
-  loadTips([4,5]);
+  loadTips([4,5]); // initial testcode, to be replaced
   searchForm();
 
 });
