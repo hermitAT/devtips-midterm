@@ -2,6 +2,16 @@ const bcrypt = require('bcrypt');
 
 let queryString;
 
+const getAllUsers = (db) => {
+  queryString = `SELECT * FROM users;`;
+
+  return db.query(queryString)
+    .then(data => data.rows)
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.getAllUsers = getAllUsers;
+
+
 const findUserByEmail = (db, email) => {
   // return a user object from the DB when a user with the given Email is found
 
@@ -12,14 +22,8 @@ const findUserByEmail = (db, email) => {
     `;
 
   return db.query(queryString, [email])
-    .then(data => {
-      return data.rows[0];
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .json({ error: err.message });
-    });
+    .then(data => data.rows[0])
+    .catch(err => console.error('Query error', err.stack));
 };
 exports.findUserByEmail = findUserByEmail;
 
@@ -34,14 +38,8 @@ const findUserByID = (db, id) => {
   `;
 
   return db.query(queryString, [id])
-    .then(data => {
-      return data.rows[0];
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .json({ error: err.message });
-    });
+    .then(data => data.rows[0])
+    .catch(err => console.error('Query error', err.stack));
 };
 exports.findUserByID = findUserByID;
 
@@ -56,14 +54,8 @@ const findUserByName = (db, name) => {
     `;
 
   return db.query(queryString, [name])
-    .then(data => {
-      return data.rows[0];
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .json({ error: err.message });
-    });
+    .then(data => data.rows[0])
+    .catch(err => console.error('Query error', err.stack));
 };
 exports.findUserByName = findUserByName;
 
@@ -83,14 +75,8 @@ const newUser = (db, user) => {
       `;
 
     return db.query(queryString, values)
-      .then(data => {
-        return data.rows[0];
-      })
-      .catch(err => {
-        res
-          .status(500)
-          .json({ error: err.message });
-      });
+      .then(data => data.rows[0])
+      .catch(err => console.error('Query error', err.stack));
   }
 };
 exports.newUser = newUser;
@@ -99,6 +85,7 @@ exports.newUser = newUser;
 const editUser = (db, userDetails) => {
   // edit user details, recieve full set of into on user (name, email, pw, id) within an array, and just apply those values to the UPDATE query
   // return the newly updated user details and render the user/:id page
+  // assumes user must submit changes to all 3 parameters ...
 
   queryString = `
     UPDATE users
@@ -108,13 +95,7 @@ const editUser = (db, userDetails) => {
   `;
 
   return db.query(queryString, userDetails)
-    .then(data => {
-      return data.rows[0];
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .json({ error: err.message });
-    });
+    .then(data => data.rows[0])
+    .catch(err => console.error('Query error', err.stack));
 };
 exports.editUser = editUser;
