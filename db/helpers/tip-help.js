@@ -36,7 +36,7 @@ const likeTip = (values) => {
   queryString = `
     INSERT INTO likes (user_id, resource_id, value)
     VALUES ($1, $2, $3)
-    RETURNING (SELECT * FROM resources WHERE id = $2);
+    RETURNING *;
     `;
 
   return query(queryString, values)
@@ -48,9 +48,9 @@ exports.likeTip = likeTip;
 const addBookmark = (values) => {
 
   queryString = `
-    UPDATE bookmarks (user_id, resource_id)
+    INSERT INTO bookmarks (user_id, resource_id)
     VALUES ($1, $2)
-    RETURNING (SELECT * FROM resources WHERE id = $2);
+    RETURNING *;
   `;
 
   return query(queryString, values)

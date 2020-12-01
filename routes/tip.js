@@ -44,7 +44,7 @@ module.exports = (db) => {
   *
   */
 
-  router.post("/:tip_id/:like"), (req, res) => {
+  router.post("/:tip_id/like"), (req, res) => {
     const values = [req.body.user_id, req.params.tip_id, req.body.value];
 
     tipHelp.likeTip(values)
