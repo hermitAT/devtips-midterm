@@ -13,70 +13,48 @@ const extract = function(rows, column) {
 
 
 /**
+ * Function receives an array of resource IDs and User ID
+ * (may be skipped, user-specific queries will just return null)
  * Returns all fields from resources table
- * related to a certain resource id along with its creator name
- * @param {*} resource_id
+ * related to each resource with their creator names,
+ * likes/dislikes, tags related to resource, comments count
+ * and user-specific information whether
+ * they liked and/or bookmarked a resource
+ * @param {*} [resource_id1,...]
  */
-const getResourceAndCreator = function(resource_id) {
+const getResourceFullData = function(arr, userID) {
 
-  const queryString = `
-  SELECT resources.*, users.name AS creator_name
-  FROM resources
-  JOIN users ON creator_id = users.id
-  WHERE resources.id  = $1;
-  `;
-  return query(queryString, [resource_id])
-  .then(res => res.rows[0]);
-
+  return Promise.all(arr.map(resource_id => {
+    const queryString = `
+    SELECT a.*, users.name AS creator_name,
+      (SELECT COUNT (likes.id)
+      FROM likes
+      WHERE value = true AND resource_id  = a.id) AS likes,
+      (SELECT COUNT (likes.id)
+      FROM likes
+      WHERE value = false AND resource_id  = a.id) AS dislikes,
+      (SELECT COUNT (comments.id)
+      FROM comments
+      WHERE resource_id  = a.id) AS comments_count,
+      (SELECT STRING_AGG(tag, ' ')
+      FROM resources_tags
+      JOIN tags ON tag_id = tags.id
+      WHERE resource_id  = a.id) AS tags,
+      (SELECT likes.id
+      FROM likes
+      WHERE user_id = $2 AND resource_id  = a.id) AS is_liked,
+      (SELECT bookmarks.id
+      FROM bookmarks
+      WHERE user_id = $2 AND resource_id  = a.id) AS is_bookmarked
+    FROM resources a
+    JOIN users ON creator_id = users.id
+    WHERE a.id  = $1;
+    `;
+    return query(queryString, [resource_id, userID])
+    .then(res => res.rows[0]);
+  }))
 }
-exports.getResourceAndCreator = getResourceAndCreator;
-
-
-/**
- * Returns all tags (as array) related to a specific resource
- * @param {*} resource_id
- */
-const getResourceTags = function(resource_id) {
-
-  const queryString = `
-  SELECT tag
-  FROM resources_tags
-  JOIN tags ON tag_id = tags.id
-  WHERE resource_id = $1
-  `;
-  return query(queryString, [resource_id])
-  .then(res => {
-    extract(res.rows, 'tag');
-  });
-
-}
-exports.getResourceTags = getResourceTags;
-
-
-/**
- * Returns array with [ total likes, total dislikes ]
- * for a specific post
- * @param {*} resource_id
- */
-const getResourceRating = function(resource_id) {
-
-  const queryString = `
-  SELECT value, COUNT (likes.id)
-  FROM likes
-  WHERE resource_id = $1
-  GROUP BY value
-  `;
-  return query(queryString, [resource_id])
-  .then(res => {
-
-    const likes = (res.rows[0].value) ? res.rows[0].count : res.rows[1].count;
-    const dislikes = (!res.rows[0].value) ? res.rows[0].count : res.rows[1].count;
-    return [ likes, dislikes ];
-
-  });
-
-}
-exports.getResourceRating = getResourceRating;
+exports.getResourceFullData = getResourceFullData;
 
 
 /**
@@ -84,55 +62,20 @@ exports.getResourceRating = getResourceRating;
  * for a specific post
  * @param {*} resource_id
  */
-const getResourceCommentsCount = function(resource_id) {
+const getResourceComments = function(arr) {
 
+  return Promise.all(arr.map(resource_id => {
   const queryString = `
-  SELECT COUNT (comments.id)
+  SELECT user_id, created_at, edited_at, comment
   FROM comments
-  WHERE resource_id = $1
+  WHERE resource_id = $1;
   `;
   return query(queryString, [resource_id])
   .then(res => res.rows[0].count);
-
+  }))
 }
-exports.getResourceCommentsCount = getResourceCommentsCount;
+exports.getResourceComments = getResourceComments;
 
-
-/**
- * Returns info if a user liked a specific post
- * @param {*} user_id
- * @param {*} resource_id
- */
-const isLikedByUser = function(user_id, resource_id) {
-
-  const queryString = `
-  SELECT id
-  FROM likes
-  WHERE  user_id = $1 AND resource_id = $2
-  `;
-  return query(queryString, [user_id, resource_id])
-  .then(res => (res.rows[0]) ? true : false);
-
-}
-exports.isLikedByUser = isLikedByUser;
-
-/**
- * Returns info if a user liked a specific post
- * @param {*} user_id
- * @param {*} resource_id
- */
-const isBookmarkedByUser = function(user_id, resource_id) {
-
-  const queryString = `
-  SELECT id
-  FROM bookmarks
-  WHERE  user_id = $1 AND resource_id = $2
-  `;
-  return query(queryString, [user_id, resource_id])
-  .then(res => (res.rows[0]) ? true : false);
-
-}
-exports.isBookmarkedByUser = isBookmarkedByUser;
 
 /**
  * Transform word to a related tag ID if any

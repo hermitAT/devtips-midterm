@@ -18,6 +18,8 @@ const dbParams = require('./lib/db.js');
 const db = new Pool(dbParams);
 db.connect();
 
+exports.db = db;
+
 // create cookie cookieSession
 app.use(cookieSession({
   name: 'session',
@@ -53,7 +55,7 @@ const homeRoutes = require("./routes/home");
 app.use("/search", searchRoutes(db));
 app.use("/user", userRoutes(db));
 app.use("/", accountRoutes(db));
-app.use("/", tipRoutes(db));
+app.use("/tip", tipRoutes(db));
 app.use("/", tipCommentRoutes(db));
 app.use("/", homeRoutes(db));
 
