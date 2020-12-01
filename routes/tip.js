@@ -24,9 +24,8 @@ module.exports = () => {
 
     const tipId = req.params.tip_id;
 
-    dbHelp.getResourceFullData([tipId], userID)
-      .then(data => res.json(data))
-      .catch(err => res.json({ error: err.message }));
+    console.log(`tip_id: ${tipId}`);
+    res.render('tip', { tipId });
   });
   // send resource with particular :tip_id to server as JSON
 
