@@ -8,6 +8,7 @@ const router  = express.Router();
 const dbHelp = require('../db/db-helpers');
 
 module.exports = (db) => {
+
   router.get("/:tip_id", (req, res) => {
 
     const tipId = req.params.tip_id;
@@ -21,8 +22,8 @@ module.exports = (db) => {
 
   router.post("/:tip_id", (req, res) => {
 
-    const values = [res.body.title, res.body.description, res.body.type];
-    const tipId = res.body.tip_id;
+    const values = [req.body.title, req.body.description, req.body.type];
+    const tipId = req.params.tip_id;
     const userId = req.session.user_id;
 
     if (!userId) {
@@ -50,8 +51,8 @@ module.exports = (db) => {
       .catch(err => res.json({ success: false, error: err }));
   });
 
-  router.post("/:tip_id/:like"), (req, res) => {
-    const values = [res.body.tip_id, req.session.user_id, res.body.boolean];
+  router.post("/:tip_id/like"), (req, res) => {
+    const values = [req.params.tip_id, req.session.user_id, true];
 
     db.query(`
     UPDATE likes
@@ -68,8 +69,8 @@ module.exports = (db) => {
 
 
   // same issue below with :bookmark, unsure where to go or what to send to server once the bookmark has been applied...
-  router.post("/:tip_id/:bookmark"), (req, res) => {
-    const values = [res.body.tip_id, req.session.user_id];
+  router.post("/:tip_id/bookmark"), (req, res) => {
+    const values = [req.params.tip_id, req.session.user_id];
 
     db.query(`
     UDPDATE bookmarks
@@ -85,8 +86,8 @@ module.exports = (db) => {
 
   // likely take the user validation step and put that into a helper function!
   router.post("/:tip_id/delete"), (req, res) => {
-    const tipId = res.body.tip_id;
-    const userId = req.session.user_id;
+    const tipId = req.params.tip_id;
+    const userId = req.params.user_id;
 
     if (!userId) {
       res.send({ error: "Unauthorized!" });
