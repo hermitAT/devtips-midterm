@@ -48,7 +48,7 @@ exports.likeTip = likeTip;
 const addBookmark = (values) => {
 
   queryString = `
-    INSERT INTO bookmarks (user_id, resource_id)
+    UPDATE bookmarks (user_id, resource_id)
     VALUES ($1, $2)
     RETURNING (SELECT * FROM resources WHERE id = $2);
   `;
@@ -58,3 +58,5 @@ const addBookmark = (values) => {
     .catch(err => console.error('Query error', err.stack));
 };
 exports.addBookmark = addBookmark;
+
+

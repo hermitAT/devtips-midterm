@@ -6,7 +6,7 @@
 const express = require('express');
 const router  = express.Router();
 const dbHelp = require('../db/db-helpers');
-const tipHelp = require('../db/helpers/tips');
+const tipHelp = require('../db/helpers/tip-help');
 
 const userID = 4;
 // There should be UID from cookie
@@ -31,7 +31,7 @@ module.exports = (db) => {
   // send resource with particular :tip_id to server as JSON
 
 
-  router.post("/:tip_id", (req, res) => {
+  router.put("/:tip_id", (req, res) => {
 
     const values = [req.body.title, req.body.description, req.body.type, req.params.tip_id];
 
@@ -44,8 +44,8 @@ module.exports = (db) => {
   *
   */
 
-  router.post("/:tip_id/like"), (req, res) => {
-    const values = [userID, req.params.tip_id, req.body.value];
+  router.post("/:tip_id/:like"), (req, res) => {
+    const values = [req.body.user_id, req.params.tip_id, req.body.value];
 
     tipHelp.likeTip(values)
       .then(data => res.json(data))
@@ -57,7 +57,7 @@ module.exports = (db) => {
 
   // same issue below with :bookmark, unsure where to go or what to send to server once the bookmark has been applied...
   router.post("/:tip_id/bookmark"), (req, res) => {
-    const values = [userID, req.params.tip_id];
+    const values = [req.body.user_id, req.params.tip_id];
 
     tipHelp.addBookmark(values)
       .then(data => data)
