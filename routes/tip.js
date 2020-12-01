@@ -12,7 +12,7 @@ const userID = 4;
 // There should be UID from cookie
 
 
-module.exports = (db) => {
+module.exports = () => {
 
   router.post("/", (req, res) => {
     const { tipsID } = req.body;
