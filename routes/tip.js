@@ -21,10 +21,11 @@ module.exports = (db) => {
   router.get("/:tip_id", (req, res) => {
 
     const tipId = req.params.tip_id;
-
-    dbHelp.getResourceFullData([tipId])
+    console.log(`tip_id: ${tipId}`);
+    res.render('tip', { tipId });
+/*     dbHelp.getResourceFullData([tipId])
       .then(data => res.json(data.rows[0]))
-      .catch(err => res.json({ error: err }));
+      .catch(err => res.json({ error: err })); */
   });
   // send resource with particular :tip_id to server as JSON
 
