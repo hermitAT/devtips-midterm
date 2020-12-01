@@ -94,6 +94,41 @@ const addComment = (values) => {
 };
 exports.addComment = addComment;
 
+/*
+*
+*
+*/
+const deleteComment = (values) => {
+
+  queryString = `
+    DELETE FROM comments
+    WHERE id = $1;
+  `;
+
+  return query(queryString, values)
+    .then(data => console.log("Success! Comment deleted!"))
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.deleteComment = deleteComment;
+
+/*
+*
+*
+*/
+const editComment = (values) => {
+
+  queryString = `
+    UPDATE comments
+    SET comment = $1, edited_at = Now()
+    WHERE id = $2
+    RETURNING *;
+  `;
+
+  return query(queryString, values)
+    .then(data => data.rows[0])
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.editComment = editComment;
 
 /*
 *
