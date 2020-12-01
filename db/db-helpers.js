@@ -1,4 +1,4 @@
-const { query } = require('../');
+const { query } = require('./');
 
 const extract = function(rows, column) {
 
@@ -49,9 +49,9 @@ const getResourceFullData = function(arr, userID) {
     WHERE a.id  = $1;
     `;
     return query(queryString, [resource_id, userID])
-    .then(res => res.rows[0]);
-  }))
-}
+      .then(res => res.rows[0]);
+  }));
+};
 exports.getResourceFullData = getResourceFullData;
 
 
