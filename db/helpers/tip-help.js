@@ -2,6 +2,10 @@ const { query } = require('../index');
 
 let queryString;
 
+/*
+*
+*
+*/
 const creatorValidation = (tipID) => {
 
   queryString = `
@@ -16,6 +20,10 @@ const creatorValidation = (tipID) => {
 };
 exports.creatorValidation = creatorValidation;
 
+/*
+*
+*
+*/
 const editTip = (values) => {
 
   queryString = `
@@ -31,6 +39,10 @@ const editTip = (values) => {
 };
 exports.editTip = editTip;
 
+/*
+*
+*
+*/
 const likeTip = (values) => {
 
   queryString = `
@@ -45,6 +57,10 @@ const likeTip = (values) => {
 };
 exports.likeTip = likeTip;
 
+/*
+*
+*
+*/
 const addBookmark = (values) => {
 
   queryString = `
@@ -59,4 +75,41 @@ const addBookmark = (values) => {
 };
 exports.addBookmark = addBookmark;
 
+
+/*
+*
+*
+*/
+const addComment = (values) => {
+
+  queryString = `
+    INSERT INTO comments (user_id, resource_id, comment)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+  `;
+
+  return query(queryString, values)
+    .then(data => data.rows[0])
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.addComment = addComment;
+
+
+/*
+*
+*
+*/
+const deleteTip = (tipID) => {
+
+  queryString = `
+    DELETE FROM resources
+    WHERE id = $1
+    RETURNING *;
+  `;
+
+  return query(queryString, [tipID])
+    .then(data => console.log("Success! Resource deleted!"))
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.deleteTip = deleteTip;
 
