@@ -8,7 +8,7 @@ const router  = express.Router();
 
 module.exports = (db) => {
   router.get("/", (req, res) => {
-    console.log(`Home page goes here.`);
+    res.render('index');
   });
   return router;
 };

@@ -12,12 +12,10 @@ const userID = 4 // There should be UID from cookie
 module.exports = (db) => {
 
   router.get("/", (req, res) => {
-    console.log(`Search goes here.`);
-    res.render('search')
+    res.render('search');
   });
 
   router.post("/", (req, res) => {
-    //console.log(req.body);
     dbHelp.searchByTags(req.body.search)
     .then((tips) => res.json(tips))
   });
