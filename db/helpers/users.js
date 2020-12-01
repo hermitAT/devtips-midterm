@@ -1,18 +1,19 @@
 const bcrypt = require('bcrypt');
+const { query } = require('../index');
 
 let queryString;
 
-const getAllUsers = (db) => {
+const getAllUsers = () => {
   queryString = `SELECT * FROM users;`;
 
-  return db.query(queryString)
+  return query(queryString)
     .then(data => data.rows)
     .catch(err => console.error('Query error', err.stack));
 };
 exports.getAllUsers = getAllUsers;
 
 
-const findUserByEmail = (db, email) => {
+const findUserByEmail = (email) => {
   // return a user object from the DB when a user with the given Email is found
 
   queryString = `
@@ -21,14 +22,14 @@ const findUserByEmail = (db, email) => {
     WHERE email = $1;
     `;
 
-  return db.query(queryString, [email])
+  return query(queryString, [email])
     .then(data => data.rows[0])
     .catch(err => console.error('Query error', err.stack));
 };
 exports.findUserByEmail = findUserByEmail;
 
 
-const findUserByID = (db, id) => {
+const findUserByID = (id) => {
   // return a user object from the DB for when a user with the given ID is found
 
   queryString = `
@@ -37,14 +38,14 @@ const findUserByID = (db, id) => {
     WHERE id = $1;
   `;
 
-  return db.query(queryString, [id])
+  return query(queryString, [id])
     .then(data => data.rows[0])
     .catch(err => console.error('Query error', err.stack));
 };
 exports.findUserByID = findUserByID;
 
 
-const findUserByName = (db, name) => {
+const findUserByName = (name) => {
   // return a user object from the DB for when a user with the given ID is found
 
   queryString = `
@@ -53,36 +54,31 @@ const findUserByName = (db, name) => {
     WHERE name = $1;
     `;
 
-  return db.query(queryString, [name])
+  return query(queryString, [name])
     .then(data => data.rows[0])
     .catch(err => console.error('Query error', err.stack));
 };
 exports.findUserByName = findUserByName;
 
 
-const newUser = (db, user) => {
+const newUser = (userDetails) => {
   // functionality to add a new user into the database, hashing the given password, and returning the new user object
-  const { name, email, password } = user;
 
-  if (!findUserByName(name) && !findUserByEmail(name)) {
-
-    const hashPassword = bcrypt.hashSync(password, 12);
-    const values = [name, email, hashPassword];
-    queryString = `
+  queryString = `
       INSERT INTO users (name, email, password)
       VALUES ($1, $2, $3)
       RETURNING *;
       `;
 
-    return db.query(queryString, values)
-      .then(data => data.rows[0])
-      .catch(err => console.error('Query error', err.stack));
-  }
+  return query(queryString, userDetails)
+    .then(data => data.rows[0])
+    .catch(err => console.error('Query error', err.stack));
+
 };
 exports.newUser = newUser;
 
 
-const editUser = (db, userDetails) => {
+const editUser = (userDetails) => {
   // edit user details, recieve full set of into on user (name, email, pw, id) within an array, and just apply those values to the UPDATE query
   // return the newly updated user details and render the user/:id page
   // assumes user must submit changes to all 3 parameters ...
@@ -94,8 +90,31 @@ const editUser = (db, userDetails) => {
     RETURNING *;
   `;
 
-  return db.query(queryString, userDetails)
+  return query(queryString, userDetails)
     .then(data => data.rows[0])
     .catch(err => console.error('Query error', err.stack));
 };
 exports.editUser = editUser;
+
+
+const login = (email, password) => {
+  //^^ log the user into the system with a given email/password, using getUserWithEmail to find the given user in the DB
+  // use bcrypt.compareSync to compare passwords, return user object upon successful validation
+  return findUserByEmail(email)
+    .then(data => {
+      if (passwordCheck(password, data)) {
+        return data;
+      }
+    })
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.login = login;
+
+const passwordCheck = (password, user) => {
+
+  if (!bcrypt.compareSync(password, user.password)) {
+    return false;
+  }
+  return true;
+};
+exports.passwordCheck = passwordCheck;
