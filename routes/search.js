@@ -8,7 +8,7 @@ const router  = express.Router();
 
 module.exports = (db) => {
   router.get("/", (req, res) => {
-    console.log(`Search goes here.`);
+    res.render('search');
   });
   return router;
 };
