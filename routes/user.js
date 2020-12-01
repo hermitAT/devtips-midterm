@@ -8,50 +8,90 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const helpers = require('../db/helpers/users.js');
 
 module.exports = (db) => {
 
-  router.get('/user/:id', (req, res) => {
-    const userID = req.session.user_id;
+  router.get('/', (req, res) => {
+    helpers.getAllUsers()
+      .then(users => {
+        res.json({ users });
+      })
+      .catch(err => {
+        res.status(500).json({ error: err.message });
+      });
+  });
+  // ^^ return JSON containing all users in database
 
-    if (!userID) {
-      res.redirect('/');
-    }
-    // if no user logged in, redirect to home page
-
-    if (userID !== req.params.id) {
-      res.status(401).render('error', { error: "Unauthorized!" });
-    }
-    // if current active user is not the user/:id in question, set status to 401 and render the 'error' page
-
-    // when it is determined that active user is authorized to view page, use ID to return the user object from the DB
-    // pass it into the res.render fn
-    db.findUserByID(userID)
-      .then(user => {
-        if (!user) {
-          res.status(404).render('error', { error: "No user with that ID!" });
+  router.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    return helpers.login(email, password)
+      .then(data => {
+        if (!data) {
+          res.json({ error: "Unauthorized" });
         }
-        res.render('user', user);
+        req.session.user_id = data.id;
+        res.redirect('/');
+      })
+      .catch(err => {
+        res.status(500).json({ error: err.message });
+      });
+  });
+  // ^^ check if user with given email is in database, and check PW hash before setting cookie and redirecting to homepage
+
+  router.get('/logout', (req, res) => {
+    req.session = null;
+    res.redirect('/');
+  });
+  // clear cookies in session upon logout, redirect to home page
+
+  router.get('/login/:id', (req, res) => {
+    req.session.user_id = req.params.id;
+    res.redirect('/');
+  });
+  // very simple user login, input ID and submit to login, set cookie to the ID of user
+  // redirect to home page upon success
+
+  router.get('/:id', (req, res) => {
+    const userID = req.params.id;
+
+    helpers.findUserByID(userID)
+      .then(user => res.json({ user }))
+      .catch(err => {
+        res.status(500).json({ error: err.message });
       });
   });
 
 
-  router.post('/user/:id', (req, res) => {
-    // check if active user is the user/:id in question by comparing to session.user_id
-
-    if (req.session.user_id !== req.params.id) {
-      res.statusCode(401).render('error', { error: "Unauthorized!"});
-    }
+  router.post('/edit/:id', (req, res) => {
 
     const { name, password, email } = req.body;
     const hashPassword = bcrypt.hashSync(password, 12);
-    const userDetails = [name, hashPassword, email, req.session.user_id];
+    const userDetails = [name, hashPassword, email, req.params.id];
 
     // update the user row within the database, and render user/:id with the updated information
-    db.editUser(userDetails)
+    helpers.editUser(userDetails)
       .then(user => {
-        res.render('user', user);
+        res.json({ user });
+      })
+      .catch(err => {
+        res.status(500).json({ error: err.message });
       });
   });
+
+  router.post('/register', (req, res) => {
+    const { name, password, email } = req.body;
+    const hashPassword = bcrypt.hashSync(password, 12);
+    const userDetails = [name, hashPassword, email];
+
+    helpers.newUser(userDetails)
+      .then(user => {
+        res.json({ user });
+      })
+      .catch(err => {
+        res.status(500).json({ error: err.message });
+      });
+  });
+
   return router;
 };
