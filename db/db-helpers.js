@@ -3,7 +3,7 @@ const { query } = require('./');
 
 const extract = function(rows, column) {
 
-  output = [];
+  const output = [];
   for (const row of rows) {
     output.push(row[column]);
   }
@@ -104,7 +104,7 @@ exports.getTagId = getTagId;
 const searchByTags = function(string) {
 
   const tags = [];
-  searchTags = string.trim().split(/[\s,]+/)
+  const searchTags = string.trim().split(/[\s,]+/)
 
   return Promise.all(searchTags.map((el) => getTagId(el)))
     .then((res) => {
