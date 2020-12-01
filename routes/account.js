@@ -8,6 +8,10 @@ const router  = express.Router();
 const bcrypt = require('bcrypt');
 
 module.exports = (db) => {
+
+  /*
+  * Return to login/register routes once we know we will be using some login/registration
+  *
   const login = (email, password) => {
     //^^ log the user into the system with a given email/password, using getUserWithEmail to find the given user in the DB
     // use bcrypt.compareSync to compare passwords, return user object upon successful validation
@@ -21,22 +25,26 @@ module.exports = (db) => {
   };
 
 
-  router.get('/login', (req, res) => {
+  router.post('/login', (req, res) => {
     const { email, password } = req.body;
     login(email, password)
       .then(user => {
         if (!user) {
-          res.error(401).render('error', { error: "Unauthorized" });
+          res.send({ error: "Unauthorized" });
         }
-        req.session.userid = user.id;
+        req.session.user_id = user.id;
         res.redirect('/user/:id', user);
+      })
+      .catch((err) => {
+        console.error('Query error', err.stack);
       });
   });
   // ^^ more complicated user login, with given email/password, using hashed password and a redirection to the user/:id page.
-
+  *
+  */
 
   router.get('/login/:id', (req, res) => {
-    req.session.userid = req.params.id;
+    req.session.user_id = req.params.id;
     res.redirect('/');
   });
   // very simple user login, input ID and submit to login, set cookie to the ID of user
@@ -50,6 +58,9 @@ module.exports = (db) => {
   // clear cookies in session upon logout, redirect to home page -> should this be a POST?
 
 
+  /*
+  * Return to this much like the login route
+  *
   router.post('/register', (req, res) => {
     // register a new user, recieve a user object from the request and pass it thru newUser helper function to add to database
     // return with the new user row from database, set cookie to new user.id and redirect to newly created user/:id page
@@ -58,15 +69,17 @@ module.exports = (db) => {
     db.newUser(userObj)
       .then(user => {
         if (!user) {
-          res.status(404).render('error', { error: "User not found!" });
+          res.send({ error: "User not found!" });
         }
-        req.session.userid = user.id;
+        req.session.user_id = user.id;
         res.redirect('user', user);
       })
       .catch((err) => {
         console.error('Query error', err.stack);
       });
   });
+  */
+
   return router;
 };
 
