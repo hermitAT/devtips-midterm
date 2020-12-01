@@ -5,9 +5,9 @@
 
 const express = require('express');
 const router  = express.Router();
-const dbHelp  = require('../db/db-helpers')
+const dbHelp  = require('../db/db-helpers');
 
-const userID = 4 // There should be UID from cookie
+const userID = 4; // There should be UID from cookie
 
 module.exports = (db) => {
 
@@ -17,7 +17,7 @@ module.exports = (db) => {
 
   router.post("/", (req, res) => {
     dbHelp.searchByTags(req.body.search)
-    .then((tips) => res.json(tips))
+      .then((tips) => res.json(tips));
   });
 
   return router;
