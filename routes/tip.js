@@ -20,12 +20,25 @@ module.exports = (db) => {
 
   router.get("/:tip_id", (req, res) => {
 
-    const tipId = req.params.tip_id;
-    console.log(`tip_id: ${tipId}`);
-    res.render('tip', { tipId });
-/*     dbHelp.getResourceFullData([tipId])
-      .then(data => res.json(data.rows[0]))
-      .catch(err => res.json({ error: err })); */
+    const tip_id = req.params.tip_id;
+    console.log(`tip_id: ${tip_id}`);
+
+    const tipQueryString = 'SELECT * FROM resources WHERE id = $1;';
+    const commentQueryString = 'SELECT * FROM comments WHERE resource_id = $1;';
+
+
+    const tip = db.query(tipQueryString, [tip_id]);
+    const comment = db.query(commentQueryString, [tip_id]);
+
+    Promise.all([tip, comment]).then((result) => {
+      const tip = result[0].rows[0];
+      const comment= result[1].rows;
+      console.log('tips: ', tip);
+      console.log('comments: ', comment);
+      res.render('tip', { tip_id, tip, comment});
+    });
+
+
   });
   // send resource with particular :tip_id to server as JSON
 
