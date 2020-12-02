@@ -7,8 +7,10 @@
 <body>
   <%- include('./partials/navbar') %>
 
-  <main style="min-height: 80vh;">
-    <div id="compose-tips" class="container mt-5 my-4">
+  <main class="mt-5" style="min-height: 80vh;">
+
+    <% if (user.id) { // @TODO When user isn't logged in %>
+    <div id="compose-tips" class="container my-4">
       <div class="row no-gutter justify-content-center">
         <div class="col col-sm-10 col-md-12 col-lg-8">
           <div class="card bg-white mb-3 shadow-md">
@@ -46,6 +48,7 @@
         </div>
       </div>
     </div>
+  <% } %>
 
     <div id="list-tips" class="container mb-5">
       <div class="row no-gutter justify-content-center">

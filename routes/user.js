@@ -28,6 +28,11 @@ module.exports = (db) => {
 
   // Simple login form
   router.get('/login', (req, res) => {
+    // Check for ID query param
+    let id = req.query.id;
+    if (id) {
+      res.redirect(`/user/login/${id}`)
+    }
     res.render('login');
   });
 

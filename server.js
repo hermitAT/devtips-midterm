@@ -50,7 +50,7 @@ app.use(function(req, res, next) {
   //res.locals.user = await userhelper.findUserByID(req.session.user_id) || {}; // Empty user object if no user
   userhelper.findUserByID(req.session.user_id)
   .then(data => {
-    res.locals.user = data;
+    res.locals.user = data || {};
     next();
   })
   .catch(err => {
