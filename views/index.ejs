@@ -53,12 +53,18 @@
     <div id="list-tips" class="container mb-5">
       <% for(let tip of tips) { %>
         <div class="row no-gutter justify-content-center">
-          <div class="col col-sm-10 col-md-12 col-lg-8">
+          <div class="col col-sm-10 col-md-12 col-lg-8 position-relative">
+            <a href="/user/<%= tip.id %>"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= tip.creator_id %>.svg"></a>
+            <div class="tip-icons d-flex flex-column align-items-center">
+              <i class="far fa-thumbs-up"></i><span class="like badge badge-dark mb-2">36</span>
+              <i class="fas fa-thumbs-down"></i><span class="dislike badge badge-dark mb-3">34</span>
+              <i class="far fa-bookmark"></i>
+            </div>
             <div class="card mb-3 shadow-sm">
               <div class="card-header border-0">
-                <a href="/tip/<%= tip.id %> "><%= tip.title %></a>
+                <a href="/tip/<%= tip.id %>"><%= tip.title %></a>
               </div>
-              <div class="card-body" style="min-height: 15em;">
+              <div class="card-body" style="min-height: 10em;">
                 <% if (tip.type === 'link') { %>
                   <a href="<%= tip.url %>"><%= tip.description %></a>
                 <% } else if (tip.type === 'image') { %>
