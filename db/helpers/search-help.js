@@ -2,6 +2,20 @@ const { query, extract } = require('../');
 
 
 /**
+ * Get an array of currently valid tags
+ */
+const getTagsList = function() {
+
+  const queryString = `
+  SELECT tag FROM tags`;
+  return query(queryString)
+    .then(res => extract(res.rows, 'tag'));
+
+};
+exports.getTagsList = getTagsList;
+
+
+/**
  * Transform word to a related tag ID if any
  * @param {*} tag
  */
@@ -26,10 +40,7 @@ exports.getTagId = getTagId;
  * tags user searched for (if any)
  * @param {*} string
  */
-const searchByTags = function(string) {
-
-  const tags = [];
-  const searchTags = string.trim().split(/[\s,]+/)
+const searchByTags = function(searchTags) {
 
   return Promise.all(searchTags.map((el) => getTagId(el)))
     .then((res) => {

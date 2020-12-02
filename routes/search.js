@@ -11,6 +11,12 @@ const userID = 4 // There should be UID from cookie
 
 module.exports = () => {
 
+  // Get list of currently valid tags
+  router.get("/tags", (req, res) => {
+    searchHelp.getTagsList()
+      .then(tags => res.json(tags))
+  });
+
   router.get("/", (req, res) => {
     res.render('search');
   });
