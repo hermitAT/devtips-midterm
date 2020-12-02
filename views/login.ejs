@@ -1,50 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-  <title>Home Page</title>
-  <%- include('./partials/includes') %>
+<title>Home Page</title>
+<%- include('./partials/includes') %>
 </head>
 
 <body>
   <%- include('./partials/navbar') %>
 
-  <main style="min-height: 80vh;">
+  <main class="mt-5" style="min-height: 80vh;">
+
     <div id="compose-tips" class="container my-4">
       <div class="card bg-white mb-3 shadow-sm">
-        <form>
-          <div class="form-group p-4">
-            <label for="exampleFormControlTextarea1">Example textarea</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        <form class="d-flex justify-content-center" method="GET" action="/user/login/" accept-charset="UTF-8" role="form">
+          <div class="panel panel-default col-6 p-5">
+            <div class="panel-heading">
+              <h3 class="panel-title">Login via site</h3>
+            </div>
+            <div class="panel-body">
+                <fieldset>
+                  <div class="form-group">
+                    <input class="form-control" placeholder="ID" name="id" type="text">
+                  </div>
+                  <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
+                </fieldset>
+            </div>
           </div>
-          <ul class="nav nav-pills nav-fill">
-            <li class="nav-item">
-              <a class="nav-link active" href="#">Active</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Much longer nav link</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-            </li>
-          </ul>
         </form>
       </div>
     </div>
 
-    <div id="list-tips" class="container mb-5">
-      <div class="card mb-3 shadow-sm">
-          <div class="card-header">
-            Header
-          </div>
-          <div class="card-body">
-            <code>
-              <%= JSON.stringify(user); %>
-            </code>
-          </div>
-        </div>
-    </div>
   </main>
 
   <footer class="bg-white text-muted py-5">

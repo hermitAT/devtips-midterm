@@ -8,7 +8,7 @@
   </form>
   <div id="navbar-user" class="d-flex align-items-center">
     <% if (!user.id) { // @TODO When user isn't logged in %>
-      <a href="/login"><button class="btn btn-light" type="button">Login</button></a>
+      <a href="/user/login"><button class="btn btn-light" type="button">Login</button></a>
   <% } else { %>
   <a class="text-white" href="/user/<%= user.id %>">
     <span id="navbar-username" class="font-weight-semibold px-3"><%= user.name %></span>
