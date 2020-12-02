@@ -27,7 +27,6 @@ if (req.session.user_id !== req.body.creator_id) {
 
 */
 
-
 module.exports = () => {
 
   /*
@@ -69,11 +68,22 @@ module.exports = () => {
   * user_id will come from login/cookie mechanism, not hardcoded once implemented
   */
   router.post("/:tip_id/bookmark", (req, res) => {
-    const values = [userID, req.params.tip_id];
+    const { value } = req.body;
+    const tipId =  req.params.tip_id;
+    // const userID = req.session.user_id
+    const values = [userID, tipId];
 
-    tipHelp.addBookmark(values)
-      .then(data => res.json(data))
-      .catch(err => res.json({ success: false, error: err }));
+    if (value === "0") {
+
+      tipHelp.unsetBookmark(values)
+        .then(data => res.json(data))
+        .catch(err => res.json({ success: false, error: err }));
+    } else {
+
+      tipHelp.setBookmark(values)
+        .then(data => res.json(data))
+        .catch(err => res.json({ success: false, error: err }));
+    }
   });
 
   /*
@@ -81,11 +91,36 @@ module.exports = () => {
   * user_id will come from login/cookie mechanism, not hardcoded, once implemented
   */
   router.post("/:tip_id/like", (req, res) => {
-    const values = [userID, req.params.tip_id, req.body.value];
 
-    tipHelp.likeTip(values)
-      .then(data => res.json(data))
-      .catch(err => res.json({ success: false, error: err }));
+    const { value, is_liked } = req.body;
+    const tipId =  req.params.tip_id;
+    // const userID = req.session.user_id
+    let values;
+
+    if (value === "0") {
+
+      values = [userID, tipId];
+
+      tipHelp.unsetLike(values)
+        .then(data => res.json(data))
+        .catch(err => res.json({ success: false, error: err }));
+
+    } else if (is_liked) {
+
+      values = [userID, req.params.tip_id, value];
+
+      tipHelp.flipLike(values)
+        .then(data => res.json(data))
+        .catch(err => res.json({ success: false, error: err }));
+
+    } else {
+
+      values = [userID, req.params.tip_id, value];
+
+      tipHelp.setLike(values)
+        .then(data => res.json(data))
+        .catch(err => res.json({ success: false, error: err }));
+    }
   });
 
   /*
@@ -93,6 +128,7 @@ module.exports = () => {
   * user_id will come from login/cookie mechanism, not body, once implemented
   */
   router.post('/:tip_id/comment', (req, res) => {
+
     const values = [userID, req.params.tip_id, req.body.comment];
 
     tipHelp.addComment(values)

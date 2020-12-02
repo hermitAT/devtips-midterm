@@ -2,6 +2,8 @@ const { query } = require('../index');
 
 let queryString;
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~ tip modification helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /*
 *
 *
@@ -38,11 +40,13 @@ const deleteTip = (values) => {
 };
 exports.deleteTip = deleteTip;
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~ like helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /*
 *
 *
 */
-const likeTip = (values) => {
+const setLike = (values) => {
 
   queryString = `
     INSERT INTO likes (user_id, resource_id, value)
@@ -54,13 +58,55 @@ const likeTip = (values) => {
     .then(data => data.rows[0])
     .catch(err => console.error('Query error', err.stack));
 };
-exports.likeTip = likeTip;
+exports.setLike = setLike;
 
 /*
 *
 *
 */
-const addBookmark = (values) => {
+const flipLike = (values) => {
+
+  queryString = `
+    UPDATE likes
+    SET user_id = $1, resource_id = $2, value = $3
+    RETURNING *;
+  `;
+
+  return query(queryString, values)
+    .then(data => data.rows[0])
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.flipLike = flipLike;
+
+/*
+*
+*
+*/
+const unsetLike = (values) => {
+
+  queryString = `
+    DELETE FROM likes
+    WHERE user_id = $1 AND resource_id = $2
+    RETURNING (SELECT id FROM resources WHERE id = $2);
+  `;
+
+  return query(queryString, values)
+    .then(data => {
+      console.log("Success! Like removed!");
+      return data.rows[0];
+    })
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.unsetLike = unsetLike;
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~ bookmark helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/*
+*
+*
+*/
+const setBookmark = (values) => {
 
   queryString = `
     INSERT INTO bookmarks (user_id, resource_id)
@@ -72,8 +118,31 @@ const addBookmark = (values) => {
     .then(data => data.rows[0])
     .catch(err => console.error('Query error', err.stack));
 };
-exports.addBookmark = addBookmark;
+exports.setBookmark = setBookmark;
 
+/*
+*
+*
+*/
+const unsetBookmark = (values) => {
+
+  queryString = `
+    DELETE FROM bookmarks
+    WHERE user_id = $1 AND resource_id = $2
+    RETURNING (SELECT id FROM resources WHERE id = $2);
+  `;
+
+  return query(queryString, values)
+    .then(data => {
+      console.log("Success! Bookmark removed!");
+      return data.rows[0];
+    })
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.unsetBookmark = unsetBookmark;
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~ comment helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /*
 *
