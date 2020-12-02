@@ -1,0 +1,19 @@
+<nav class="navbar navbar-light bg-dark py-3 shadow-md text-white">
+  <a class="navbar-brand mb-0 text-white h1" href="/">
+    DevTips
+  </a>
+  <form class="form-inline" style="flex: 1; margin: 0 15vw; max-width: 768px;">
+    <input class="form-control mr-sm-2" style="flex: 1;" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-light my-2 my-sm-0" type="submit">Search</button>
+  </form>
+  <div id="navbar-user" class="d-flex align-items-center">
+    <% if (!user.id) { // @TODO When user isn't logged in %>
+      <a href="/login"><button class="btn btn-light" type="button">Login</button></a>
+  <% } else { %>
+  <a class="text-white" href="/user/<%= user.id %>">
+    <span id="navbar-username" class="font-weight-semibold px-3"><%= user.name %></span>
+    <img class="rounded-circle border-0 img-thumbnail p-0" height="42" width="42" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= user.id %>.svg">
+  </a>
+  <% } %>
+  </div>
+</nav>

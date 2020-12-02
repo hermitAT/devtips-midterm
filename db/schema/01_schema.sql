@@ -1,5 +1,5 @@
 DROP TYPE IF EXISTS type CASCADE;
-CREATE TYPE type as enum('text', 'image', 'video', 'audio');
+CREATE TYPE type as enum('link', 'image', 'video', 'markdown', 'code');
 
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS tags CASCADE;

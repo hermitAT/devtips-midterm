@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Home Page</title>
+  <%- include('./partials/includes') %>
+</head>
+
+<body>
+  <%- include('./partials/navbar') %>
+
+  <main style="min-height: 80vh;">
+
+    <div id="list-tips" class="container my-5">
+
+        <div class="row">
+          <div class="col-3 offset-half">
+            <div class="card shadow-sm">
+              <div class="card-header">
+                <span id="profile-name">Profile</span>
+              </div>
+              <img class="m-4 border rounded-circle shadow-md" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= data.id %>.svg">
+              <div id="profile-info" class="d-flex justify-content-center">
+                <h5 id="profile-name"><%= data.name %> </h5>
+                <p id="profile-bio"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-8 pl-3">
+            <div class="card shadow-sm">
+              <div class="card-header">
+                xxx
+              </div>
+              <div class="card-body" style="min-height: 15em;">
+                xxx
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </main>
+
+  <footer class="bg-white text-muted py-5">
+    <div class="container">
+      <p class="float-right">
+        <a href="#">Back to top</a>
+      </p>
+      <p>© Devtips 2020</p>
+    </div>
+  </footer>
+</body>
+
+</html>
