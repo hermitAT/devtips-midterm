@@ -7,6 +7,7 @@ const express = require('express');
 const router  = express.Router();
 const homeHelp = require('../db/helpers/home-help')
 
+
 module.exports = () => {
 
   router.get("/", (req, res) => {
@@ -16,7 +17,8 @@ module.exports = () => {
   // Upload a new tip to DB
   router.post("/", (req, res) => {
 
-    //
+    console.log(req.body.tip);
+    homeHelp.createNewTip(req.body.tip)
 
   });
 

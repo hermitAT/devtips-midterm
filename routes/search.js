@@ -18,7 +18,7 @@ module.exports = () => {
   });
 
   router.get("/", (req, res) => {
-    res.render('search');
+    res.render('test-search');
   });
 
   router.post("/", (req, res) => {

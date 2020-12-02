@@ -37,7 +37,8 @@ const getResourceFullData = function(arr, userID) {
       WHERE user_id = $2 AND resource_id  = a.id) AS is_bookmarked
     FROM resources a
     JOIN users ON creator_id = users.id
-    WHERE a.id  = $1;
+    WHERE a.id  = $1
+    ORDER BY created_at;
     `;
     return query(queryString, [resource_id, userID])
     .then(res => res.rows[0]);

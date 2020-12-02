@@ -103,6 +103,7 @@ const searchFormValidateInput = function() {
     const string = disarm($('input').val());
     const words = string.replace(/(#|,)/g, ' ').trim().toLowerCase().split(/[\s]+/);
     if (!words[0]) return $('input').val('');
+    $('#tip-feed').empty();
     $.ajax(`/search/tags`, { method: 'GET'})
       .then(tags => {
 
@@ -192,7 +193,7 @@ const createTipElement = function(tip) {
  * @param {*} tweets - array of objects
  */
 const renderTips = function(tips) {
-  $('#tip-feed').empty()
+  $('#tip-feed').empty();
   for (const tip of tips) {
     $('#tip-feed').prepend(createTipElement(tip));
   }

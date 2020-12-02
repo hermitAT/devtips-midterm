@@ -12,6 +12,11 @@ const userID = 4 // There should be UID from cookie
 
 module.exports = () => {
 
+  // New tip creation
+  router.get("/", (req, res) => {
+    res.render('test-new-tip');
+  });
+
   // load tips data for an array of Tip IDs
   router.post("/", (req, res) => {
     const { tipsID } = req.body;
