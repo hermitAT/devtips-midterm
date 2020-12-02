@@ -46,15 +46,15 @@ module.exports = (db) => {
   router.get("/:tip_id", (req, res) => {
     const tip_id = req.params.tip_id;
     const tipQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE r.id = $1;';
-    const commentQueryString = 'SELECT * FROM comments WHERE resource_id = $1;';
+    const commentQueryString = 'SELECT * FROM comments AS c JOIN users AS u ON u.id = c.user_id WHERE c.resource_id = $1;';
 
     const tip = db.query(tipQueryString, [tip_id]);
-    const comment = db.query(commentQueryString, [tip_id]);
+    const comments = db.query(commentQueryString, [tip_id]);
 
-    Promise.all([tip, comment]).then((result) => {
+    Promise.all([tip, comments]).then((result) => {
       const tip = result[0].rows[0];
-      const comment= result[1].rows;
-      res.render('tip', { tip_id, tip, comment});
+      const comments= result[1].rows;
+      res.render('tip', { tip_id, tip, comments});
     });
   });
 
