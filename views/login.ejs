@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Home Page</title>
+<%- include('./partials/includes') %>
+</head>
+
+<body>
+  <%- include('./partials/navbar') %>
+
+  <main class="mt-5" style="min-height: 80vh;">
+
+    <div id="compose-tips" class="container my-4">
+      <div class="card bg-white mb-3 shadow-sm">
+        <form class="d-flex justify-content-center" method="GET" action="/user/login/" accept-charset="UTF-8" role="form">
+          <div class="panel panel-default col-6 p-5">
+            <div class="panel-heading">
+              <h3 class="panel-title">Login via site</h3>
+            </div>
+            <div class="panel-body">
+                <fieldset>
+                  <div class="form-group">
+                    <input class="form-control" placeholder="ID" name="id" type="text">
+                  </div>
+                  <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
+                </fieldset>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="bg-white text-muted py-5">
+    <div class="container">
+      <p class="float-right">
+        <a href="#">Back to top</a>
+      </p>
+      <p>© Devtips 2020</p>
+    </div>
+  </footer>
+</body>
+
+</html>

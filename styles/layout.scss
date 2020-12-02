@@ -1,9 +1,71 @@
 // See: https://sass-lang.com/
 
+html {
+}
+
 body {
-  background-color: #EEE;
+  font-family: Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji !important;
+  line-height: 1.5;
+  background-color: hsl(210, 36%, 96%);
+
+  a:hover {
+    text-decoration: none;
+  }
 
   h1 {
     color: #244751;
   }
+}
+
+#compose-textarea:focus {
+  border: none;
+    overflow: hidden !important;
+    outline: none;
+    webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    resize: none !important;
+}
+
+textarea, textarea::-webkit-input-placeholder, textarea:-moz-placeholder, textarea::-moz-placeholder, textarea:-ms-input-placeholder, textarea::placeholder {
+  color: red;
+}
+
+.offset-half {
+  margin-left: 4.166666%;
+}
+
+.code-block > * {
+  padding: 1.5rem!important;
+}
+
+.bg-primary {
+  background-color:hsl(243, 94%, 66%)!important;
+}
+
+a {
+  color: hsl(243, 94%, 66%);
+}
+
+.text-primary {
+  color: hsl(243, 94%, 66%);
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  color: #fff;
+  background-color: hsl(243, 94%, 66%);
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: hsl(243, 94%, 66%);
+  border-color: hsl(243, 94%, 66%);
+}
+
+.nav.nav-social li {
+  padding: 0.5em;
+}
+
+.nav.nav-usertabs li {
+  margin: 0.5em;
 }

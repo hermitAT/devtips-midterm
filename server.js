@@ -9,12 +9,22 @@ const bodyParser = require("body-parser");
 const sass       = require("node-sass-middleware");
 const app        = express();
 const morgan     = require('morgan');
+const bcrypt     = require('bcrypt');
+const cookieSession = require('cookie-session');
 
 // PG database client/connection setup
 const { Pool } = require('pg');
 const dbParams = require('./lib/db.js');
 const db = new Pool(dbParams);
 db.connect();
+
+exports.db = db;
+
+// create cookie cookieSession
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1']
+}));
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -31,25 +41,48 @@ app.use("/styles", sass({
 }));
 app.use(express.static("public"));
 
+// --------------------------------
+// Custom Middleware
+// --------------------------------
+
+app.use(function(req, res, next) {
+  const userhelper = require('./db/helpers/user-help');
+  //res.locals.user = await userhelper.findUserByID(req.session.user_id) || {}; // Empty user object if no user
+  userhelper.findUserByID(req.session.user_id)
+  .then(data => {
+    res.locals.user = data || {};
+    next();
+  })
+  .catch(err => {
+    next(err);
+  });
+});
+
 // Separated Routes for each Resource
 // Note: Feel free to replace the example routes below with your own
-const usersRoutes = require("./routes/users");
-const widgetsRoutes = require("./routes/widgets");
+const searchRoutes = require("./routes/search");
+const userRoutes = require("./routes/user");
+const tipRoutes = require("./routes/tip");
+const homeRoutes = require("./routes/home");
 
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
-app.use("/api/users", usersRoutes(db));
-app.use("/api/widgets", widgetsRoutes(db));
-// Note: mount other resources here, using the same pattern above
+app.use("/search", searchRoutes(db));
+app.use("/user", userRoutes(db));
+app.use("/tip", tipRoutes(db));
+app.use("/", homeRoutes(db));
 
-
-// Home page
-// Warning: avoid creating more routes in this file!
-// Separate them into separate routes files (see above).
-app.get("/", (req, res) => {
-  res.render("index");
-});
+// ----- Main Error catching can go here -----
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  const { message, stack } = err;
+  const status = (err.status || 500);
+  console.log('ERROR------', err);
+  res.status(status);
+  return res.render("error", { status, message, stack });
 });
