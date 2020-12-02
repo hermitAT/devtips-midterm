@@ -44,19 +44,9 @@ module.exports = (db) => {
   *
   */
   router.get("/:tip_id", (req, res) => {
-
     const tip_id = req.params.tip_id;
-    console.log(`tip_id: ${tip_id}`);
-
-    const tipQueryString =
-    `
-    SELECT *
-    FROM resources AS r
-    JOIN users AS u ON u.id = r.creator_id
-    WHERE r.id = $1;
-    `;
+    const tipQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE r.id = $1;';
     const commentQueryString = 'SELECT * FROM comments WHERE resource_id = $1;';
-    const creatorQueryString = 'SELECT * FROM comments WHERE resource_id = $1;';
 
     const tip = db.query(tipQueryString, [tip_id]);
     const comment = db.query(commentQueryString, [tip_id]);
@@ -66,8 +56,6 @@ module.exports = (db) => {
       const comment= result[1].rows;
       res.render('tip', { tip_id, tip, comment});
     });
-
-
   });
 
   /*
