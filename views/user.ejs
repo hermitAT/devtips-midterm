@@ -22,7 +22,7 @@
               <div id="profile-info" class="d-flex flex-column align-items-center mb-4">
                 <a href="/user/<%= data.id %> "><h5 id="profile-name"><%= data.name %></h5></a>
                 <p class="mb-0">Freelance Web Developer</p>
-                <ul class="follow-us nav">
+                <ul class="follow-us nav nav-social">
                   <li><a href="#"><i class="fa fa-lg fa-facebook" aria-hidden="true"></i></a></li>
                   <li><a href="#"><i class="fa fa-lg fa-twitter" aria-hidden="true"></i></a></li>
                   <li><a href="#"><i class="fa fa-lg fa-linkedin" aria-hidden="true"></i></a></li>
@@ -31,6 +31,22 @@
             </div>
           </div>
           <div class="col-8 pl-3">
+            <% if (data.id === user.id) { %>
+            <ul class="nav nav-pills nav-usertabs">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Tips</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Liked</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Disliked</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Saved</a>
+              </li>
+            </ul>
+          <% } %>
             <div class="card shadow-sm">
               <div class="card-header">
                 xxx

@@ -51,12 +51,21 @@ a {
   color: hsl(243, 94%, 66%);
 }
 
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  color: #fff;
+  background-color: hsl(243, 94%, 66%);
+}
+
 .btn-primary {
   color: #fff;
   background-color: hsl(243, 94%, 66%);
   border-color: hsl(243, 94%, 66%);
 }
 
-.nav li {
+.nav.nav-social li {
   padding: 0.5em;
+}
+
+.nav.nav-usertabs li {
+  margin: 0.5em;
 }
