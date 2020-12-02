@@ -10,7 +10,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const helpers = require('../db/helpers/user-help.js');
 
-module.exports = () => {
+module.exports = (db) => {
 
   /*
   * Return JSON containing all users in database

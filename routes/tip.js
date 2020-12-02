@@ -27,7 +27,7 @@ if (req.session.user_id !== req.body.creator_id) {
 
 */
 
-module.exports = () => {
+module.exports = (db) => {
 
   /*
   *

@@ -1,0 +1,4 @@
+
+$(() => {
+  autosize(document.querySelector('textarea'));
+});

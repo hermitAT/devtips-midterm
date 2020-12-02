@@ -12,3 +12,13 @@ body {
     color: #244751;
   }
 }
+
+#compose-textarea:focus {
+  border: none;
+    overflow: hidden !important;
+    outline: none;
+    webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    resize: !important;
+}
