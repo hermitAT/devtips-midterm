@@ -10,9 +10,9 @@
     <% if (!user.id) { // @TODO When user isn't logged in %>
       <a href="/login"><button class="btn btn-light" type="button">Login</button></a>
   <% } else { %>
-  <a href="/user/<%= user.id %>">
+  <a class="text-white" href="/user/<%= user.id %>">
     <span id="navbar-username" class="font-weight-semibold px-3"><%= user.name %></span>
-    <img class="rounded-circle img-thumbnail p-0" height="42" width="42" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= user.id %>.svg">
+    <img class="rounded-circle border-0 img-thumbnail p-0" height="42" width="42" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= user.id %>.svg">
   </a>
   <% } %>
   </div>

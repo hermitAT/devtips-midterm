@@ -46,9 +46,16 @@ app.use(express.static("public"));
 // --------------------------------
 
 app.use(function(req, res, next) {
-  const userhelper = require('./db/user-db-helpers');
-  res.locals.user = req.session.user_id|| {}; // Empty user object if no user
-  next();
+  const userhelper = require('./db/helpers/user-help');
+  //res.locals.user = await userhelper.findUserByID(req.session.user_id) || {}; // Empty user object if no user
+  userhelper.findUserByID(req.session.user_id)
+  .then(data => {
+    res.locals.user = data;
+    next();
+  })
+  .catch(err => {
+    next(err);
+  });
 });
 
 // Separated Routes for each Resource
