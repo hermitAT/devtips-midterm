@@ -68,7 +68,7 @@ module.exports = () => {
   * user_id will come from login/cookie mechanism, not hardcoded once implemented
   */
   router.post("/:tip_id/bookmark", (req, res) => {
-    const { value } = req.body;
+    const { value, is_bookmarked} = req.body;
     const tipId =  req.params.tip_id;
     // const userID = req.session.user_id
     const values = [userID, tipId];
@@ -78,11 +78,13 @@ module.exports = () => {
       tipHelp.unsetBookmark(values)
         .then(data => res.json(data))
         .catch(err => res.json({ success: false, error: err }));
-    } else {
+    } else if (is_bookmarked === "false") {
 
       tipHelp.setBookmark(values)
         .then(data => res.json(data))
         .catch(err => res.json({ success: false, error: err }));
+    } else {
+      return res.json({ message: 'This tip is already bookmarked!'});
     }
   });
 
