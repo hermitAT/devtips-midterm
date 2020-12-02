@@ -34,15 +34,26 @@
                 <% } %>
               </div>
             </div>
+            <% for(let comment of comments) { %>
+              <div class="card shadow-sm comment my-1">
+                <div class="card-body">
+                  <img class="m-4 border rounded-circle shadow-md" width="42" height="42" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= comment.user_id %>.svg">
+                  <a href="/user/<%= comment.user_id %> "><%= comment.name %> </a>
+                  <p><%= comment.comment %> </p>
+                  <span class="comment-date-created"><%= comment.created_at %> </span>
+                </div>
+              </div>
+              <% } %>
+
           </div>
           <div class="col-3">
             <div class="card shadow-sm">
               <div class="card-header">
                 <span id="profile-name">Creator Profile</span>
               </div>
-              <img class="m-4 border rounded-circle shadow-md" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= tip.creator_id %>.svg">
+              <a href="/user/<%= tip.creator_id %> "><img class="m-4 border rounded-circle shadow-md" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= tip.creator_id %>.svg"></a>
               <div id="profile-info" class="d-flex justify-content-center">
-                <h5 id="profile-name"><%= tip.name %></h5>
+                <a href="/user/<%= tip.creator_id %> "><h5 id="profile-name"><%= tip.name %></h5></a>
                 <p id="profile-bio"></p>
               </div>
             </div>
