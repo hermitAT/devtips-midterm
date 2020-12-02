@@ -3,6 +3,10 @@ const { query } = require('../index');
 
 let queryString;
 
+/*
+* return all user objects from database
+*
+*/
 const getAllUsers = () => {
   queryString = `SELECT * FROM users;`;
 
@@ -12,9 +16,11 @@ const getAllUsers = () => {
 };
 exports.getAllUsers = getAllUsers;
 
-
+/*
+* Return the user object from database with the provided email
+*
+*/
 const findUserByEmail = (email) => {
-  // return a user object from the DB when a user with the given Email is found
 
   queryString = `
     SELECT *
@@ -28,9 +34,11 @@ const findUserByEmail = (email) => {
 };
 exports.findUserByEmail = findUserByEmail;
 
-
+/*
+* Return a user object from database given just the user's ID
+*
+*/
 const findUserByID = (id) => {
-  // return a user object from the DB for when a user with the given ID is found
 
   queryString = `
     SELECT *
@@ -44,9 +52,11 @@ const findUserByID = (id) => {
 };
 exports.findUserByID = findUserByID;
 
-
+/*
+* Return user object from database given a user 'name'
+*
+*/
 const findUserByName = (name) => {
-  // return a user object from the DB for when a user with the given ID is found
 
   queryString = `
     SELECT *
@@ -60,7 +70,10 @@ const findUserByName = (name) => {
 };
 exports.findUserByName = findUserByName;
 
-
+/*
+* Create a new user object in the database with their provided their name, email and password
+*
+*/
 const newUser = (userDetails) => {
   // functionality to add a new user into the database, hashing the given password, and returning the new user object
 
@@ -77,11 +90,11 @@ const newUser = (userDetails) => {
 };
 exports.newUser = newUser;
 
-
+/*
+* Edit details - name, password, and email - for the given user ID
+*
+*/
 const editUser = (userDetails) => {
-  // edit user details, recieve full set of into on user (name, email, pw, id) within an array, and just apply those values to the UPDATE query
-  // return the newly updated user details and render the user/:id page
-  // assumes user must submit changes to all 3 parameters ...
 
   queryString = `
     UPDATE users
@@ -96,10 +109,11 @@ const editUser = (userDetails) => {
 };
 exports.editUser = editUser;
 
-
+/*
+* Login to the app with provided credentials, if they pass the authentication check
+*
+*/
 const login = (email, password) => {
-  //^^ log the user into the system with a given email/password, using getUserWithEmail to find the given user in the DB
-  // use bcrypt.compareSync to compare passwords, return user object upon successful validation
   return findUserByEmail(email)
     .then(data => {
       if (passwordCheck(password, data)) {
@@ -110,6 +124,10 @@ const login = (email, password) => {
 };
 exports.login = login;
 
+/*
+* Authentication check for a given password and a user object
+*
+*/
 const passwordCheck = (password, user) => {
 
   if (!bcrypt.compareSync(password, user.password)) {
