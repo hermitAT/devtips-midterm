@@ -19,9 +19,14 @@
                 <span id="profile-name">Profile</span>
               </div>
               <img class="m-4 border rounded-circle shadow-md" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= data.id %>.svg">
-              <div id="profile-info" class="d-flex justify-content-center">
-                <h5 id="profile-name"><%= data.name %> </h5>
-                <p id="profile-bio"></p>
+              <div id="profile-info" class="d-flex flex-column align-items-center mb-4">
+                <a href="/user/<%= data.id %> "><h5 id="profile-name"><%= data.name %></h5></a>
+                <p class="mb-0">Freelance Web Developer</p>
+                <ul class="follow-us nav">
+                  <li><a href="#"><i class="fa fa-lg fa-facebook" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fa fa-lg fa-twitter" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fa fa-lg fa-linkedin" aria-hidden="true"></i></a></li>
+                </ul>
               </div>
             </div>
           </div>
