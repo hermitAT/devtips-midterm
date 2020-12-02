@@ -60,3 +60,12 @@ app.use("/", homeRoutes(db));
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
+
+// error handler
+app.use(function(err, req, res, next) {
+  const { message, stack } = err;
+  const status = (err.status || 500);
+  console.log('ERROR------', err);
+  res.status(status);
+  return res.render("error", { status, message, stack });
+});
