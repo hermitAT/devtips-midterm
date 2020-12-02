@@ -26,6 +26,11 @@ module.exports = (db) => {
       });
   });
 
+  // Simple login form
+  router.get('/login', (req, res) => {
+    res.render('login');
+  });
+
   /*
   * Log user into app given the check of password/email against database, and set req.session.user_id cookie to the user's ID
   * Redirect to the index page upon successful login
