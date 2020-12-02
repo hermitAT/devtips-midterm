@@ -5,8 +5,8 @@ let queryString;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ tip modification helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /*
-*
-*
+* Edit the title & description of a given Tip ID, && edited_at is set to Now(), return the updated Tip object
+* Parameters are the updated title, description and the Tip ID to update
 */
 const editTip = (values) => {
 
@@ -24,8 +24,8 @@ const editTip = (values) => {
 exports.editTip = editTip;
 
 /*
-*
-*
+* Delete all details for a given Tip ID && log a succesful deletion to the console.
+* Params in values is only the resource.id in question
 */
 const deleteTip = (values) => {
 
@@ -43,8 +43,8 @@ exports.deleteTip = deleteTip;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ like helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /*
-*
-*
+* Create a 'like' for the given user/resource pair, and assign the given value to the boolean field
+* Params are the active user, the Tip ID, and the given boolean value (0 creates a falsey (dislike), 1 creates a truthy (like))
 */
 const setLike = (values) => {
 
@@ -61,8 +61,8 @@ const setLike = (values) => {
 exports.setLike = setLike;
 
 /*
-*
-*
+* When Tip is already 'liked' by the active user, flip the boolean value stored in the table.
+* Params are active user, Tip ID, and the boolean value (which will always be falsey)
 */
 const flipLike = (values) => {
 
@@ -79,8 +79,8 @@ const flipLike = (values) => {
 exports.flipLike = flipLike;
 
 /*
-*
-*
+* Removes all likes that have been set for the user/tip pair (if multiple have been created due to seeds, otherwise, etc)
+* Params are the active user and the Tip Id, the Tip Id is the data returned.
 */
 const unsetLike = (values) => {
 
@@ -103,8 +103,8 @@ exports.unsetLike = unsetLike;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ bookmark helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /*
-*
-*
+* create a new bookmark for the user/tip pair
+* Params are the user/tip id pair
 */
 const setBookmark = (values) => {
 
@@ -121,8 +121,8 @@ const setBookmark = (values) => {
 exports.setBookmark = setBookmark;
 
 /*
-*
-*
+* Remove the bookmark set for the user/tip pair
+* Params are the user/tip id pair
 */
 const unsetBookmark = (values) => {
 
@@ -145,8 +145,8 @@ exports.unsetBookmark = unsetBookmark;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~ comment helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /*
-*
-*
+* Create a new comment for a given tipID, created by the active user
+* Params are the user/tip id pair and the comment text
 */
 const addComment = (values) => {
 
@@ -163,8 +163,8 @@ const addComment = (values) => {
 exports.addComment = addComment;
 
 /*
-*
-*
+* Delete a comment with a given id
+* Param is the id of the comment to be deleted
 */
 const deleteComment = (values) => {
 
@@ -180,8 +180,8 @@ const deleteComment = (values) => {
 exports.deleteComment = deleteComment;
 
 /*
-*
-*
+* Edit the text of a comment, and create an edited_at value of Now()
+* Params are the comment id and the comment text to input
 */
 const editComment = (values) => {
 
@@ -197,4 +197,3 @@ const editComment = (values) => {
     .catch(err => console.error('Query error', err.stack));
 };
 exports.editComment = editComment;
-

@@ -12,6 +12,10 @@ const helpers = require('../db/helpers/user-help.js');
 
 module.exports = () => {
 
+  /*
+  * Return JSON containing all users in database
+  *
+  */
   router.get('/', (req, res) => {
     helpers.getAllUsers()
       .then(users => {
@@ -21,8 +25,11 @@ module.exports = () => {
         res.status(500).json({ error: err.message });
       });
   });
-  // ^^ return JSON containing all users in database
 
+  /*
+  * Log user into app given the check of password/email against database, and set req.session.user_id cookie to the user's ID
+  * Redirect to the index page upon successful login
+  */
   router.post('/login', (req, res) => {
     const { email, password } = req.body;
     return helpers.login(email, password)
@@ -37,21 +44,29 @@ module.exports = () => {
         res.status(500).json({ error: err.message });
       });
   });
-  // ^^ check if user with given email is in database, and check PW hash before setting cookie and redirecting to homepage
 
+  /*
+  * Clear all cookies, logging user out from the system, redirecting back to index
+  *
+  */
   router.get('/logout', (req, res) => {
     req.session = null;
     res.redirect('/');
   });
-  // clear cookies in session upon logout, redirect to home page
 
+  /*
+  * Given a simple input, log a user into the system and set their user_id cookie to the parameter ID
+  *
+  */
   router.get('/login/:id', (req, res) => {
     req.session.user_id = req.params.id;
     res.redirect('/');
   });
-  // very simple user login, input ID and submit to login, set cookie to the ID of user
-  // redirect to home page upon success
 
+  /*
+  * return the user object for the given ID, and send as JSON to client
+  *
+  */
   router.get('/:id', (req, res) => {
     const userID = req.params.id;
 
@@ -62,14 +77,16 @@ module.exports = () => {
       });
   });
 
-
+  /*
+  * Edit details of a given user. User must submit/reconfirm all details of their profile
+  * Return user object with updated details as JSON
+  */
   router.post('/edit/:id', (req, res) => {
 
     const { name, password, email } = req.body;
     const hashPassword = bcrypt.hashSync(password, 12);
     const userDetails = [name, hashPassword, email, req.params.id];
 
-    // update the user row within the database, and render user/:id with the updated information
     helpers.editUser(userDetails)
       .then(user => {
         res.json({ user });
@@ -79,6 +96,10 @@ module.exports = () => {
       });
   });
 
+  /*
+  * Create a new user in database, and set user_id cookie to the newly created user ID
+  * Return new user object as JSON
+  */
   router.post('/register', (req, res) => {
     const { name, password, email } = req.body;
     const hashPassword = bcrypt.hashSync(password, 12);
@@ -86,6 +107,7 @@ module.exports = () => {
 
     helpers.newUser(userDetails)
       .then(user => {
+        req.session.user_id = user.id;
         res.json({ user });
       })
       .catch(err => {
