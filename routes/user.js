@@ -76,7 +76,7 @@ module.exports = (db) => {
     const userID = req.params.id;
 
     helpers.findUserByID(userID)
-      .then(user => res.json({ user }))
+      .then(data => res.render('user', { data }))
       .catch(err => {
         res.status(500).json({ error: err.message });
       });
