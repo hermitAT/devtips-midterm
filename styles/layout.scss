@@ -69,3 +69,28 @@ a {
 .nav.nav-usertabs li {
   margin: 0.5em;
 }
+
+.tip-avatar {
+  position: absolute;
+  top: -22px;
+  right: -69px;
+}
+
+.tip-icons {
+  position: absolute;
+  left: -23px;
+  top: 12px;
+  color: hsl(0, 0%, 27%);
+  i {
+    padding: 0.5rem;
+    padding-bottom: 0.75rem;
+  }
+  .badge {
+    font-size: 0.70em;
+    font-weight: normal;
+    background-color: hsl(158, 74%, 55%);
+  }
+  .badge.dislike {
+    background-color: rgb(255, 95, 95);
+  }
+}
