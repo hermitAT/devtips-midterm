@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Home Page</title>
+  <%- include('./partials/includes') %>
+</head>
+
+<body>
+  <%- include('./partials/navbar') %>
+
+  <main style="min-height: 80vh;">
+
+    <div id="list-tips" class="container my-5">
+
+        <div class="row">
+          <div class="col-3 offset-half">
+            <div class="card shadow-sm">
+              <div class="card-header">
+                <span id="profile-name">Profile</span>
+              </div>
+              <img class="m-4 border rounded-circle shadow-md" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= data.id %>.svg">
+              <div id="profile-info" class="d-flex flex-column align-items-center mb-4">
+                <a href="/user/<%= data.id %> "><h5 id="profile-name"><%= data.name %></h5></a>
+                <p class="mb-0">Freelance Web Developer</p>
+                <ul class="follow-us nav nav-social">
+                  <li><a href="#"><i class="fab fa-lg fa-facebook-f" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fab fa-lg fa-twitter" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fab fa-lg fa-linkedin" aria-hidden="true"></i></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-8 pl-3">
+            <% if (data.id === user.id) { %>
+            <ul class="nav nav-pills nav-usertabs">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Tips</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Liked</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Disliked</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Saved</a>
+              </li>
+            </ul>
+          <% } %>
+            <div class="card shadow-sm">
+              <div class="card-header">
+                xxx
+              </div>
+              <div class="card-body" style="min-height: 15em;">
+                xxx
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </main>
+
+  <footer class="bg-white text-muted py-5">
+    <div class="container">
+      <p class="float-right">
+        <a href="#">Back to top</a>
+      </p>
+      <p>© Devtips 2020</p>
+    </div>
+  </footer>
+</body>
+
+</html>

@@ -27,7 +27,7 @@ if (req.session.user_id !== req.body.creator_id) {
 
 */
 
-module.exports = () => {
+module.exports = (db) => {
 
   /*
   *
@@ -44,11 +44,18 @@ module.exports = () => {
   *
   */
   router.get("/:tip_id", (req, res) => {
+    const tip_id = req.params.tip_id;
+    const tipQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE r.id = $1;';
+    const commentQueryString = 'SELECT * FROM comments AS c JOIN users AS u ON u.id = c.user_id WHERE c.resource_id = $1;';
 
-    const tipId = req.params.tip_id;
+    const tip = db.query(tipQueryString, [tip_id]);
+    const comments = db.query(commentQueryString, [tip_id]);
 
-    console.log(`tip_id: ${tipId}`);
-    res.render('tip', { tipId });
+    Promise.all([tip, comments]).then((result) => {
+      const tip = result[0].rows[0];
+      const comments= result[1].rows;
+      res.render('tip', { tip_id, tip, comments});
+    });
   });
 
   /*

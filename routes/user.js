@@ -10,7 +10,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const helpers = require('../db/helpers/user-help.js');
 
-module.exports = () => {
+module.exports = (db) => {
 
   /*
   * Return JSON containing all users in database
@@ -24,6 +24,16 @@ module.exports = () => {
       .catch(err => {
         res.status(500).json({ error: err.message });
       });
+  });
+
+  // Simple login form
+  router.get('/login', (req, res) => {
+    // Check for ID query param
+    let id = req.query.id;
+    if (id) {
+      res.redirect(`/user/login/${id}`)
+    }
+    res.render('login');
   });
 
   /*
@@ -71,7 +81,7 @@ module.exports = () => {
     const userID = req.params.id;
 
     helpers.findUserByID(userID)
-      .then(user => res.json({ user }))
+      .then(data => res.render('user', { data }))
       .catch(err => {
         res.status(500).json({ error: err.message });
       });
