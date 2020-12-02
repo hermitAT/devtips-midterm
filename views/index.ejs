@@ -51,62 +51,32 @@
   <% } %>
 
     <div id="list-tips" class="container mb-5">
-      <div class="row no-gutter justify-content-center">
-        <div class="col col-sm-10 col-md-12 col-lg-8">
-          <div class="card mb-3 shadow-sm">
-            <div class="card-header">
-              Header
-            </div>
-            <div class="card-body">
-              <code>
-              <%= JSON.stringify(user); %>
-            </code>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row no-gutter justify-content-center">
-        <div class="col col-sm-10 col-md-12 col-lg-8">
-          <div class="card mb-3 shadow-sm">
-            <div class="card-header">
-              Header
-            </div>
-            <div class="card-body">
-              Body</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
+      <% for(let tip of tips) { %>
+        <div class="row no-gutter justify-content-center">
+          <div class="col col-sm-10 col-md-12 col-lg-8">
+            <div class="card mb-3 shadow-sm">
+              <div class="card-header border-0">
+                <a href="/tip/<%= tip.id %> "><%= tip.title %></a>
+              </div>
+              <div class="card-body" style="min-height: 15em;">
+                <% if (tip.type === 'link') { %>
+                  <a href="<%= tip.url %>"><%= tip.description %></a>
+                <% } else if (tip.type === 'image') { %>
+                  <img src="<%= tip.url %>" class="mw-100" alt="<%= tip.description %>">
+                <% } else if (tip.type === 'video') { %>
+                  <youtube-video controls src="<%= tip.url %>"></youtube-video>
+                <% } else if (tip.type === 'markdown') { %>
+                  <p><%= tip.description %></p>
+                <% } else if (tip.type === 'code') { %>
+                    <div class="code-block">
+                      <pre><%= JSON.stringify(tip, null, 1) %></pre>
+                    </div>
+                <% } %>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row no-gutter justify-content-center">
-        <div class="col col-sm-10 col-md-12 col-lg-8">
-          <div class="card mb-3 shadow-sm">
-            <div class="card-header">
-              Header
-            </div>
-            <div class="card-body">
-              Body</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-              ...</br>
-            </div>
-          </div>
-        </div>
-      </div>
+        <% } %>
     </div>
   </main>
 
