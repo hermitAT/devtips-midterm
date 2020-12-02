@@ -64,8 +64,6 @@ module.exports = () => {
     Promise.all([tip, comment]).then((result) => {
       const tip = result[0].rows[0];
       const comment= result[1].rows;
-      console.log('tips: ', tip);
-      console.log('comments: ', comment);
       res.render('tip', { tip_id, tip, comment});
     });
 
