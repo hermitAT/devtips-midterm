@@ -12,7 +12,29 @@
 
     <div id="list-tips" class="container my-5">
 
-        <div class="row no-gutters">
+        <div class="row">
+          <div class="col-8 offset-half pl-2">
+            <div class="card shadow-sm">
+              <div class="card-header">
+                <%= tip.title %>
+              </div>
+              <div class="card-body" style="min-height: 15em;">
+                <% if (tip.type === 'link') { %>
+                  <a href="<%= tip.url %>"><%= tip.description %></a>
+                <% } else if (tip.type === 'image') { %>
+                  <img src="<%= tip.url %>" class="mw-100" alt="<%= tip.description %>">
+                <% } else if (tip.type === 'video') { %>
+                  <youtube-video controls src="<%= tip.url %>"></youtube-video>
+                <% } else if (tip.type === 'markdown') { %>
+                  <p><%= tip.description %></p>
+                <% } else if (tip.type === 'code') { %>
+                    <div class="code-block">
+                      <pre><%= JSON.stringify(tip, null, 1) %></pre>
+                    </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
           <div class="col-3">
             <div class="card shadow-sm">
               <div class="card-header">
@@ -22,18 +44,6 @@
               <div id="profile-info" class="d-flex justify-content-center">
                 <h5 id="profile-name"><%= tip.name %></h5>
                 <p id="profile-bio"></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-9 pl-3">
-            <div class="card shadow-sm">
-              <div class="card-header">
-                <%= tip.title %>
-              </div>
-              <div class="card-body" style="min-height: 15em;">
-                <% if (tip.type === 'video') { %>
-                  <youtube-video controls src="<%= tip.url %>"></youtube-video>
-                <% } %>
               </div>
             </div>
           </div>
@@ -50,6 +60,18 @@
       <p>© Devtips 2020</p>
     </div>
   </footer>
+
+    <!-- EnlighterJS -->
+    <script type="text/javascript" src="../vendor/enlighterjs.min.js"></script>
+    <!-- Init Code -->
+    <script type="text/javascript">
+        EnlighterJS.init('pre', 'code', {
+                language : 'json',
+                theme: 'dracula',
+                indent : 2
+        });
+    </script>
+
 </body>
 
 </html>
