@@ -18,6 +18,7 @@
 
   <!-- Javascript Libraries -->
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+  <script type="module" src="https://unpkg.com/youtube-video-element"></script>
 
   <!-- DevTips Javascript -->
   <script type="text/javascript" src="/scripts/app.js"></script>
@@ -25,7 +26,7 @@
 
 <body>
   <nav class="navbar navbar-light bg-primary py-4 shadow-md text-white">
-    <a class="navbar-brand mb-0 text-white h1" href="#">
+    <a class="navbar-brand mb-0 text-white h1" href="/">
       DevTips
     </a>
     <form class="form-inline" style="flex: 1; margin: 0 15vw; max-width: 768px;">
@@ -63,10 +64,12 @@
           <div class="col-9 pl-3">
             <div class="card shadow-sm">
               <div class="card-header">
-                Tip ID: <%= tip_id %>
+                <%= tip.title %>
               </div>
               <div class="card-body" style="min-height: 15em;">
-
+                <% if (tip.type === 'video') { %>
+                  <youtube-video controls src="<%= tip.url %>"></youtube-video>
+                <% } %>
               </div>
             </div>
           </div>
