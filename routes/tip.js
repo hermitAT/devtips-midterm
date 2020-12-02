@@ -8,15 +8,12 @@ const router = express.Router();
 const dbHelp = require('../db/db-helpers');
 const tipHelp = require('../db/helpers/tip-help');
 
-const userID = 4;
-// There should be UID from cookie
-
 /*
 
 user authentication logic, to be implemented on all routes requiring it ~~~
 
 if (req.session.user_id === req.body.creator_id) {
-      <route logic & query goes here>
+
 }
 
 OR
@@ -53,7 +50,7 @@ module.exports = (db) => {
 
     Promise.all([tip, comments]).then((result) => {
       const tip = result[0].rows[0];
-      const comments= result[1].rows;
+      const comments = result[1].rows;
       res.render('tip', { tip_id, tip, comments});
     });
   });
@@ -63,6 +60,7 @@ module.exports = (db) => {
   * must add user authentication !!!
   */
   router.post("/:tip_id/delete", (req, res) => {
+
     const tipId = [req.params.tip_id];
 
     tipHelp.deleteTip(tipId)

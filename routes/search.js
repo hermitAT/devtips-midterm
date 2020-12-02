@@ -9,10 +9,12 @@ const dbHelp  = require('../db/db-helpers');
 
 const userID = 4; // There should be UID from cookie
 
-module.exports = (db) => {
+module.exports = () => {
 
   router.get("/", (req, res) => {
+    // const userId = req.session.user_id;
     res.render('search');
+    // ^^ add { userId } to the render args..
   });
 
   router.post("/", (req, res) => {

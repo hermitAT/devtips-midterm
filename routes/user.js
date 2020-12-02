@@ -29,9 +29,9 @@ module.exports = (db) => {
   // Simple login form
   router.get('/login', (req, res) => {
     // Check for ID query param
-    let id = req.query.id;
+    let id = req.session.user_id;
     if (id) {
-      res.redirect(`/user/login/${id}`)
+      res.redirect(`/`);
     }
     res.render('login');
   });
@@ -61,15 +61,6 @@ module.exports = (db) => {
   */
   router.get('/logout', (req, res) => {
     req.session = null;
-    res.redirect('/');
-  });
-
-  /*
-  * Given a simple input, log a user into the system and set their user_id cookie to the parameter ID
-  *
-  */
-  router.get('/login/:id', (req, res) => {
-    req.session.user_id = req.params.id;
     res.redirect('/');
   });
 
