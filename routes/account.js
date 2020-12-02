@@ -43,10 +43,6 @@ module.exports = (db) => {
   *
   */
 
-   router.get('/login', (req, res) => {
-    res.render('login');
-  });
-
   router.get('/login/:id', (req, res) => {
     req.session.user_id = req.params.id;
     res.redirect('/');

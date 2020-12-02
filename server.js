@@ -55,18 +55,14 @@ app.use(function(req, res, next) {
 // Note: Feel free to replace the example routes below with your own
 const searchRoutes = require("./routes/search");
 const userRoutes = require("./routes/user");
-const accountRoutes = require("./routes/account");
 const tipRoutes = require("./routes/tip");
-const tipCommentRoutes = require("./routes/tip_comment");
 const homeRoutes = require("./routes/home");
 
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
 app.use("/search", searchRoutes(db));
-app.use("/user", userRoutes(db));
-app.use("/", accountRoutes(db));
-app.use("/tip", tipRoutes(db));
-app.use("/", tipCommentRoutes(db));
+app.use("/user", userRoutes());
+app.use("/tips", tipRoutes());
 app.use("/", homeRoutes(db));
 
 // ----- Main Error catching can go here -----
