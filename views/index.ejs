@@ -33,13 +33,12 @@
       <button class="btn btn-light my-2 my-sm-0" type="submit">Search</button>
     </form>
     <div id="navbar-user" class="d-flex align-items-center">
-      <% if (true === false) { // @TODO When user isn't logged in %>
-      <form class="form-inline">
-        <button class="btn btn-light" type="button">Login</button>
-      </form>
-    <% } %>
+      <% if (!user.id) { // @TODO When user isn't logged in %>
+        <a href="/login"><button class="btn btn-light" type="button">Login</button></a>
+    <% } else { %>
     <span id="navbar-username">Username</span>
     <i class="material-icons md-36 px-2">face</i>
+    <% } %>
     </div>
   </nav>
 
@@ -75,16 +74,9 @@
             Header
           </div>
           <div class="card-body">
-            Body</br>
-            ...</br>
-            ...</br>
-            ...</br>
-            ...</br>
-            ...</br>
-            ...</br>
-            ...</br>
-            ...</br>
-            ...</br>
+            <code>
+              <%= JSON.stringify(user); %>
+            </code>
           </div>
         </div>
       <div class="card mb-3 shadow-sm">

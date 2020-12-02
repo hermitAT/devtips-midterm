@@ -41,6 +41,16 @@ app.use("/styles", sass({
 }));
 app.use(express.static("public"));
 
+// --------------------------------
+// Custom Middleware
+// --------------------------------
+
+app.use(function(req, res, next) {
+  const userhelper = require('./db/user-db-helpers');
+  res.locals.user = req.session.user_id|| {}; // Empty user object if no user
+  next();
+});
+
 // Separated Routes for each Resource
 // Note: Feel free to replace the example routes below with your own
 const searchRoutes = require("./routes/search");
