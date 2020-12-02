@@ -6,7 +6,7 @@
 const express = require('express');
 const router  = express.Router();
 const homeHelp = require('../db/helpers/home-help')
-
+const userID = '4'; // MUST BE TAKEN FROM COOKIE!
 
 module.exports = () => {
 
@@ -14,11 +14,13 @@ module.exports = () => {
     res.render('index');
   });
 
-  // Upload a new tip to DB
+  /** Upload a new tip to DB User ID passed to helper for
+   * security check is used to avoid "CURLing from outside" */
   router.post("/", (req, res) => {
 
-    console.log(req.body.tip);
-    homeHelp.createNewTip(req.body.tip)
+    return homeHelp.createNewTip(req.body.tip, userID)
+      //.then(tipID => tipID)
+      .then(tipID => res.redirect(`/tip/${tipID}`));
 
   });
 
