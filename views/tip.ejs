@@ -50,7 +50,14 @@
         <div class="row no-gutters">
           <div class="col-3">
             <div class="card shadow-sm">
-              <h1>Profile</h1>
+              <div class="card-header">
+                <span id="profile-name">Creator Profile</span>
+              </div>
+              <img class="m-4 border rounded-circle shadow-md" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= tip.creator_id %>.svg">
+              <div id="profile-info" class="d-flex justify-content-center">
+                <h5 id="profile-name"><%= tip.name %></h5>
+                <p id="profile-bio"></p>
+              </div>
             </div>
           </div>
           <div class="col-9 pl-3">
