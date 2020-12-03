@@ -8,7 +8,7 @@ const router  = express.Router();
 const homeHelp = require('../db/helpers/home-help')
 const userID = '4'; // MUST BE TAKEN FROM COOKIE!
 
-module.exports = () => {
+module.exports = (db) => {
 
   router.get("/", (req, res) => {
     const tipsQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id ORDER BY r.created_at LIMIT 30;';
