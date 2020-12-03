@@ -21,7 +21,7 @@ module.exports = () => {
   router.post("/", (req, res) => {
     searchHelp.searchByTags(req.body.search)
     .then((tips) => res.json(tips))
-
+  });
 
   router.get("/", (req, res) => {
     // const userId = req.session.user_id;
@@ -29,7 +29,7 @@ module.exports = () => {
     // ^^ add { userId } to the render args..
   });
 
-  });
+
 
   return router;
 };
