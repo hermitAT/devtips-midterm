@@ -1,6 +1,8 @@
 
 const { query } = require('../');
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ get resource/comments helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /**
  * Function receives an array of resource IDs and User ID
  * (may be skipped, user-specific queries will just return null)
@@ -41,9 +43,9 @@ const getResourceFullData = function(arr, userID) {
     ORDER BY created_at;
     `;
     return query(queryString, [resource_id, userID])
-    .then(res => res.rows[0]);
-  }))
-}
+      .then(res => res.rows[0]);
+  }));
+};
 exports.getResourceFullData = getResourceFullData;
 
 
@@ -55,15 +57,15 @@ exports.getResourceFullData = getResourceFullData;
 const getResourceComments = function(arr) {
 
   return Promise.all(arr.map(resource_id => {
-  const queryString = `
-  SELECT user_id, created_at, edited_at, comment
-  FROM comments
-  WHERE resource_id = $1;
-  `;
-  return query(queryString, [resource_id])
-  .then(res => res.rows[0].count);
-  }))
-}
+    const queryString = `
+      SELECT user_id, created_at, edited_at, comment
+      FROM comments
+      WHERE resource_id = $1;
+    `;
+    return query(queryString, [resource_id])
+      .then(res => res.rows[0].count);
+  }));
+};
 exports.getResourceComments = getResourceComments;
 
 let queryString;
@@ -79,7 +81,7 @@ const editTip = (values) => {
   queryString = `
     UPDATE resources
     SET title = $1, description = $2, edited_at = Now()
-    WHERE id = $3
+    WHERE id = $3 AND creator_id = $4
     RETURNING *;
     `;
 
@@ -97,7 +99,7 @@ const deleteTip = (values) => {
 
   queryString = `
     DELETE FROM resources
-    WHERE id = $1;
+    WHERE id = $1 AND creator_id = $2;
   `;
 
   return query(queryString, values)
@@ -115,34 +117,15 @@ exports.deleteTip = deleteTip;
 const setLike = (values) => {
 
   queryString = `
-    INSERT INTO likes (user_id, resource_id, value)
-    VALUES ($1, $2, $3)
-    RETURNING *;
+    INSERT INTO likes (user_id, resource_id)
+    VALUES ($1, $2);
     `;
 
   return query(queryString, values)
-    .then(data => data.rows[0])
+    .then(data => console.log("Success! Like added!"))
     .catch(err => console.error('Query error', err.stack));
 };
 exports.setLike = setLike;
-
-/*
-* When Tip is already 'liked' by the active user, flip the boolean value stored in the table.
-* Params are active user, Tip ID, and the boolean value (which will always be falsey)
-*/
-const flipLike = (values) => {
-
-  queryString = `
-    UPDATE likes
-    SET user_id = $1, resource_id = $2, value = $3
-    RETURNING *;
-  `;
-
-  return query(queryString, values)
-    .then(data => data.rows[0])
-    .catch(err => console.error('Query error', err.stack));
-};
-exports.flipLike = flipLike;
 
 /*
 * Removes all likes that have been set for the user/tip pair (if multiple have been created due to seeds, otherwise, etc)
@@ -152,8 +135,7 @@ const unsetLike = (values) => {
 
   queryString = `
     DELETE FROM likes
-    WHERE user_id = $1 AND resource_id = $2
-    RETURNING (SELECT id FROM resources WHERE id = $2);
+    WHERE user_id = $1 AND resource_id = $2;
   `;
 
   return query(queryString, values)
@@ -176,12 +158,11 @@ const setBookmark = (values) => {
 
   queryString = `
     INSERT INTO bookmarks (user_id, resource_id)
-    VALUES ($1, $2)
-    RETURNING *;
+    VALUES ($1, $2);
   `;
 
   return query(queryString, values)
-    .then(data => data.rows[0])
+    .then(data => console.log("Success! Bookmark added!"))
     .catch(err => console.error('Query error', err.stack));
 };
 exports.setBookmark = setBookmark;
@@ -194,15 +175,11 @@ const unsetBookmark = (values) => {
 
   queryString = `
     DELETE FROM bookmarks
-    WHERE user_id = $1 AND resource_id = $2
-    RETURNING (SELECT id FROM resources WHERE id = $2);
+    WHERE user_id = $1 AND resource_id = $2;
   `;
 
   return query(queryString, values)
-    .then(data => {
-      console.log("Success! Bookmark removed!");
-      return data.rows[0];
-    })
+    .then(data => console.log("Success! Bookmark removed!"))
     .catch(err => console.error('Query error', err.stack));
 };
 exports.unsetBookmark = unsetBookmark;
@@ -236,7 +213,7 @@ const deleteComment = (values) => {
 
   queryString = `
     DELETE FROM comments
-    WHERE id = $1;
+    WHERE id = $1 AND resource_id = $2 AND user_id = $3;
   `;
 
   return query(queryString, values)
@@ -254,7 +231,7 @@ const editComment = (values) => {
   queryString = `
     UPDATE comments
     SET comment = $1, edited_at = Now()
-    WHERE id = $2
+    WHERE id = $2 AND resource_id = $3, user_id = $4
     RETURNING *;
   `;
 

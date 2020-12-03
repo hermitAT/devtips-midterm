@@ -4,25 +4,10 @@
  */
 
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 const tipHelp = require('../db/helpers/tip-help');
 
-/*
-
-user authentication logic, to be implemented on all routes requiring it ~~~
-
-if (req.session.user_id === req.body.creator_id) {
-
-}
-
-OR
-
-if (req.session.user_id !== req.body.creator_id) {
-      <send error to client re: unauthorized>
-}
-
-*/
-  module.exports = (db) => {
+module.exports = (db) => {
 
   // New tip creation
   router.get("/", (req, res) => {
@@ -51,47 +36,39 @@ if (req.session.user_id !== req.body.creator_id) {
     Promise.all([tip, comments]).then((result) => {
       const tip = result[0].rows[0];
       const comments = result[1].rows;
-      res.render('tip', { tip_id, tip, comments});
+      res.render('tip', { tip_id, tip, comments });
     });
   });
 
-  /*
-  * (should be DELETE) POST req to remove a tip from the resources table
-  * must add user authentication !!!
-  */
-  router.post("/:tip_id/delete", (req, res) => {
-
-    const tipId = [req.params.tip_id];
-
-    tipHelp.deleteTip(tipId)
-      .then(data => res.redirect('/'))
-      .catch(err => res.json({ success: false, error: err }));
-  });
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ bookmark routes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /*
   * POST req to mark a tip as bookmarked by the active user
   * user_id will come from login/cookie mechanism, not hardcoded once implemented
   */
   router.post("/:tip_id/bookmark", (req, res) => {
-    const { value, is_bookmarked} = req.body;
-    const tipId =  req.params.tip_id;
-    // const userID = req.session.user_id
-    const values = [userID, tipId];
 
-    if (value === "0") {
+    const values = [req.session.user_id, req.params.tip_id];
 
-      tipHelp.unsetBookmark(values)
-        .then(data => res.json(data))
-        .catch(err => res.json({ success: false, error: err }));
-    } else if (is_bookmarked === "false") {
-
-      tipHelp.setBookmark(values)
-        .then(data => res.json(data))
-        .catch(err => res.json({ success: false, error: err }));
-    } else {
-      return res.json({ message: 'This tip is already bookmarked!'});
-    }
+    tipHelp.setBookmark(values)
+      .then(data => res.json({ success: true }))
+      .catch(err => res.json({ success: false, error: err }));
   });
+
+  /*
+  * DELETE req to mark a tip as bookmarked by the active user
+  * user_id will come from login/cookie mechanism, not hardcoded once implemented
+  */
+  router.delete("/:tip_id/bookmark", (req, res) => {
+
+    const values = [req.session.user_id, req.params.tip_id];
+
+    tipHelp.unsetBookmark(values)
+      .then(data => res.json({ success: true }))
+      .catch(err => res.json({ success: false, error: err }));
+  });
+
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ like routes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /*
   * POST req to add a new like boolean value to the given :tip_id
@@ -99,36 +76,27 @@ if (req.session.user_id !== req.body.creator_id) {
   */
   router.post("/:tip_id/like", (req, res) => {
 
-    const { value, is_liked } = req.body;
-    const tipId =  req.params.tip_id;
-    // const userID = req.session.user_id
-    let values;
+    let values = [req.session.user_id, req.params.tip_id];
 
-    if (value === "0") {
-
-      values = [userID, tipId];
-
-      tipHelp.unsetLike(values)
-        .then(data => res.json(data))
-        .catch(err => res.json({ success: false, error: err }));
-
-    } else if (is_liked) {
-
-      values = [userID, req.params.tip_id, value];
-
-      tipHelp.flipLike(values)
-        .then(data => res.json(data))
-        .catch(err => res.json({ success: false, error: err }));
-
-    } else {
-
-      values = [userID, req.params.tip_id, value];
-
-      tipHelp.setLike(values)
-        .then(data => res.json(data))
-        .catch(err => res.json({ success: false, error: err }));
-    }
+    tipHelp.setLike(values)
+      .then(data => res.json({ success: true }))
+      .catch(err => res.json({ success: false, error: err }));
   });
+
+  /*
+  * POST req to add a new like boolean value to the given :tip_id
+  * user_id will come from login/cookie mechanism, not hardcoded, once implemented
+  */
+  router.delete("/:tip_id/like", (req, res) => {
+
+    let values = [req.session.user_id, req.params.tip_id];
+
+    tipHelp.setLike(values)
+      .then(data => res.json({ success: true }))
+      .catch(err => res.json({ success: false, error: err }));
+  });
+
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ comment routes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /*
   * POST req to add a new comment associated with the given :tip_id
@@ -136,7 +104,7 @@ if (req.session.user_id !== req.body.creator_id) {
   */
   router.post('/:tip_id/comment', (req, res) => {
 
-    const values = [userID, req.params.tip_id, req.body.comment];
+    const values = [req.session.user_id, req.params.tip_id, req.body.comment];
 
     tipHelp.addComment(values)
       .then(data => res.json(data))
@@ -149,14 +117,12 @@ if (req.session.user_id !== req.body.creator_id) {
   */
   router.post('/:tip_id/comment/:id/delete', (req, res) => {
 
-    const values = [req.params.id];
+    const values = [req.params.id, req.params.tip_id, req.session.user_id];
 
     tipHelp.deleteComment(values)
-      .then(data => res.redirect('/'))
+      .then(data => res.json({ success: true }))
       .catch(err => res.json({ success: false, error: err }));
   });
-
-
 
   /*
   * (should be PUT req) POST req to edit an existing comment, user can only edit the 'text' of the comment.
@@ -164,10 +130,25 @@ if (req.session.user_id !== req.body.creator_id) {
   */
   router.post('/:tip_id/comment/:id', (req, res) => {
 
-    const values = [req.body.comment, req.params.id];
+    const values = [req.body.comment, req.params.id, req.params.tip_id, req.session.user_id];
 
     tipHelp.editComment(values)
       .then(data => res.json(data))
+      .catch(err => res.json({ success: false, error: err }));
+  });
+
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ edit/delete tip routes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /*
+  * (should be DELETE) POST req to remove a tip from the resources table
+  * must add user authentication !!!
+  */
+  router.post("/:tip_id/delete", (req, res) => {
+
+    const values = [req.params.tip_id, req.session.user_id];
+
+    tipHelp.deleteTip(values)
+      .then(data => res.json({ success: true }))
       .catch(err => res.json({ success: false, error: err }));
   });
 
@@ -178,10 +159,10 @@ if (req.session.user_id !== req.body.creator_id) {
   * must add user authentication !!!
   */
   router.post("/:tip_id", (req, res) => {
-    const values = [req.body.title, req.body.description, req.params.tip_id];
+    const values = [req.body.title, req.body.description, req.params.tip_id, req.session.user_id];
 
     tipHelp.editTip(values)
-      .then(data => res.json(data))
+      .then(data => res.json({ success: true }))
       .catch(err => res.json({ success: false, error: err.message }));
   });
 
