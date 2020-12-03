@@ -7,10 +7,22 @@ const express = require('express');
 const router  = express.Router();
 const tipHelp = require('../db/helpers/tip-help');
 
-const userID = 4 // There should be UID from cookie
+/*
 
+user authentication logic, to be implemented on all routes requiring it ~~~
 
-module.exports = () => {
+if (req.session.user_id === req.body.creator_id) {
+
+}
+
+OR
+
+if (req.session.user_id !== req.body.creator_id) {
+      <send error to client re: unauthorized>
+}
+
+*/
+  module.exports = (db) => {
 
   // New tip creation
   router.get("/", (req, res) => {
@@ -21,113 +33,157 @@ module.exports = () => {
   router.post("/", (req, res) => {
     const { tipsID } = req.body;
     tipHelp.getResourceFullData(tipsID, userID)
-      .then((tips) => res.json(tips))
+      .then((tips) => res.json(tips));
   });
 
+  /*
+  * render 'tip' EJS page, passing thru the given tipId
+  *
+  */
   router.get("/:tip_id", (req, res) => {
+    const tip_id = req.params.tip_id;
+    const tipQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE r.id = $1;';
+    const commentQueryString = 'SELECT * FROM comments AS c JOIN users AS u ON u.id = c.user_id WHERE c.resource_id = $1;';
 
-    const tipId = req.params.tip_id;
-    console.log(`tip_id: ${tipId}`);
-    res.render('tip', { tipId });
-/*     tipHelp.getResourceFullData([tipId])
-      .then(data => res.json(data.rows[0]))
-      .catch(err => res.json({ error: err })); */
+    const tip = db.query(tipQueryString, [tip_id]);
+    const comments = db.query(commentQueryString, [tip_id]);
+
+    Promise.all([tip, comments]).then((result) => {
+      const tip = result[0].rows[0];
+      const comments = result[1].rows;
+      res.render('tip', { tip_id, tip, comments});
+    });
   });
-  // send resource with particular :tip_id to server as JSON
+
+  /*
+  * (should be DELETE) POST req to remove a tip from the resources table
+  * must add user authentication !!!
+  */
+  router.post("/:tip_id/delete", (req, res) => {
+
+    const tipId = [req.params.tip_id];
+
+    tipHelp.deleteTip(tipId)
+      .then(data => res.redirect('/'))
+      .catch(err => res.json({ success: false, error: err }));
+  });
+
+  /*
+  * POST req to mark a tip as bookmarked by the active user
+  * user_id will come from login/cookie mechanism, not hardcoded once implemented
+  */
+  router.post("/:tip_id/bookmark", (req, res) => {
+    const { value, is_bookmarked} = req.body;
+    const tipId =  req.params.tip_id;
+    // const userID = req.session.user_id
+    const values = [userID, tipId];
+
+    if (value === "0") {
+
+      tipHelp.unsetBookmark(values)
+        .then(data => res.json(data))
+        .catch(err => res.json({ success: false, error: err }));
+    } else if (is_bookmarked === "false") {
+
+      tipHelp.setBookmark(values)
+        .then(data => res.json(data))
+        .catch(err => res.json({ success: false, error: err }));
+    } else {
+      return res.json({ message: 'This tip is already bookmarked!'});
+    }
+  });
+
+  /*
+  * POST req to add a new like boolean value to the given :tip_id
+  * user_id will come from login/cookie mechanism, not hardcoded, once implemented
+  */
+  router.post("/:tip_id/like", (req, res) => {
+
+    const { value, is_liked } = req.body;
+    const tipId =  req.params.tip_id;
+    // const userID = req.session.user_id
+    let values;
+
+    if (value === "0") {
+
+      values = [userID, tipId];
+
+      tipHelp.unsetLike(values)
+        .then(data => res.json(data))
+        .catch(err => res.json({ success: false, error: err }));
+
+    } else if (is_liked) {
+
+      values = [userID, req.params.tip_id, value];
+
+      tipHelp.flipLike(values)
+        .then(data => res.json(data))
+        .catch(err => res.json({ success: false, error: err }));
+
+    } else {
+
+      values = [userID, req.params.tip_id, value];
+
+      tipHelp.setLike(values)
+        .then(data => res.json(data))
+        .catch(err => res.json({ success: false, error: err }));
+    }
+  });
+
+  /*
+  * POST req to add a new comment associated with the given :tip_id
+  * user_id will come from login/cookie mechanism, not body, once implemented
+  */
+  router.post('/:tip_id/comment', (req, res) => {
+
+    const values = [userID, req.params.tip_id, req.body.comment];
+
+    tipHelp.addComment(values)
+      .then(data => res.json(data))
+      .catch(err => res.json({ success: false, error: err }));
+  });
+
+  /*
+  * (should be DELETE req) POST req to delete a comment with the selected id
+  * must add user authentication !!!
+  */
+  router.post('/:tip_id/comment/:id/delete', (req, res) => {
+
+    const values = [req.params.id];
+
+    tipHelp.deleteComment(values)
+      .then(data => res.redirect('/'))
+      .catch(err => res.json({ success: false, error: err }));
+  });
 
 
+
+  /*
+  * (should be PUT req) POST req to edit an existing comment, user can only edit the 'text' of the comment.
+  * must add user authentication !!!
+  */
+  router.post('/:tip_id/comment/:id', (req, res) => {
+
+    const values = [req.body.comment, req.params.id];
+
+    tipHelp.editComment(values)
+      .then(data => res.json(data))
+      .catch(err => res.json({ success: false, error: err }));
+  });
+
+
+
+  /*
+  * (should be PUT req) POST request to edit an existing tip, user can only edit title and description
+  * must add user authentication !!!
+  */
   router.post("/:tip_id", (req, res) => {
+    const values = [req.body.title, req.body.description, req.params.tip_id];
 
-    const values = [res.body.title, res.body.description, res.body.type];
-    const tipId = res.body.tip_id;
-    const userId = req.session.user_id;
-
-    if (!userId) {
-      res.json({ error: "Unauthorized!" });
-    }
-    // if no user is logged in, send error of unauthorized
-
-    db.query(`SELECT creator_id FROM resources WHERE id = $1`, tipId)
-      .then(data => {
-        const creator = data.rows[0]["creator_id"];
-        // ^^ select the creator_id from the resource from the DB, get the value and compare to userId below as validation check
-        if (creator !== userId) {
-          res.json({ error: "Unauthorized!" });
-        }
-      })
-      .catch(err => res.json({ success: false, error: err }));
-
-    // if validation passes, take new values for title, desc, type and set them and apply value Now() for edited_at
-    db.query(`
-      UPDATE resources
-      SET title = $1, description = $2, type = $3, edited_at = Now()
-      WHERE id = $4
-      RETURNING *`, values)
-      .then(data => res.json(data.rows[0]))
-      .catch(err => res.json({ success: false, error: err }));
+    tipHelp.editTip(values)
+      .then(data => res.json(data))
+      .catch(err => res.json({ success: false, error: err.message }));
   });
-
-  router.post("/:tip_id/:like"), (req, res) => {
-    const values = [res.body.tip_id, req.session.user_id, res.body.boolean];
-
-    db.query(`
-    UPDATE likes
-    SET resource_id = $1, user_id = $2, boolean = $3
-    RETURNING *;
-    `, values)
-      .then(data => {
-        res.json(data.rows[0]);
-      })
-      .catch(err => res.json({ success: false, error: err }));
-  };
-  // recieve boolean from submission, apply it to new like and link resource_id and user_id to the new like.
-  // redirect to the resource page? not sure where to go after updating the table.
-
-
-  // same issue below with :bookmark, unsure where to go or what to send to server once the bookmark has been applied...
-  router.post("/:tip_id/:bookmark"), (req, res) => {
-    const values = [res.body.tip_id, req.session.user_id];
-
-    db.query(`
-    UDPDATE bookmarks
-    SET resource_id = $1, user_id = $2
-    RETURNING *;
-    `, values)
-      .then(data => {
-        res.json(data.rows[0]);
-      })
-      .catch(err => res.json({ success: false, error: err }));
-  };
-
-
-  // likely take the user validation step and put that into a helper function!
-  router.post("/:tip_id/delete"), (req, res) => {
-    const tipId = res.body.tip_id;
-    const userId = req.session.user_id;
-
-    if (!userId) {
-      res.send({ error: "Unauthorized!" });
-    }
-    // if no user is logged in, send error of unauthorized
-
-    db.query(`SELECT creator_id FROM resources WHERE id = $1`, tipId)
-      .then(data => {
-        const creator = data.rows[0].creator_id;
-        // ^^ select the creator_id from the resource from the DB, get the value and compare to userId below as validation check
-        if (creator !== userId) {
-          res.send({ error: "Unauthorized!" });
-        }
-      })
-      .catch(err => res.json({ success: false, error: err }));
-
-    // once validation check is passed, delete all columns for the given resource_id
-    db.query(`DELETE FROM resources WHERE resource_id = $1;`, tipId)
-      .then(data => {
-        res.json({ success: true });
-        res.redirect('/');
-      })
-      .catch(err => res.json({ success: false, error: err }));
-  };
 
   return router;
 };

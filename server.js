@@ -41,26 +41,48 @@ app.use("/styles", sass({
 }));
 app.use(express.static("public"));
 
+// --------------------------------
+// Custom Middleware
+// --------------------------------
+
+app.use(function(req, res, next) {
+  const userhelper = require('./db/helpers/user-help');
+  //res.locals.user = await userhelper.findUserByID(req.session.user_id) || {}; // Empty user object if no user
+  userhelper.findUserByID(req.session.user_id)
+  .then(data => {
+    res.locals.user = data || {};
+    next();
+  })
+  .catch(err => {
+    next(err);
+  });
+});
+
 // Separated Routes for each Resource
 // Note: Feel free to replace the example routes below with your own
 const searchRoutes = require("./routes/search");
 const userRoutes = require("./routes/user");
-const accountRoutes = require("./routes/account");
 const tipRoutes = require("./routes/tip");
-const tipCommentRoutes = require("./routes/tip_comment");
 const homeRoutes = require("./routes/home");
 
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
 app.use("/search", searchRoutes(db));
 app.use("/user", userRoutes(db));
-app.use("/", accountRoutes(db));
 app.use("/tip", tipRoutes(db));
-app.use("/", tipCommentRoutes(db));
 app.use("/", homeRoutes(db));
 
 // ----- Main Error catching can go here -----
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  const { message, stack } = err;
+  const status = (err.status || 500);
+  console.log('ERROR------', err);
+  res.status(status);
+  return res.render("error", { status, message, stack });
 });

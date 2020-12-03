@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <title>Home Page</title>
+  <%- include('./partials/includes') %>
+</head>
+
+<body>
+  <%- include('./partials/navbar') %>
+
+  <main style="min-height: 80vh;">
+
+
+    <div id="list-tips" class="container my-5">
+      <div class="card mb-3 shadow-sm">
+          <div class="card-header">
+            Error <%= status %>
+          </div>
+          <div class="card-body">
+            <p>
+              <%= message %>
+            </p>
+            <code>
+              <pre>
+                <%= stack %>
+              </pre>
+            </code>
+          </div>
+        </div>
+    </div>
+  </main>
+
+  <footer class="bg-white text-muted py-5">
+    <div class="container">
+      <p class="float-right">
+        <a href="#">Back to top</a>
+      </p>
+      <p>© Devtips 2020</p>
+    </div>
+  </footer>
+</body>
+
+</html>
