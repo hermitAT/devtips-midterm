@@ -1,5 +1,5 @@
 
-const { query } = require('../');
+const { query, extract } = require('../');
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ get resource/comments helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -48,6 +48,20 @@ const getResourceFullData = function(arr, userID) {
 };
 exports.getResourceFullData = getResourceFullData;
 
+
+const getAllTipIDs = function() {
+
+  queryString = `
+  SELECT id FROM resources
+  ORDER BY created_at DESC;
+  `;
+
+return query(queryString)
+  .then(data => extract(data.rows, 'id'))
+  .catch(err => console.error('Query error', err.stack));
+
+}
+exports.getAllTipIDs = getAllTipIDs;
 
 /**
  * Returns count of comments the resource has (just count!)

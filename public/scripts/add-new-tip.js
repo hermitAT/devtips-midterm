@@ -19,16 +19,18 @@ const disarm = function(str) {
  * 4. Call '/' POST and send serialized data there
  */
 const createNewTip = function() {
-
-  $('form').on('submit', function(e) {
-    e.preventDefault();
-    let tip = disarm($('form').serialize());
-    const userID = 4;              // MUST BE TAKEN FROM A COOKIE!!!!
-    tip += `&amp;creator_id=${userID}`;
-    $.ajax(`/`, { method: 'POST', data: { tip }})
-      //.then((tipID) => $.ajax(`/tip/${tipID}`, { method: 'GET' }))
-      .then(() => 'Succsess')
-      .catch(() => 'Error')
+  $('form.form-compose').submit(function(event) {
+    event.preventDefault(); // Prevent the form from submitting via the browser
+    const form = $(this);
+    $.ajax({
+      type: form.attr('method'),
+      url: form.attr('action'),
+      data: form.serialize()
+    }).done(function(data) {
+      console.log('Success! ', data);
+    }).fail(function(err) {
+      console.log('Failure. ', err);
+    });
   });
 }
 

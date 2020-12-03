@@ -1,100 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<title>Home Page</title>
-<%- include('./partials/includes') %>
-</head>
+  <head>
+    <title>Home Page</title>
 
-<body>
-  <%- include('./partials/navbar') %>
+    <!-- Local Includes -->
+    <%- include('./partials/includes') %>
+  </head>
 
-  <main class="mt-5" style="min-height: 80vh;">
+  <body>
+    <%- include('./partials/navbar') %>
 
-    <% if (user.id) { // @TODO When user isn't logged in %>
-    <div id="compose-tips" class="container my-4">
-      <div class="row no-gutter justify-content-center">
-        <div class="col col-sm-10 col-md-12 col-lg-8">
-          <div class="card bg-white mb-3 shadow-md">
-            <form>
-              <div class="form-group row px-3 py-2 mb-0">
-                <div class="col-sm-2 d-flex justify-content-center align-items-center">
-                  <img class="rounded-circle img-thumbnail p-0 shadow-sm" height="64" width="64" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= user.id %>.svg">
-                </div>
-                <div class="form-group col-sm-10 py-2 px-0 mb-0">
-                  <textarea id="compose-textarea" class="form-control form-control-lg textarea border-0 px-0" id="exampleFormControlTextarea1" rows="2" data-min-rows='2' placeholder="Share your tips..." autofocus></textarea>
-                </div>
-              </div>
-              <ul class="nav nav-pills nav-fill border-top">
-                <li class="nav-item border-right">
-                  <a class="nav-link py-3" href="#">Link</a>
-                </li>
-                <li class="nav-item border-right">
-                  <a class="nav-link py-3" href="#">Image</a>
-                </li>
-                <li class="nav-item border-right">
-                  <a class="nav-link py-3" href="#">Video</a>
-                </li>
-                <li class="nav-item border-right">
-                  <a class="nav-link py-3" href="#">Markdown</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link py-3" href="#">Code</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link py-3 bg-primary text-white rounded-0" href="#" tabindex="-1" aria-disabled="true">Post</a>
-                </li>
-              </ul>
-            </form>
-          </div>
-        </div>
+    <main class="mt-5" style="min-height: 80vh;">
+
+      <%- include('./partials/compose') %>
+
+      <div id="list-tips" class="container mb-5">
+
       </div>
-    </div>
-  <% } %>
+      <div id="paginator"></div>
+    </main>
 
-    <div id="list-tips" class="container mb-5">
-      <% for(let tip of tips) { %>
-        <div class="row no-gutter justify-content-center">
-          <div class="col col-sm-10 col-md-12 col-lg-8 position-relative">
-            <a href="/user/<%= tip.id %>"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= tip.creator_id %>.svg"></a>
-            <div class="tip-icons d-flex flex-column align-items-center">
-              <i class="far fa-thumbs-up"></i><span class="like badge badge-dark mb-2">36</span>
-              <i class="fas fa-thumbs-down"></i><span class="dislike badge badge-dark mb-3">34</span>
-              <i class="far fa-bookmark"></i>
-              <a id="tip_id" style="display: none"><%= tip.id %></a>
-            </div>
-            <div class="card mb-3 shadow-sm">
-              <div class="card-header border-0">
-                <a href="/tip/<%= tip.id %>"><%= tip.title %></a>
-              </div>
-              <div class="card-body" style="min-height: 10em;">
-                <% if (tip.type === 'link') { %>
-                  <a href="<%= tip.url %>"><%= tip.description %></a>
-                <% } else if (tip.type === 'image') { %>
-                  <img src="<%= tip.url %>" class="mw-100" alt="<%= tip.description %>">
-                <% } else if (tip.type === 'video') { %>
-                  <youtube-video controls src="<%= tip.url %>"></youtube-video>
-                <% } else if (tip.type === 'markdown') { %>
-                  <p><%= tip.description %></p>
-                <% } else if (tip.type === 'code') { %>
-                    <div class="code-block">
-                      <pre><%= JSON.stringify(tip, null, 1) %></pre>
-                    </div>
-                <% } %>
-              </div>
-            </div>
-          </div>
-        </div>
-        <% } %>
-    </div>
-  </main>
-
-  <footer class="bg-white text-muted py-5">
-    <div class="container">
-      <p class="float-right">
-        <a href="#">Back to top</a>
-      </p>
-      <p>© Devtips 2020</p>
-    </div>
-  </footer>
-</body>
+    <footer class="bg-white text-muted py-5">
+      <div class="container">
+        <p class="float-right">
+          <a href="#">Back to top</a>
+        </p>
+        <p>© Devtips 2020</p>
+      </div>
+    </footer>
+  </body>
 
 </html>

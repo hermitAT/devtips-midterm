@@ -26,7 +26,7 @@ CREATE TABLE tags (
 
 CREATE TABLE resources (
   id SERIAL PRIMARY KEY NOT NULL,
-  url TEXT NOT NULL,
+  data TEXT NOT NULL,
   title VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   type type NOT NULL,
