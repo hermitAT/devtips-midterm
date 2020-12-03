@@ -1,7 +1,7 @@
 INSERT INTO resources (url, title, description, type, creator_id)
 VALUES
-('https://www.youtube.com/watch?v=TWEXCYQKyDc', 'Faithful way finds company', 'Keeping your eye on the ball while performing a deep dive on the start-up mentality to derive convergence on cross-platform integration.', 'code', '1'),
-('https://thumbs.dreamstime.com/b/java-lines-code-website-application-script-language-software-development-vue-routes-js-javascript-markup-163646063.jpg', 'Eager day calls fact', 'Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.', 'markdown', '25'),
+('https://www.youtube.com/watch?v=TWEXCYQKyDc', 'Faithful way finds company', 'Keeping your eye on the ball while performing a deep dive on the start-up mentality to derive convergence on cross-platform integration.', 'video', '1'),
+('https://thumbs.dreamstime.com/b/java-lines-code-website-application-script-language-software-development-vue-routes-js-javascript-markup-163646063.jpg', 'Eager day calls fact', 'Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.', 'image', '25'),
 ('https://blog.udemy.com/tableau-certifications/', 'Faithful year makes fact', 'Leverage agile frameworks to provide a robust synopsis for high level overviews.', 'link', '27'),
 ('https://www.itprotoday.com/sites/itprotoday.com/files/styles/article_featured_retina/public/JavaScript-code_1.jpg?itok=mk2NfyrZ', 'Faithful day seeks group', 'Iterative approaches to corporate strategy foster collaborative thinking to further the overall value proposition.', 'image', '25'),
 ('https://www.youtube.com/watch?v=uOfonONtIuk', 'Brave man needs problem', 'Organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.', 'video', '43'),
