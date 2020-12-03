@@ -53,7 +53,8 @@ const getAllTipIDs = function() {
 
   queryString = `
   SELECT id FROM resources
-  ORDER BY created_at DESC;
+  ORDER BY created_at DESC
+  LIMIT 150;
   `;
 
   return query(queryString)

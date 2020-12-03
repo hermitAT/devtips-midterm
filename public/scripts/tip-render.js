@@ -74,7 +74,7 @@ const loadTips = function(tipsID) {
 const drawPaginator = function(tipsPaged) {
 
   for (const page in tipsPaged) {
-    $('#paginator').append(`<button>${page}</button>`);
+    $('#paginator').append(`<button style="width: 2.2em" class="m-1.5 rounded text-center">${page}</button>`);
     $('#paginator button:last-child').click(() => {
       loadTips(tipsPaged[page]);
     });
@@ -128,7 +128,7 @@ const createTipElement = function(tip) {
       <div class="card-body" style="min-height: 10em;">
         ${content}
       </div>
-      <mark>${tagsField}</mark>
+      <mark style="background-color: rgba(0,0,0,.03)">${tagsField}</mark>
     </div>
   </div>
 </div>
