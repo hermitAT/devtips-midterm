@@ -7,6 +7,7 @@
  */
 const timeAgo = function(date) {
 
+  const datemil = new Date(date)
   const timeMap = {
     'year' : 24 * 60 * 60 * 1000 * 365,
     'month' : 24 * 60 * 60 * 1000 * 30.42,
@@ -16,7 +17,7 @@ const timeAgo = function(date) {
     'order': ['year', 'month', 'day', 'hour', 'minute']
   };
 
-  const delta = Math.floor((Date.now() - date));
+  const delta = Math.floor((Date.now() - datemil));
   for (const unit of timeMap.order) {
     const num = Math.floor(delta / timeMap[unit]);
     if (num >= 1) return `${num} ${unit}${(num === 1) ? '' : 's'} ago`;
@@ -89,7 +90,7 @@ const drawPaginator = function(tipsPaged) {
  *  */
 const createTipElement = function(tip) {
   console.log(tip);
-  const { id, likes, dislikes, creator_id, title, data,  description, tags } = tip;
+  const { id, likes, dislikes, creator_id, title, data,  description, tags, created_at } = tip;
   let type = tip.type;
   let content = ``;
   if (['markdown', 'code'].includes(type)) type = 'text';
@@ -122,8 +123,9 @@ const createTipElement = function(tip) {
       <i class="far fa-bookmark"></i>
     </div>
     <div class="card mb-3 shadow-sm">
-      <div class="card-header border-0">
+      <div class="card-header border-0 d-flex justify-content-between">
         <a href="/tip/${id}">${title}</a>
+        <a>${timeAgo(created_at)}</a>
       </div>
       <div class="card-body" style="min-height: 10em;">
         ${content}
@@ -158,8 +160,13 @@ const getAllTips = function() {
 };
 
 
-$(document).ready(() => {
+const changeTime = function() {
 
+}
+
+
+$(document).ready(() => {
+  //if ($(document)[0].title === 'DevTips - Tip') changeTime();
   if ($(document)[0].title === 'Home Page') getAllTips();
   //loadTips([4,5]); // initial testcode, to be replaced
   //searchFormValidateInput();
