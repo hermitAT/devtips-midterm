@@ -32,7 +32,7 @@ const createNewTip = function() {
       console.log('Failure. ', err);
     });
   });
-}
+};
 
 /**
  * Create a checkbox for each tag in the DB
@@ -40,22 +40,20 @@ const createNewTip = function() {
 const drawTagCheckboxes = function() {
 
   $.ajax(`/search/tags`, { method: 'GET'})
-      .then(tags => {
-        tags.map(tag => {
-          const checkbox = `
+    .then(tags => {
+      tags.map(tag => {
+        const checkbox = `
           <input type="checkbox" id="${tag}" name="tags" value="${tag}">
           <label for="${tag}"> #${tag}</label>
           `;
-          $('mark').append(checkbox);
-        })
-      })
-
-}
+        $('mark').append(checkbox);
+      });
+    });
+};
 
 
 
 $(document).ready(() => {
-
 
   drawTagCheckboxes();
   createNewTip();

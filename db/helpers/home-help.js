@@ -27,13 +27,12 @@ const createNewTip = function(tipSerialized, userID) {
   INSERT INTO resources (data, title, description, type, creator_id)
   VALUES ($1, $2, $3, $4, $5)
   RETURNING id;
-  `
+  `;
   return query(queryString, [ data, title, description, type, creator_id ])
-  .then(res => {
-    if (!tip.tags) return res.rows[0].id;
-    return assignTags(res.rows[0].id, tip.tags);
-  })
-
+    .then(res => {
+      if (!tip.tags) return res.rows[0].id;
+      return assignTags(res.rows[0].id, tip.tags);
+    });
 };
 exports.createNewTip = createNewTip;
 
@@ -56,11 +55,10 @@ const assignTags = function(tipID, tags) {
         const queryString = `
         INSERT INTO resources_tags (resource_id, tag_id)
         VALUES ($1, $2);
-        `
-        return query(queryString, [ tipID, tagID ])
+        `;
+        return query(queryString, [ tipID, tagID ]);
 
-      }))
+      }));
     })
     .then(() => tipID);
-
-}
+};

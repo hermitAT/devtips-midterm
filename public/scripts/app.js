@@ -7,7 +7,7 @@ $(() => {
   $('#compose-textarea-title, #compose-textarea-data, #compose-textarea-description, #compose-input-tags').on('input propertychange', (e) => {
     if ($('#compose-textarea-title').val() || $('#compose-textarea-data').val() || $('#compose-textarea-description').val() || $('#compose-input-tags').val()) {
       $('#compose-textarea-data').show();
-      if($('#compose-textarea-data').val() || $('#compose-textarea-description').val() || $('#compose-input-tags').val()){
+      if ($('#compose-textarea-data').val() || $('#compose-textarea-description').val() || $('#compose-input-tags').val()) {
         $('#compose-metadata').show();
       } else {
         $('#compose-metadata').hide();

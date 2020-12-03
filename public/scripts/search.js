@@ -1,3 +1,15 @@
+/**
+ * Replace 'dangerous' characters which could possibly
+ * be a part of malicious code with special char HTML codes
+ * @param {*} str - untrusted text string to disarm
+ */
+const disarm = function(str) {
+
+  let div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+
+};
 
 /**
  * 1. Function receives arrays with valid and invalid search tags
@@ -12,7 +24,7 @@ const makeResultsHeader = function(valid, invalid) {
 
   const plurIn = invalid.length > 1;
   const valS = (valid.length > 1) ? 's' : '';
-  const [tobe, an, s] = (plurIn) ? ['are', '', 's'] : ['is', 'a ', '']
+  const [tobe, an, s] = (plurIn) ? ['are', '', 's'] : ['is', 'a ', ''];
 
   const invalidMessage = (invalid.length) ? `, ${an}tag${s} ${invalid.join(', ')} ${tobe} invalid!` : '';
   const validMessage = (valid.length) ? `Results for tag${valS} ${valid.join(', ')}` : 'No results';
@@ -23,7 +35,7 @@ const makeResultsHeader = function(valid, invalid) {
   }
   $('#results-header').text(message);
   return true;
-}
+};
 
 
 /**
@@ -42,31 +54,29 @@ const searchForm = function() {
     if (!words[0]) return $('nav form input').val('');
     if ($(document)[0].title !== 'Search Results') {
       const param = $.param({search: words});
-      window.location = `${window.location.origin}/search?${param}`
+      window.location = `${window.location.origin}/search?${param}`;
       //$.ajax(`/search`, { method: 'GET',  data: words })
     }
     $('#list-tips').empty();
     $('#paginator').empty();
     validateInput(words);
-  })
-}
+  });
+};
 
 
 const validateInput = function(words) {
 
   $.ajax(`/search/tags`, { method: 'GET'})
-  .then(tags => {
+    .then(tags => {
 
-    const [ valid, invalid ] = [[], []];
-    for (const word of words) {
-      (tags.includes(word)) ? valid.push(word) : invalid.push(word);
-    }
-
-    const isValid = makeResultsHeader(valid, invalid);
-    if (isValid) searchQuery(valid);
-  })
-
-}
+      const [ valid, invalid ] = [[], []];
+      for (const word of words) {
+        (tags.includes(word)) ? valid.push(word) : invalid.push(word);
+      }
+      const isValid = makeResultsHeader(valid, invalid);
+      if (isValid) searchQuery(valid);
+    });
+};
 
 
 /**
@@ -81,9 +91,8 @@ const searchQuery = function(search) {
   $.ajax(`/search/`, { method: 'POST', data: { search } })
     .then((tips) => {
       paginator(tips);
-    })
-
-}
+    });
+};
 
 
 
@@ -91,7 +100,7 @@ $(document).ready(() => {
   //console.log(words)
   searchForm();
   if ($(document)[0].title === 'Search Results') {
-    const words = decodeURI(document.location.search).split(/.search\[\]=/).slice(1)
+    const words = decodeURI(document.location.search).split(/.search\[\]=/).slice(1);
     validateInput(words);
-  };
+  }
 });
