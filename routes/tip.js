@@ -29,11 +29,20 @@ if (req.session.user_id !== req.body.creator_id) {
     res.render('test-new-tip');
   });
 
+
   // load tips data for an array of Tip IDs
   router.post("/", (req, res) => {
+
+    const userID = '4'; // MUST BE TAKEN FROM COOKIE!
     const { tipsID } = req.body;
     tipHelp.getResourceFullData(tipsID, userID)
       .then((tips) => res.json(tips));
+  });
+
+  // Get list of all Tip IDs in the DB
+  router.get("/all", (req, res) => {
+    tipHelp.getAllTipIDs()
+    .then((tips) => res.json(tips));
   });
 
   /*

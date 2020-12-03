@@ -1,6 +1,6 @@
 const { query } = require('../');
 const querystring = require('querystring');
-const { getTagId } = require('./search-help')
+const { getTagId } = require('./search-help');
 
 
 /**
