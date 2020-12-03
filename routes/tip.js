@@ -48,7 +48,7 @@ module.exports = (db) => {
   */
   router.post("/:tip_id/bookmark", (req, res) => {
 
-    const values = [req.session.user_id, req.params.tip_id];
+    const values = [res.locals.user.id, req.params.tip_id];
 
     tipHelp.setBookmark(values)
       .then(data => res.json({ success: true }))
@@ -61,7 +61,7 @@ module.exports = (db) => {
   */
   router.delete("/:tip_id/bookmark", (req, res) => {
 
-    const values = [req.session.user_id, req.params.tip_id];
+    const values = [res.locals.user.id, req.params.tip_id];
 
     tipHelp.unsetBookmark(values)
       .then(data => res.json({ success: true }))
@@ -76,7 +76,7 @@ module.exports = (db) => {
   */
   router.post("/:tip_id/like", (req, res) => {
 
-    let values = [req.session.user_id, req.params.tip_id];
+    let values = [res.locals.user.id, req.params.tip_id];
 
     tipHelp.setLike(values)
       .then(data => res.json({ success: true }))
@@ -89,7 +89,7 @@ module.exports = (db) => {
   */
   router.delete("/:tip_id/like", (req, res) => {
 
-    let values = [req.session.user_id, req.params.tip_id];
+    let values = [res.locals.user.id, req.params.tip_id];
 
     tipHelp.setLike(values)
       .then(data => res.json({ success: true }))
@@ -104,7 +104,7 @@ module.exports = (db) => {
   */
   router.post('/:tip_id/comment', (req, res) => {
 
-    const values = [req.session.user_id, req.params.tip_id, req.body.comment];
+    const values = [res.locals.user.id, req.params.tip_id, req.body.comment];
 
     tipHelp.addComment(values)
       .then(data => res.json(data))
