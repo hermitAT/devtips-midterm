@@ -123,8 +123,9 @@ const createTipElement = function(tip) {
       content += `<img src="${url}" class="mw-100" alt="${title}">`
   }
 
-  const tagsField = tags.split(' ')
-    .map(tag => `<a href="/search?search%5B%5D=${tag}">&nbsp;&nbsp;#${tag}&nbsp;&nbsp;</a>`).join('')
+  // @TODO this is breaking the index page
+  /* const tagsField = tags.split(' ')
+    .map(tag => `<a href="/search?search%5B%5D=${tag}">&nbsp;&nbsp;#${tag}&nbsp;&nbsp;</a>`).join('') */
 
   return `
   <div class="row no-gutter justify-content-center">
@@ -142,7 +143,7 @@ const createTipElement = function(tip) {
       <div class="card-body" style="min-height: 10em;">
         ${content}
       </div>
-      <mark>${tagsField}</mark>
+      <mark>tagsField goes here (broken)</mark>
     </div>
   </div>
 </div>
