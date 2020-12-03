@@ -37,18 +37,17 @@ const paginator = function(arr, offset = 10) {
 
   const pages = {};
   let page = 1;
-  const lastPage = Math.ceil(arr.length / offset)
+  const lastPage = Math.ceil(arr.length / offset);
   while (page <= lastPage) {
-    pages[page] = arr.slice(offset * (page -1) ,offset * page);
+    pages[page] = arr.slice(offset * (page - 1) ,offset * page);
     page++;
   }
 
   $('#paginator').empty().hide();
   if (pages['2']) drawPaginator(pages);
-  loadTips(pages[1])
+  loadTips(pages[1]);
   //return pages;
-
-}
+};
 
 
 /**
@@ -75,26 +74,11 @@ const loadTips = function(tipsID) {
 const drawPaginator = function(tipsPaged) {
 
   for (const page in tipsPaged) {
-    $('#paginator').append(`<button>${page}</button>`)
+    $('#paginator').append(`<button>${page}</button>`);
     $('#paginator button:last-child').click(() => {
-      loadTips(tipsPaged[page])
-    })
+      loadTips(tipsPaged[page]);
+    });
   }
-
-}
-
-
-/**
- * Replace 'dangerous' characters which could possibly
- * be a part of malicious code with special char HTML codes
- * @param {*} str - untrusted text string to disarm
- */
-const disarm = function(str) {
-
-  let div = document.createElement('div');
-  div.appendChild(document.createTextNode(str));
-  return div.innerHTML;
-
 };
 
 
@@ -104,23 +88,23 @@ const disarm = function(str) {
  * @param {*} tip
  *  */
 const createTipElement = function(tip) {
-  console.log(tip)
+  console.log(tip);
   const { id, likes, dislikes, creator_id, title, data,  description, tags } = tip;
   let type = tip.type;
-  let content = ``
+  let content = ``;
   if (['markdown', 'code'].includes(type)) type = 'text';
   switch (type) {
-    case 'video':
-      content += `<youtube-video controls src="${data}"></youtube-video>`;
-      break;
-    case 'text':
-      content += `<a href="${data}">${data}</a><p>${description}</p>`;
-      break;
-    case 'link':
-      content += `<span>Link: </span><a href="${data}">${data}</a><p>${description}</p>`;
-      break;
-    case 'image':
-      content += `<img src="${data}" class="mw-100" alt="${title}">`
+  case 'video':
+    content += `<youtube-video controls src="${data}"></youtube-video>`;
+    break;
+  case 'text':
+    content += `<a href="${data}">${data}</a><p>${description}</p>`;
+    break;
+  case 'link':
+    content += `<span>Link: </span><a href="${data}">${data}</a><p>${description}</p>`;
+    break;
+  case 'image':
+    content += `<img src="${data}" class="mw-100" alt="${title}">`;
   }
 
   // @TODO this is breaking the index page
@@ -168,11 +152,10 @@ const renderTips = function(tips) {
 const getAllTips = function() {
 
   $.ajax(`/tip/all`, { method: 'GET' })
-  .then(tips => {
-    paginator(tips)
-  })
-
-}
+    .then(tips => {
+      paginator(tips);
+    });
+};
 
 
 $(document).ready(() => {

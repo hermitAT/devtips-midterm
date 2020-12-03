@@ -9,6 +9,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const helpers = require('../db/helpers/user-help.js');
+const user = require('./user');
 
 module.exports = (db) => {
 
@@ -29,7 +30,7 @@ module.exports = (db) => {
   // Simple login form
   router.get('/login', (req, res) => {
     // Check for ID query param
-    let id = req.session.user_id;
+    let id = user.id;
     if (id) {
       res.redirect(`/`);
     }
@@ -40,7 +41,7 @@ module.exports = (db) => {
   * Log user into app given the check of password/email against database, and set req.session.user_id cookie to the user's ID
   * Redirect to the index page upon successful login
   */
-  router.post('/login', (req, res) => {
+  router.post('/login/', (req, res) => {
     const { email, password } = req.body;
     return helpers.login(email, password)
       .then(data => {
@@ -107,8 +108,8 @@ module.exports = (db) => {
     const userDetails = [name, hashPassword, email];
 
     helpers.newUser(userDetails)
-      .then(user => {
-        req.session.user_id = user.id;
+      .then(data => {
+        req.session.user_id = data.id;
         res.json({ user });
       })
       .catch(err => {

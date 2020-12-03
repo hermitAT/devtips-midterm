@@ -33,11 +33,11 @@ module.exports = (db) => {
     INSERT INTO resources (data, title, description, type, creator_id)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING id;
-    `
+    `;
     console.log(req.body);
     const { data, title, description, type } = req.body;
     db.query(queryString, [data, title, description, type, res.locals.user.id])
-      .then(tipData => res.json(tipData.rows[0]) ) // Return id of inserted tip
+      .then(tipData => res.json(tipData.rows[0])) // Return id of inserted tip
       .catch(err => res.status(401).json({err: err})); // Return err JSON on failure
   });
 

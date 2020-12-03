@@ -56,11 +56,10 @@ const getAllTipIDs = function() {
   ORDER BY created_at DESC;
   `;
 
-return query(queryString)
-  .then(data => extract(data.rows, 'id'))
-  .catch(err => console.error('Query error', err.stack));
-
-}
+  return query(queryString)
+    .then(data => extract(data.rows, 'id'))
+    .catch(err => console.error('Query error', err.stack));
+};
 exports.getAllTipIDs = getAllTipIDs;
 
 /**

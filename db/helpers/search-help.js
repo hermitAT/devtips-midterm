@@ -26,7 +26,7 @@ const getTagId = function(tag) {
   WHERE  tag = $1;
   `;
   return query(queryString, [tag])
-  .then(res => res.rows[0] ? res.rows[0].id : undefined);
+    .then(res => res.rows[0] ? res.rows[0].id : undefined);
 };
 exports.getTagId = getTagId;
 
@@ -49,7 +49,7 @@ const searchByTags = function(searchTags) {
       while (code < 97 + res.length) {
         froms.push(`resources_tags ${String.fromCharCode(code)}`);
         wheres.push(`${String.fromCharCode(code)}.tag_id = $${code - 96}`);
-        ands.push((code != 97) ? `${String.fromCharCode(code - 1)}.resource_id = ${String.fromCharCode(code)}.resource_id`: ' ');
+        ands.push((code != 97) ? `${String.fromCharCode(code - 1)}.resource_id = ${String.fromCharCode(code)}.resource_id` : ' ');
         code++;
       }
 
@@ -58,11 +58,10 @@ const searchByTags = function(searchTags) {
       FROM ${froms.join(', ')}
       WHERE ${wheres.join(' AND ')}
       ${ands.join(' AND ')};
-      `
+      `;
       return query(queryString, res)
-      .then(res => extract(res.rows, 'resource_id'))
-    })
-
+        .then(res => extract(res.rows, 'resource_id'))
+    });
 };
 exports.searchByTags = searchByTags;
 
