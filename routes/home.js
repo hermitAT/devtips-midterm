@@ -25,12 +25,27 @@ module.exports = (db) => {
   /** Upload a new tip to DB User ID passed to helper for
    * security check is used to avoid "CURLing from outside" */
   router.post("/", (req, res) => {
-
-    const userID = '4'; // MUST BE TAKEN FROM COOKIE!
-    return homeHelp.createNewTip(req.body.tip, userID)
-      //.then(tipID => tipID)
-      .then(tipID => res.redirect(`/tip/${tipID}`));
-
+    //Check that user is authenticated
+    if (!res.locals.user.id) {
+      return res.status(401)
+        .json({
+          err: {
+            status: 401,
+            message: 'Unauthorized'
+          }
+        });
+    }
+    //Build query and send to database
+    const queryString = `
+    INSERT INTO resources (url, title, description, type, creator_id)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING id;
+    `
+    console.log(req.body);
+    const { url, title, description, type } = req.body;
+    db.query(queryString, [url, title, description, type, res.locals.user.id])
+      .then(tipData => res.json(tipData.rows[0]) ) // Return id of inserted tip
+      .catch(err => res.status(401).json({err: err})); // Return err JSON on failure
   });
 
   return router;

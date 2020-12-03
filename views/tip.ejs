@@ -26,10 +26,10 @@
                 <% } else if (tip.type === 'video') { %>
                   <youtube-video controls src="<%= tip.url %>"></youtube-video>
                 <% } else if (tip.type === 'markdown') { %>
-                  <p><%= tip.description %></p>
+                  <pre><%= tip.description %></pre>
                 <% } else if (tip.type === 'code') { %>
                     <div class="code-block">
-                      <pre><%= JSON.stringify(tip, null, 1) %></pre>
+                      <pre class="code"><%= JSON.stringify(tip, null, 2) %></pre>
                     </div>
                 <% } %>
               </div>
@@ -79,7 +79,7 @@
     <script type="text/javascript" src="../vendor/enlighterjs.min.js"></script>
     <!-- Init Code -->
     <script type="text/javascript">
-        EnlighterJS.init('pre', 'code', {
+        EnlighterJS.init('pre.code', 'code', {
                 language : 'json',
                 theme: 'dracula',
                 indent : 2

@@ -17,13 +17,12 @@ const { getTagId } = require('./search-help')
 const createNewTip = function(tipSerialized, userID) {
   const tip = querystring.parse(decodeURI(tipSerialized).replace(/&amp;/g, '&'))
 
-  if (userID !== tip.creator_id) return false;
-
   // Wrap if 'tags' is just a single value, wrap it in array to aviod
   // falure tags.map inside assignTags function
   if (tip.tags && !Array.isArray(tip.tags)) tip.tags = [tip.tags];
 
-  const { url, title, description, type, creator_id } = tip;
+  const { url, title, description, type, } = tip;
+  const creator_id = userID;
   const queryString = `
   INSERT INTO resources (url, title, description, type, creator_id)
   VALUES ($1, $2, $3, $4, $5)

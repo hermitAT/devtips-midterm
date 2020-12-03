@@ -13,7 +13,7 @@
 
   <body>
     <h1>Search</h1>
-    <form action="/" method="POST">
+    <form action="/" method="POST" class="form-compose">
 
       <label for="title">Title</label>
       <input name="title" id="title"></input>
@@ -27,10 +27,11 @@
 
       <label for="type">type</label>
       <select name="type" id="type">
-        <option value="text">text</option>
+        <option value="link">link</option>
         <option value="image">image</option>
         <option value="video">video</option>
-        <option value="audio">audio</option>
+        <option value="markdown">markdown</option>
+        <option value="code">code</option>
       </select>
       <br>
       <mark></mark>
