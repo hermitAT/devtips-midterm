@@ -15,7 +15,7 @@ const { getTagId } = require('./search-help');
  * @param {*} userID
  */
 const createNewTip = function(tipSerialized, userID) {
-  const tip = querystring.parse(decodeURI(tipSerialized).replace(/&amp;/g, '&'))
+  const tip = querystring.parse(decodeURI(tipSerialized).replace(/&amp;/g, '&'));
 
   // Wrap if 'tags' is just a single value, wrap it in array to aviod
   // falure tags.map inside assignTags function
