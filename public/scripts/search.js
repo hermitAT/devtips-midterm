@@ -15,7 +15,7 @@ const makeResultsHeader = function(valid, invalid) {
   const [tobe, an, s] = (plurIn) ? ['are', '', 's'] : ['is', 'a ', '']
 
   const invalidMessage = (invalid.length) ? `, ${an}tag${s} ${invalid.join(', ')} ${tobe} invalid!` : '';
-  const validMessage = (valid.length) ? `Result${valS} for tag${valS} ${valid.join(', ')}` : 'No results';
+  const validMessage = (valid.length) ? `Results for tag${valS} ${valid.join(', ')}` : 'No results';
   const message = validMessage + invalidMessage;
   if (!valid.length) {
     $('#results-header').text(message);
@@ -33,27 +33,41 @@ const makeResultsHeader = function(valid, invalid) {
  * 4. Compose the search results header
  * 5. Pass valid tags to search query if any
  */
-const searchFormValidateInput = function() {
+const searchForm = function() {
 
-  $('form').on('submit', function(e) {
+  $('nav form').on('submit', function(e) {
     e.preventDefault();
-    const string = disarm($('input').val());
+    const string = disarm($('nav form input').val());
     const words = string.replace(/(#|,)/g, ' ').trim().toLowerCase().split(/[\s]+/);
-    if (!words[0]) return $('input').val('');
+    if (!words[0]) return $('nav form input').val('');
+    if ($(document)[0].title !== 'Search Results') {
+      const param = $.param({search: words});
+      window.location = `${window.location.origin}/search?${param}`
+      //$.ajax(`/search`, { method: 'GET',  data: words })
+    }
     $('#list-tips').empty();
-    $.ajax(`/search/tags`, { method: 'GET'})
-      .then(tags => {
-
-        const [ valid, invalid ] = [[], []];
-        for (const word of words) {
-          (tags.includes(word)) ? valid.push(word) : invalid.push(word);
-        }
-
-        const isValid = makeResultsHeader(valid, invalid);
-        if (isValid) searchQuery(valid);
-      })
+    $('#paginator').empty();
+    validateInput(words);
   })
 }
+
+
+const validateInput = function(words) {
+
+  $.ajax(`/search/tags`, { method: 'GET'})
+  .then(tags => {
+
+    const [ valid, invalid ] = [[], []];
+    for (const word of words) {
+      (tags.includes(word)) ? valid.push(word) : invalid.push(word);
+    }
+
+    const isValid = makeResultsHeader(valid, invalid);
+    if (isValid) searchQuery(valid);
+  })
+
+}
+
 
 /**
  * 1. Function receives an array of valid tags to search for
@@ -66,19 +80,18 @@ const searchFormValidateInput = function() {
 const searchQuery = function(search) {
   $.ajax(`/search/`, { method: 'POST', data: { search } })
     .then((tips) => {
-
-      $('#pager').empty();
-      const tipsPaged = pager(tips);
-      if (tipsPaged['2']) drawPager(tipsPaged);
-      loadTips(tipsPaged[1])
+      paginator(tips);
     })
 
 }
 
+
+
 $(document).ready(() => {
-
-
-  //loadTips([4,5]); // initial testcode, to be replaced
-  //searchFormValidateInput();
-
+  //console.log(words)
+  searchForm();
+  if ($(document)[0].title === 'Search Results') {
+    const words = decodeURI(document.location.search).split(/.search\[\]=/).slice(1)
+    validateInput(words);
+  };
 });

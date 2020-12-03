@@ -7,6 +7,7 @@ const express = require('express');
 const router  = express.Router();
 const searchHelp  = require('../db/helpers/search-help')
 const userID = 4; // There should be UID from cookie
+const querystring = require('querystring');
 
 module.exports = () => {
 
@@ -24,12 +25,10 @@ module.exports = () => {
   });
 
   router.get("/", (req, res) => {
-    // const userId = req.session.user_id;
-    res.render('search');
+    res.render('search')
     // ^^ add { userId } to the render args..
   });
 
-
-
   return router;
+
 };
