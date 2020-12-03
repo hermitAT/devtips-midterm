@@ -62,6 +62,7 @@ $(document).ready(function() {
       });
   });
 
+  /*
   // FILL IN THE .done PART OF THIS TO RENDER THE TIP RETURNED!
   $('#edit-tip').on('click', function(event) {
 
@@ -78,5 +79,6 @@ $(document).ready(function() {
         // fill me in l8r
       });
   });
+  */
 
 });
