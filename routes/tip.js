@@ -4,8 +4,7 @@
  */
 
 const express = require('express');
-const router = express.Router();
-const dbHelp = require('../db/db-helpers');
+const router  = express.Router();
 const tipHelp = require('../db/helpers/tip-help');
 
 /*
@@ -23,16 +22,17 @@ if (req.session.user_id !== req.body.creator_id) {
 }
 
 */
+  module.exports = (db) => {
 
-module.exports = (db) => {
+  // New tip creation
+  router.get("/", (req, res) => {
+    res.render('test-new-tip');
+  });
 
-  /*
-  *
-  *
-  */
+  // load tips data for an array of Tip IDs
   router.post("/", (req, res) => {
     const { tipsID } = req.body;
-    dbHelp.getResourceFullData(tipsID, userID)
+    tipHelp.getResourceFullData(tipsID, userID)
       .then((tips) => res.json(tips));
   });
 
