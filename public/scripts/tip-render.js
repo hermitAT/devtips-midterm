@@ -105,22 +105,22 @@ const disarm = function(str) {
  *  */
 const createTipElement = function(tip) {
   console.log(tip)
-  const { id, likes, dislikes, creator_id, title, url,  description, tags } = tip;
+  const { id, likes, dislikes, creator_id, title, data,  description, tags } = tip;
   let type = tip.type;
   let content = ``
   if (['markdown', 'code'].includes(type)) type = 'text';
   switch (type) {
     case 'video':
-      content += `<youtube-video controls src="${url}"></youtube-video>`;
+      content += `<youtube-video controls src="${data}"></youtube-video>`;
       break;
     case 'text':
-      content += `<a href="${url}">${url}</a><p>${description}</p>`;
+      content += `<a href="${data}">${data}</a><p>${description}</p>`;
       break;
     case 'link':
-      content += `<span>Link: </span><a href="${url}">${url}</a><p>${description}</p>`;
+      content += `<span>Link: </span><a href="${data}">${data}</a><p>${description}</p>`;
       break;
     case 'image':
-      content += `<img src="${url}" class="mw-100" alt="${title}">`
+      content += `<img src="${data}" class="mw-100" alt="${title}">`
   }
 
   // @TODO this is breaking the index page

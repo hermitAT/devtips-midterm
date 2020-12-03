@@ -30,13 +30,13 @@ module.exports = (db) => {
     }
     //Build query and send to database
     const queryString = `
-    INSERT INTO resources (url, title, description, type, creator_id)
+    INSERT INTO resources (data, title, description, type, creator_id)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING id;
     `
     console.log(req.body);
-    const { url, title, description, type } = req.body;
-    db.query(queryString, [url, title, description, type, res.locals.user.id])
+    const { data, title, description, type } = req.body;
+    db.query(queryString, [data, title, description, type, res.locals.user.id])
       .then(tipData => res.json(tipData.rows[0]) ) // Return id of inserted tip
       .catch(err => res.status(401).json({err: err})); // Return err JSON on failure
   });

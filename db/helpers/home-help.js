@@ -21,14 +21,14 @@ const createNewTip = function(tipSerialized, userID) {
   // falure tags.map inside assignTags function
   if (tip.tags && !Array.isArray(tip.tags)) tip.tags = [tip.tags];
 
-  const { url, title, description, type, } = tip;
+  const { data, title, description, type, } = tip;
   const creator_id = userID;
   const queryString = `
-  INSERT INTO resources (url, title, description, type, creator_id)
+  INSERT INTO resources (data, title, description, type, creator_id)
   VALUES ($1, $2, $3, $4, $5)
   RETURNING id;
   `
-  return query(queryString, [ url, title, description, type, creator_id ])
+  return query(queryString, [ data, title, description, type, creator_id ])
   .then(res => {
     if (!tip.tags) return res.rows[0].id;
     return assignTags(res.rows[0].id, tip.tags);

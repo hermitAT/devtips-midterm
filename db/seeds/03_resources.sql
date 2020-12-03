@@ -1,4 +1,4 @@
-INSERT INTO resources (url, title, description, type, creator_id)
+INSERT INTO resources (data, title, description, type, creator_id)
 VALUES
 ('https://www.youtube.com/watch?v=TWEXCYQKyDc', 'Faithful way finds company', 'Keeping your eye on the ball while performing a deep dive on the start-up mentality to derive convergence on cross-platform integration.', 'video', '1'),
 ('https://thumbs.dreamstime.com/b/java-lines-code-website-application-script-language-software-development-vue-routes-js-javascript-markup-163646063.jpg', 'Eager day calls fact', 'Nanotechnology immersion along the information highway will close the loop on focusing solely on the bottom line.', 'image', '25'),
