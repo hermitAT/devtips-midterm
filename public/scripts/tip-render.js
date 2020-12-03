@@ -42,7 +42,11 @@ const paginator = function(arr, offset = 10) {
     pages[page] = arr.slice(offset * (page -1) ,offset * page);
     page++;
   }
-  return pages;
+
+  $('#paginator').empty().hide();
+  if (pages['2']) drawPaginator(pages);
+  loadTips(pages[1])
+  //return pages;
 
 }
 
@@ -68,7 +72,7 @@ const loadTips = function(tipsID) {
  * loading its resource IDs with this button
  * @param {*} tipsPaged
  */
-const drawPager = function(tipsPaged) {
+const drawPaginator = function(tipsPaged) {
 
   for (const page in tipsPaged) {
     $('#paginator').append(`<button>${page}</button>`)
@@ -100,8 +104,8 @@ const disarm = function(str) {
  * @param {*} tip
  *  */
 const createTipElement = function(tip) {
-
-  const { id, likes, dislikes, creator_id, title, url,  description } = tip;
+  console.log(tip)
+  const { id, likes, dislikes, creator_id, title, url,  description, tags } = tip;
   let type = tip.type;
   let content = ``
   if (['markdown', 'code'].includes(type)) type = 'text';
@@ -119,6 +123,9 @@ const createTipElement = function(tip) {
       content += `<img src="${url}" class="mw-100" alt="${title}">`
   }
 
+  const tagsField = tags.split(' ')
+    .map(tag => `<a href="/search?search%5B%5D=${tag}">&nbsp;&nbsp;#${tag}&nbsp;&nbsp;</a>`).join('')
+
   return `
   <div class="row no-gutter justify-content-center">
   <div class="col col-sm-10 col-md-12 col-lg-8 position-relative">
@@ -135,6 +142,7 @@ const createTipElement = function(tip) {
       <div class="card-body" style="min-height: 10em;">
         ${content}
       </div>
+      <mark>${tagsField}</mark>
     </div>
   </div>
 </div>
@@ -151,6 +159,7 @@ const renderTips = function(tips) {
   for (const tip of tips) {
     $('#list-tips').prepend(createTipElement(tip));
   }
+  $('#paginator').show();
 };
 
 
@@ -158,11 +167,7 @@ const getAllTips = function() {
 
   $.ajax(`/tip/all`, { method: 'GET' })
   .then(tips => {
-    console.log('ids loaded')
-    $('#paginator').empty();
-    const tipsPaged = paginator(tips);
-    if (tipsPaged['2']) drawPager(tipsPaged);
-    loadTips(tipsPaged[1])
+    paginator(tips)
   })
 
 }
@@ -170,7 +175,7 @@ const getAllTips = function() {
 
 $(document).ready(() => {
 
-  getAllTips();
+  if ($(document)[0].title === 'Home Page') getAllTips();
   //loadTips([4,5]); // initial testcode, to be replaced
   //searchFormValidateInput();
 
