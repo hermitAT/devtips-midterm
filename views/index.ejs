@@ -57,12 +57,12 @@
             <a href="/user/<%= tip.id %>"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= tip.creator_id %>.svg"></a>
             <div class="tip-icons d-flex flex-column align-items-center">
               <i class="far fa-thumbs-up"></i><span class="like badge badge-dark mb-2">36</span>
-              <i class="fas fa-thumbs-down"></i><span class="dislike badge badge-dark mb-3">34</span>
               <i class="far fa-bookmark"></i>
             </div>
             <div class="card mb-3 shadow-sm">
               <div class="card-header border-0">
                 <a href="/tip/<%= tip.id %>"><%= tip.title %></a>
+                <a id="tip_id" style="display: none"><%= tip.id %></a>
               </div>
               <div class="card-body" style="min-height: 10em;">
                 <% if (tip.type === 'link') { %>
