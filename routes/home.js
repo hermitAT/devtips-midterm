@@ -5,21 +5,14 @@
 
 const express = require('express');
 const router  = express.Router();
-const homeHelp = require('../db/helpers/home-help')
+const homeHelp = require('../db/helpers/home-help');
+const user = require('./user');
 
 
 module.exports = (db) => {
 
   router.get("/", (req, res) => {
-    // const tipsQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id ORDER BY r.created_at LIMIT 30;';
-    // const tips = db.query(tipsQueryString);
-    // Promise.all([tips]).then((result) => {
-    //   const tips = result[0].rows;
-    //   res.render('index', { tips});
-    // });
-
-    const userID = '4'; // MUST BE TAKEN FROM COOKIE!
-    res.render('index', { userID });
+    res.render('index',);
   });
 
   /** Upload a new tip to DB User ID passed to helper for
