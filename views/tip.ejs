@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Home Page</title>
+  <title>DevTips - Tip #<%= tip.id %> </title>
   <%- include('./partials/includes') %>
 </head>
 
@@ -20,16 +20,16 @@
               </div>
               <div class="card-body" style="min-height: 15em;">
                 <% if (tip.type === 'link') { %>
-                  <a href="<%= tip.url %>"><%= tip.description %></a>
+                  <a href="<%= tip.data %>"><%= tip.description %></a>
                 <% } else if (tip.type === 'image') { %>
-                  <img src="<%= tip.url %>" class="mw-100" alt="<%= tip.description %>">
+                  <img src="<%= tip.data %>" class="mw-100" alt="<%= tip.description %>">
                 <% } else if (tip.type === 'video') { %>
-                  <youtube-video controls src="<%= tip.url %>"></youtube-video>
+                  <youtube-video controls src="<%= tip.data %>"></youtube-video>
                 <% } else if (tip.type === 'markdown') { %>
-                  <p><%= tip.description %></p>
+                  <pre><%= tip.description %></pre>
                 <% } else if (tip.type === 'code') { %>
                     <div class="code-block">
-                      <pre><%= JSON.stringify(tip, null, 1) %></pre>
+                      <pre class="code"><%= JSON.stringify(tip, null, 2) %></pre>
                     </div>
                 <% } %>
               </div>
@@ -79,7 +79,7 @@
     <script type="text/javascript" src="../vendor/enlighterjs.min.js"></script>
     <!-- Init Code -->
     <script type="text/javascript">
-        EnlighterJS.init('pre', 'code', {
+        EnlighterJS.init('pre.code', 'code', {
                 language : 'json',
                 theme: 'dracula',
                 indent : 2

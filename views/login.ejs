@@ -11,7 +11,7 @@
 
     <div id="compose-tips" class="container my-4">
       <div class="card bg-white mb-3 shadow-sm">
-        <form class="d-flex justify-content-center" method="GET" action="/user/login/" accept-charset="UTF-8" role="form">
+        <form class="d-flex justify-content-center" method="POST" action="/user/login/" accept-charset="UTF-8" role="form">
           <div class="panel panel-default col-6 p-5">
             <div class="panel-heading">
               <h3 class="panel-title">Login via site</h3>
@@ -19,7 +19,8 @@
             <div class="panel-body">
                 <fieldset>
                   <div class="form-group">
-                    <input class="form-control" placeholder="ID" name="id" type="text">
+                    <input class="form-control" placeholder="anna_green@example.su" name="email" type="email">
+                    <input class="form-control" placeholder="password" name="password" type="password">
                   </div>
                   <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
                 </fieldset>

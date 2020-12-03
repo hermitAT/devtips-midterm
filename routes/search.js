@@ -5,20 +5,30 @@
 
 const express = require('express');
 const router  = express.Router();
-const dbHelp  = require('../db/db-helpers');
-
+const searchHelp  = require('../db/helpers/search-help')
 const userID = 4; // There should be UID from cookie
+const querystring = require('querystring');
 
-module.exports = (db) => {
+module.exports = () => {
 
-  router.get("/", (req, res) => {
-    res.render('search');
+
+  // Get list of currently valid tags
+  router.get("/tags", (req, res) => {
+    searchHelp.getTagsList()
+      .then(tags => res.json(tags))
   });
 
+
   router.post("/", (req, res) => {
-    dbHelp.searchByTags(req.body.search)
-      .then((tips) => res.json(tips));
+    searchHelp.searchByTags(req.body.search)
+    .then((tips) => res.json(tips))
+  });
+
+  router.get("/", (req, res) => {
+    res.render('search')
+    // ^^ add { userId } to the render args..
   });
 
   return router;
+
 };

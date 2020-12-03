@@ -17,18 +17,29 @@ body {
   }
 }
 
-#compose-textarea:focus {
+#compose-textarea-title:focus,
+#compose-textarea-data:focus,
+#compose-textarea-description:focus {
   border: none;
-    overflow: hidden !important;
-    outline: none;
-    webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    resize: none !important;
+  overflow: hidden !important;
+  outline: none;
+  webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  resize: none !important;
 }
 
-textarea, textarea::-webkit-input-placeholder, textarea:-moz-placeholder, textarea::-moz-placeholder, textarea:-ms-input-placeholder, textarea::placeholder {
-  color: red;
+textarea,
+textarea::-webkit-input-placeholder,
+textarea:-moz-placeholder,
+textarea::-moz-placeholder,
+textarea:-ms-input-placeholder,
+textarea::placeholder {
+  color: rgb(206, 206, 206);
+}
+
+.hidden {
+  display: none;
 }
 
 .offset-half {

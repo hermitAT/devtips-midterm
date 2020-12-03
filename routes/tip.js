@@ -4,19 +4,15 @@
  */
 
 const express = require('express');
-const router = express.Router();
-const dbHelp = require('../db/db-helpers');
+const router  = express.Router();
 const tipHelp = require('../db/helpers/tip-help');
-
-const userID = 4;
-// There should be UID from cookie
 
 /*
 
 user authentication logic, to be implemented on all routes requiring it ~~~
 
 if (req.session.user_id === req.body.creator_id) {
-      <route logic & query goes here>
+
 }
 
 OR
@@ -26,17 +22,25 @@ if (req.session.user_id !== req.body.creator_id) {
 }
 
 */
+  module.exports = (db) => {
 
-module.exports = (db) => {
+  // New tip creation
+  router.get("/", (req, res) => {
+    res.render('test-new-tip');
+  });
 
-  /*
-  *
-  *
-  */
+  // load tips data for an array of Tip IDs
   router.post("/", (req, res) => {
+    const userID = '4'; // MUST BE TAKEN FROM COOKIE!
     const { tipsID } = req.body;
-    dbHelp.getResourceFullData(tipsID, userID)
+    tipHelp.getResourceFullData(tipsID, userID)
       .then((tips) => res.json(tips));
+  });
+
+  // Get list of all Tip IDs in the DB
+  router.get("/all", (req, res) => {
+    tipHelp.getAllTipIDs()
+    .then((tips) => res.json(tips));
   });
 
   /*
@@ -53,7 +57,7 @@ module.exports = (db) => {
 
     Promise.all([tip, comments]).then((result) => {
       const tip = result[0].rows[0];
-      const comments= result[1].rows;
+      const comments = result[1].rows;
       res.render('tip', { tip_id, tip, comments});
     });
   });
@@ -63,6 +67,7 @@ module.exports = (db) => {
   * must add user authentication !!!
   */
   router.post("/:tip_id/delete", (req, res) => {
+
     const tipId = [req.params.tip_id];
 
     tipHelp.deleteTip(tipId)
