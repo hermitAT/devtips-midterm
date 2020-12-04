@@ -6,17 +6,13 @@
 const express = require('express');
 const router = express.Router();
 const tipHelp = require('../db/helpers/tip-help');
+const user = require('./user');
 
 module.exports = (db) => {
 
-  // New tip creation
-  router.get("/", (req, res) => {
-    res.render('test-new-tip');
-  });
-
   // load tips data for an array of Tip IDs
   router.post("/", (req, res) => {
-    const userID = res.locals.user.id;
+    const userID = user.id;
     const { tipsID } = req.body;
     tipHelp.getResourceFullData(tipsID, userID)
       .then((tips) => res.json(tips));
@@ -99,7 +95,7 @@ module.exports = (db) => {
 
     let values = [res.locals.user.id, req.body.tip_id];
 
-    tipHelp.setLike(values)
+    tipHelp.unsetLike(values)
       .then(data => res.json({ success: true }))
       .catch(err => res.json({ success: false, error: err }));
   });

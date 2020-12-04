@@ -7,7 +7,7 @@
  */
 const timeAgo = function(date) {
 
-  const datemil = new Date(date)
+  const datemil = new Date(date);
   const timeMap = {
     'year' : 24 * 60 * 60 * 1000 * 365,
     'month' : 24 * 60 * 60 * 1000 * 30.42,
@@ -60,7 +60,7 @@ const loadTips = function(tipsID) {
 
   $.ajax(`/tip`, { method: 'POST', data: { tipsID } })
     .then((tips, user) => {
-      console.log(tips, user)
+      console.log(tips, user);
       renderTips(tips);
     });
 
@@ -90,7 +90,7 @@ const drawPaginator = function(tipsPaged) {
  * @param {*} tip
  *  */
 const createTipElement = function(tip) {
-  const { id, likes, dislikes, creator_id, title, data,  description, tags, created_at, is_liked, is_bookmarked } = tip;
+  const { id, likes, creator_id, title, data,  description, tags, created_at, is_liked, is_bookmarked } = tip;
   let type = tip.type;
   let content = ``;
   if (['markdown', 'code'].includes(type)) type = 'text';
@@ -111,7 +111,7 @@ const createTipElement = function(tip) {
   // @TODO this is breaking the index page
   let tagsField = '&nbsp;';
   if (tags) tagsField = tags.split(' ')
-    .map(tag => `<a href="/search?search%5B%5D=${tag}">&nbsp;&nbsp;#${tag}&nbsp;&nbsp;</a>`).join('')
+    .map(tag => `<a href="/search?search%5B%5D=${tag}">&nbsp;&nbsp;#${tag}&nbsp;&nbsp;</a>`).join('');
 
   const likeState = (is_liked) ? 'fas' : 'far';
   const bookmarkState = (is_bookmarked) ? 'fas' : 'far';
@@ -163,28 +163,13 @@ const getAllTips = function() {
 };
 
 
-const likeAndBookmarkListeners = function () {
+const likeAndBookmarkListeners = function() {
 
   // Like listener
-  $('.fa-thumbs-up').on('click', function (event) {
-    console.log('zzzzz');
+  $('.fa-thumbs-up').on('click', function(event) {
 
-    console.log(event);
     const $likeIcon = $(this);
     const $tip_id = $(this)[0].id.replace(/like-/, '');
-    console.log($tip_id);
-    /*
-    let method, remove, add;
-
-    if ($(this).hasClass('far')) {
-      method = 'POST';
-      remove = 'far';
-      add = 'fas';
-    } else {
-      method = 'DELETE';
-      remove = 'fas';
-      add = 'far';
-    }*/
 
     const [ method, remove, add ] = ($(this).hasClass('far')) ?
       ['POST', 'far', 'fas'] : [ 'DELETE', 'fas', 'far' ];
@@ -194,26 +179,27 @@ const likeAndBookmarkListeners = function () {
       data: { "tip_id": $tip_id },
       dataType: "json"
     })
-      .done(function () {
+      .then(function() {
         $likeIcon.removeClass(`${remove}`).addClass(`${add}`);
       });
   });
 
-
-
   // Bookmark listener
-  $('.far fa-bookmark').on('click', function (event) {
+  $('.fa-bookmark').on('click', function(event) {
 
-    const $bookmarkIcon = $(this);
-    const $tip_id = $(this)[0].id;
+    const $bookIcon = $(this);
+    const $tip_id = $(this)[0].id.replace(/book-/, '');
 
-    $.ajax('/tip/:tip_id/like', {
-      method: 'POST',
+    const [ method, remove, add ] = ($(this).hasClass('far')) ?
+      ['POST', 'far', 'fas'] : [ 'DELETE', 'fas', 'far' ];
+
+    $.ajax(`/tip/${$tip_id}/bookmark`, {
+      method: method,
       data: { "tip_id": $tip_id },
       dataType: "json"
     })
-      .done(function () {
-        $bookmarkIcon.removeClass('far').addClass('fas');
+      .done(function() {
+        $bookIcon.removeClass(`${remove}`).addClass(`${add}`);
       });
   });
 };
