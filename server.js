@@ -63,15 +63,15 @@ app.use(function(req, res, next) {
 });
 
 /**
- * Check the user in res.locals.user against a specified user_id and execute callback on failure
+ * Check the user in res.locals.user against request user id param and execute callback on failure
  * @param {Number} checkedUserID
  * @param {Function} err_callback
  */
-const checkAuth = function(checkedUserID, err_callback) {
-  if (req.session.user in users) {
+const checkAuth = function(req, res, err_callback) {
+  if (res.locals.user.id === req.params.id) {
     return next();
   }
-  return res.redirect('/login?status=notAuthorized');
+  return err_callback();
 };
 
 

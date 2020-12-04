@@ -9,7 +9,6 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const helpers = require('../db/helpers/user-help.js');
-const user = require('./user');
 
 module.exports = (db) => {
 
@@ -30,7 +29,7 @@ module.exports = (db) => {
   // Simple login form
   router.get('/login', (req, res) => {
     // Check for ID query param
-    let id = user.id;
+    let id = res.locals.user.id;
     if (id) {
       res.redirect(`/`);
     }
@@ -66,15 +65,29 @@ module.exports = (db) => {
   });
 
   /*
-  * return the user object for the given ID, and send as JSON to client
-  *
+  * User profile page
   */
   router.get('/:id', (req, res) => {
-    const userID = req.params.id;
+    const user_id = req.params.id; //Get the page user id
 
-    helpers.findUserByID(userID)
-      .then(data => res.render('user', { data }))
-      .catch(err => {
+    //Get tips for this user
+    const tipsQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE r.creator_id = $1;';
+    // @TODO Get num_likes and is_liked, is_bookmarked and display
+
+    // If the req.param.id matches res.user.id get liked posts and bookmarked posts
+    //const likesQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE u.id = $1;';
+    //const bookmarksQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE u.id = $1;';
+    // @TODO Get num_likes and display
+
+    const userQuery = helpers.findUserByID(user_id);
+    const tipsQuery = db.query(tipsQueryString, [user_id]);
+
+    Promise.all([userQuery, tipsQuery])
+      .then(result => {
+        const data = result[0]; //Get user data of the req.param.id
+        const tips = result[1].rows;
+        res.render('user', { data, tips })
+      }).catch(err => {
         res.status(500).json({ error: err.message });
       });
   });

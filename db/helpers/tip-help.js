@@ -18,28 +18,25 @@ const getResourceFullData = function(arr, userID) {
   return Promise.all(arr.map(resource_id => {
     const queryString = `
     SELECT a.*, users.name AS creator_name,
-      (SELECT COUNT (likes.id)
+      (SELECT COUNT(likes.id)
       FROM likes
-      WHERE value = true AND resource_id  = a.id) AS likes,
-      (SELECT COUNT (likes.id)
-      FROM likes
-      WHERE value = false AND resource_id  = a.id) AS dislikes,
-      (SELECT COUNT (comments.id)
+      WHERE resource_id = a.id) AS likes,
+      (SELECT COUNT(comments.id)
       FROM comments
-      WHERE resource_id  = a.id) AS comments_count,
+      WHERE resource_id = a.id) AS comments_count,
       (SELECT STRING_AGG(tag, ' ')
       FROM resources_tags
       JOIN tags ON tag_id = tags.id
-      WHERE resource_id  = a.id) AS tags,
+      WHERE resource_id = a.id) AS tags,
       (SELECT likes.id
       FROM likes
-      WHERE user_id = $2 AND resource_id  = a.id) AS is_liked,
+      WHERE user_id = $2 AND resource_id = a.id) AS is_liked,
       (SELECT bookmarks.id
       FROM bookmarks
-      WHERE user_id = $2 AND resource_id  = a.id) AS is_bookmarked
+      WHERE user_id = $2 AND resource_id = a.id) AS is_bookmarked
     FROM resources a
     JOIN users ON creator_id = users.id
-    WHERE a.id  = $1
+    WHERE a.id = $1
     ORDER BY created_at;
     `;
     return query(queryString, [resource_id, userID])
@@ -52,8 +49,10 @@ exports.getResourceFullData = getResourceFullData;
 const getAllTipIDs = function() {
 
   queryString = `
-  SELECT id FROM resources
-  ORDER BY created_at DESC;
+  SELECT id
+  FROM resources
+  ORDER BY created_at DESC
+  LIMIT 150;
   `;
 
   return query(queryString)
@@ -131,11 +130,15 @@ const setLike = (values) => {
 
   queryString = `
     INSERT INTO likes (user_id, resource_id)
-    VALUES ($1, $2);
+    VALUES ($1, $2)
+    RETURNING (SELECT COUNT(likes.id) FROM likes WHERE resource_id  = $2) AS likes;
     `;
 
   return query(queryString, values)
-    .then(data => console.log("Success! Like added!"))
+    .then(data => {
+      console.log("Success! Like added!");
+      return data.rows[0];
+    })
     .catch(err => console.error('Query error', err.stack));
 };
 exports.setLike = setLike;
@@ -148,7 +151,8 @@ const unsetLike = (values) => {
 
   queryString = `
     DELETE FROM likes
-    WHERE user_id = $1 AND resource_id = $2;
+    WHERE user_id = $1 AND resource_id = $2
+    RETURNING (SELECT COUNT(likes.id) FROM likes WHERE resource_id  = $2) AS likes;
   `;
 
   return query(queryString, values)
@@ -253,3 +257,32 @@ const editComment = (values) => {
     .catch(err => console.error('Query error', err.stack));
 };
 exports.editComment = editComment;
+
+
+/**
+ * Calculate the time difference between the current moment and a given one.
+ * Returns result as n minutes/hours/days/months/years ago,
+ * supports singular form of units.
+ * If difference is less than a minute - returns 'now'
+ * @param {*} date - a Date (in ms) to calculate a difference with
+ */
+const timeAgo = function(date) {
+
+  const timeMap = {
+    'year' : 24 * 60 * 60 * 1000 * 365,
+    'month' : 24 * 60 * 60 * 1000 * 30.42,
+    'day' : 24 * 60 * 60 * 1000,
+    'hour' : 60 * 60 * 1000,
+    'minute' : 60 * 1000,
+    'order': ['year', 'month', 'day', 'hour', 'minute']
+  };
+
+  const delta = Math.floor((Date.now() - date));
+  for (const unit of timeMap.order) {
+    const num = Math.floor(delta / timeMap[unit]);
+    if (num >= 1) return `${num} ${unit}${(num === 1) ? '' : 's'} ago`;
+  }
+  return 'now';
+
+};
+exports.timeAgo = timeAgo;

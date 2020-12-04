@@ -6,7 +6,6 @@
 const express = require('express');
 const router  = express.Router();
 const searchHelp  = require('../db/helpers/search-help');
-const user = require('./user');
 const querystring = require('querystring');
 
 module.exports = () => {

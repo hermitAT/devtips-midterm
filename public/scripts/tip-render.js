@@ -7,6 +7,7 @@
  */
 const timeAgo = function(date) {
 
+  const datemil = new Date(date);
   const timeMap = {
     'year' : 24 * 60 * 60 * 1000 * 365,
     'month' : 24 * 60 * 60 * 1000 * 30.42,
@@ -16,7 +17,7 @@ const timeAgo = function(date) {
     'order': ['year', 'month', 'day', 'hour', 'minute']
   };
 
-  const delta = Math.floor((Date.now() - date));
+  const delta = Math.floor((Date.now() - datemil));
   for (const unit of timeMap.order) {
     const num = Math.floor(delta / timeMap[unit]);
     if (num >= 1) return `${num} ${unit}${(num === 1) ? '' : 's'} ago`;
@@ -58,7 +59,8 @@ const paginator = function(arr, offset = 10) {
 const loadTips = function(tipsID) {
 
   $.ajax(`/tip`, { method: 'POST', data: { tipsID } })
-    .then(tips => {
+    .then((tips, user) => {
+      console.log(tips, user);
       renderTips(tips);
     });
 
@@ -74,7 +76,7 @@ const loadTips = function(tipsID) {
 const drawPaginator = function(tipsPaged) {
 
   for (const page in tipsPaged) {
-    $('#paginator').append(`<button>${page}</button>`);
+    $('#paginator').append(`<button style="width: 2.2em" class="m-1.5 rounded text-center">${page}</button>`);
     $('#paginator button:last-child').click(() => {
       loadTips(tipsPaged[page]);
     });
@@ -88,17 +90,18 @@ const drawPaginator = function(tipsPaged) {
  * @param {*} tip
  *  */
 const createTipElement = function(tip) {
-  console.log(tip);
-  const { id, likes, dislikes, creator_id, title, data,  description, tags } = tip;
+  const { id, likes, creator_id, title, data,  description, tags, created_at, is_liked, is_bookmarked } = tip;
   let type = tip.type;
   let content = ``;
-  if (['markdown', 'code'].includes(type)) type = 'text';
   switch (type) {
   case 'video':
     content += `<youtube-video controls src="${data}"></youtube-video>`;
     break;
-  case 'text':
-    content += `<a href="${data}">${data}</a><p>${description}</p>`;
+  case 'markdown':
+    content += `<pre>${data}</pre><p>${description}</p>`;
+    break;
+  case 'code':
+    content += `<div class="code-block"><pre class="code">${data}</pre></div><p>${description}</p>`;
     break;
   case 'link':
     content += `<span>Link: </span><a href="${data}">${data}</a><p>${description}</p>`;
@@ -110,25 +113,28 @@ const createTipElement = function(tip) {
   // @TODO this is breaking the index page
   let tagsField = '&nbsp;';
   if (tags) tagsField = tags.split(' ')
-    .map(tag => `<a href="/search?search%5B%5D=${tag}">&nbsp;&nbsp;#${tag}&nbsp;&nbsp;</a>`).join('')
+    .map(tag => `<a href="/search?search%5B%5D=${tag}">&nbsp;&nbsp;#${tag}&nbsp;&nbsp;</a>`).join('');
+
+  const likeState = (is_liked) ? 'fas' : 'far';
+  const bookmarkState = (is_bookmarked) ? 'fas' : 'far';
 
   return `
   <div class="row no-gutter justify-content-center">
   <div class="col col-sm-10 col-md-12 col-lg-8 position-relative">
     <a href="/user/${creator_id}"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48" src="https://avatars.dicebear.com/4.4/api/avataaars/${creator_id}.svg"></a>
     <div class="tip-icons d-flex flex-column align-items-center">
-      <i class="far fa-thumbs-up"></i><span class="like badge badge-dark mb-2">${likes}</span>
-      <i class="fas fa-thumbs-down"></i><span class="dislike badge badge-dark mb-3">${dislikes}</span>
-      <i class="far fa-bookmark"></i>
+        <i class="${likeState} fa-thumbs-up" style="cursor: pointer" id="like-${id}"></i><span class="like badge badge-dark mb-2">${likes}</span>
+        <i class="${bookmarkState} fa-bookmark" style="cursor: pointer" id="book-${id}"></i>
     </div>
     <div class="card mb-3 shadow-sm">
-      <div class="card-header border-0">
+      <div class="card-header border-0 d-flex justify-content-between">
         <a href="/tip/${id}">${title}</a>
+        <a>${timeAgo(created_at)}</a>
       </div>
       <div class="card-body" style="min-height: 10em;">
         ${content}
       </div>
-      <mark>${tagsField}</mark>
+      <mark style="background-color: rgba(0,0,0,.03)">${tagsField}</mark>
     </div>
   </div>
 </div>
@@ -143,9 +149,15 @@ const createTipElement = function(tip) {
 const renderTips = function(tips) {
   $('#list-tips').empty();
   for (const tip of tips) {
-    $('#list-tips').prepend(createTipElement(tip));
+    $('#list-tips').append(createTipElement(tip));
   }
+  EnlighterJS.init('pre.code', 'code', {
+    language : 'json',
+    theme: 'dracula',
+    indent : 2
+  });
   $('#paginator').show();
+  likeAndBookmarkListeners();
 };
 
 
@@ -158,8 +170,50 @@ const getAllTips = function() {
 };
 
 
-$(document).ready(() => {
+const likeAndBookmarkListeners = function() {
 
+  // Like listener
+  $('.fa-thumbs-up').on('click', function(event) {
+
+    const $likeIcon = $(this);
+    const $tip_id = $(this)[0].id.replace(/like-/, '');
+
+    const [ method, remove, add ] = ($(this).hasClass('far')) ?
+      ['POST', 'far', 'fas'] : [ 'DELETE', 'fas', 'far' ];
+
+    $.ajax(`/tip/${$tip_id}/like`, {
+      method: method,
+      data: { "tip_id": $tip_id },
+      dataType: "json"
+    })
+      .then(function() {
+        $likeIcon.removeClass(`${remove}`).addClass(`${add}`);
+      });
+  });
+
+  // Bookmark listener
+  $('.fa-bookmark').on('click', function(event) {
+
+    const $bookIcon = $(this);
+    const $tip_id = $(this)[0].id.replace(/book-/, '');
+
+    const [ method, remove, add ] = ($(this).hasClass('far')) ?
+      ['POST', 'far', 'fas'] : [ 'DELETE', 'fas', 'far' ];
+
+    $.ajax(`/tip/${$tip_id}/bookmark`, {
+      method: method,
+      data: { "tip_id": $tip_id },
+      dataType: "json"
+    })
+      .done(function() {
+        $bookIcon.removeClass(`${remove}`).addClass(`${add}`);
+      });
+  });
+};
+
+
+$(document).ready(() => {
+  //if ($(document)[0].title === 'DevTips - Tip') changeTime();
   if ($(document)[0].title === 'Home Page') getAllTips();
   //loadTips([4,5]); // initial testcode, to be replaced
   //searchFormValidateInput();
