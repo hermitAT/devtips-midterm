@@ -65,6 +65,11 @@ textarea::placeholder {
   border-color: hsl(243, 94%, 66%)!important;
 }
 
+#navbar-form-search .form-control:focus {
+  border-color: hsl(243, 100%, 77%);
+  box-shadow: 0 0 0 0.2rem  hsla(243, 81%, 60%, 0.479);
+}
+
 a {
   color: hsl(243, 94%, 66%) !important;
 }
