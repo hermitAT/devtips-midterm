@@ -174,19 +174,21 @@ const likeAndBookmarkListeners = function() {
 
   // Like listener
   $('.fa-thumbs-up').on('click', function(event) {
-
+    const likesCount = Number($(this).next()[0].innerText);
     const $likeIcon = $(this);
     const $tip_id = $(this)[0].id.replace(/like-/, '');
 
-    const [ method, remove, add ] = ($(this).hasClass('far')) ?
-      ['POST', 'far', 'fas'] : [ 'DELETE', 'fas', 'far' ];
+    const [ method, remove, add, likeAdjust ] = ($(this).hasClass('far')) ?
+      [ 'POST', 'far', 'fas', 1 ] : [ 'DELETE', 'fas', 'far', -1 ];
 
+    $(this).next()[0].innerText = likesCount + likeAdjust;
     $.ajax(`/tip/${$tip_id}/like`, {
       method: method,
       data: { "tip_id": $tip_id },
       dataType: "json"
     })
-      .then(function() {
+      .done(function() {
+
         $likeIcon.removeClass(`${remove}`).addClass(`${add}`);
       });
   });
