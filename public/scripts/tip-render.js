@@ -76,7 +76,7 @@ const loadTips = function(tipsID) {
 const drawPaginator = function(tipsPaged) {
 
   for (const page in tipsPaged) {
-    $('#paginator').append(`<button style="width: 2.2em" class="m-1.5 rounded text-center">${page}</button>`);
+    $('#paginator').append(`<button class=" btn btn-primary m-1.5 btn-sm rounded text-center">${page}</button>`);
     $('#paginator button:last-child').click(() => {
       loadTips(tipsPaged[page]);
     });
