@@ -31,7 +31,7 @@ module.exports = (db) => {
     const queryString = `
     INSERT INTO resources (data, title, description, type, creator_id)
     VALUES ($1, $2, $3, $4, $5)
-    RETURNING id;
+    RETURNING *;
     `;
     console.log(req.body);
     const { data, title, description, type } = req.body;

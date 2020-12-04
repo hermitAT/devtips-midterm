@@ -76,7 +76,7 @@ const loadTips = function(tipsID) {
 const drawPaginator = function(tipsPaged) {
 
   for (const page in tipsPaged) {
-    $('#paginator').append(`<button style="width: 2.2em" class="m-1.5 rounded text-center">${page}</button>`);
+    $('#paginator').append(`<button class=" btn btn-primary m-1.5 btn-sm rounded text-center">${page}</button>`);
     $('#paginator button:last-child').click(() => {
       loadTips(tipsPaged[page]);
     });
@@ -95,19 +95,19 @@ const createTipElement = function(tip) {
   let content = ``;
   switch (type) {
   case 'video':
-    content += `<youtube-video controls src="${data}"></youtube-video>`;
+    content += `<div class="video"><youtube-video controls src="${data}"></youtube-video></div>`;
     break;
   case 'markdown':
-    content += `<pre>${data}</pre><p>${description}</p>`;
+    content += `<div class="markdown"><pre>${data}</pre><p>${description}</p></div>`;
     break;
   case 'code':
-    content += `<div class="code-block"><pre class="code">${data}</pre></div><p>${description}</p>`;
+    content += `<div class="code-block"><pre class="code">${data}</pre><p>${description}</p></div>`;
     break;
   case 'link':
-    content += `<span>Link: </span><a href="${data}">${data}</a><p>${description}</p>`;
+    content += `<div class="link"><span>Link: </span><a href="${data}">${data}</a><p>${description}</p></div>`;
     break;
   case 'image':
-    content += `<img src="${data}" class="mw-100" alt="${title}">`;
+    content += `<div class="image"><img src="${data}" class="mw-100" alt="${title}"></div>`;
   }
 
   // @TODO this is breaking the index page
@@ -119,7 +119,7 @@ const createTipElement = function(tip) {
   const bookmarkState = (is_bookmarked) ? 'fas' : 'far';
 
   return `
-  <div class="row no-gutter justify-content-center">
+  <div class="row no-gutter justify-content-center tip index">
   <div class="col col-sm-10 col-md-12 col-lg-8 position-relative">
     <a href="/user/${creator_id}"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48" src="https://avatars.dicebear.com/4.4/api/avataaars/${creator_id}.svg"></a>
     <div class="tip-icons d-flex flex-column align-items-center">

@@ -13,41 +13,69 @@
     <div id="list-tips" class="container my-5">
 
         <div class="row">
-          <div class="col-8 offset-half pl-2">
-            <div class="card shadow-md border-0 rounded-0">
-              <div class="card-header border-0">
+          <div class="col-lg-8 offset-half-lg pl-2 mb-4">
+            <div class="tip resource card shadow-md">
+              <div class="card-header">
                 <%= tip.title %>
               </div>
               <div class="card-body" style="min-height: 15em;">
                 <% if (tip.type === 'link') { %>
-                  <a href="<%= tip.data %>"><%= tip.description %></a>
+                  <div class="link">
+                    <a href="<%= tip.data %>"><%= tip.description || tip.data %></a>
+                  </div>
                 <% } else if (tip.type === 'image') { %>
-                  <img src="<%= tip.data %>" class="mw-100" alt="<%= tip.description %>">
+                  <div class="image">
+                    <img src="<%= tip.data %>" class="mw-100" alt="<%= tip.description %>">
+                  </div>
                 <% } else if (tip.type === 'video') { %>
-                  <youtube-video controls src="<%= tip.data %>"></youtube-video>
+                  <div class="video">
+                    <youtube-video controls src="<%= tip.data %>"></youtube-video>
+                  </div>
                 <% } else if (tip.type === 'markdown') { %>
-                  <pre><%= tip.data %></pre>
-                  <p><%= tip.description %></p>
+                  <div class="markdown">
+                    <pre><%= tip.data %></pre>
+                    <p><%= tip.description %></p>
+                  </div>
                 <% } else if (tip.type === 'code') { %>
                     <div class="code-block"><pre class="code"><%= tip.data %></pre></div><p><%= tip.description %></p>
                 <% } %>
               </div>
             </div>
-            <% for(let comment of comments) { %>
-              <div class="card shadow-sm border-0 rounded-0 comment my-2">
-                <div class="card-body">
-                  <img class="m-4 border rounded-circle shadow-md" width="42" height="42" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= comment.user_id %>.svg">
-                  <a href="/user/<%= comment.user_id %> "><%= comment.name %> </a>
-                  <p class="mb-0"><%= comment.comment %> </p>
-                  <span class="comment-date-created"><%= comment.created_at %> </span>
+            <div class="card shadow-sm comment my-2 mb-4">
+              <form id="form-comment" method="POST" action="/tip/<%= tip.resource_id %>/comment">
+                <div class="card-body p-0">
+                  <div class="status-upload d-flex">
+                    <textarea class="p-3 border-0" style="flex: 1;" name="comment" placeholder="Say whatchu' you gotta say..." ></textarea>
+                  </div>
                 </div>
-              </div>
-              <% } %>
+                <div class="card-footer d-flex justify-content-end">
+                  <button id="form-comment-submit" class="btn btn-success green"><i class="fa fa-share"></i> Share</button>
+                </div>
+              </form>
+            </div>
+            <div id="comment-list" class="container-variable">
+              <% for(let comment of comments) { %>
+                <div class="d-flex flex-row">
+                  <div class="comment-avatar pr-2 py-2">
+                    <a href="/user/<%= comment.user_id %>"><img class="border bg-white rounded-circle shadow-md" width="72" height="72" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= comment.user_id %>.svg"></a>
+                  </div>
+                  <div class="card shadow-sm comment my-2 ml-1" style="flex: 1;">
+                    <div class="card-header">
+                      <a href="/user/<%= comment.user_id %>"><%= comment.name %></a>
+                      <span class="comment-date-created"><%= comment.created_at %> </span>
+                    </div>
+                    <div class="card-body">
+                      <p class="mb-0"><%= comment.comment %> </p>
+                    </div>
+                  </div>
+                </div>
+                <% } %>
+            </div>
 
           </div>
-          <div class="col-3">
-            <div class="card rounded-0 border-0 shadow-md">
-              <div class="card-header border-0"></div>
+          <div class="col-lg-3">
+            <div class="card shadow-md">
+              <div class="card-header">Creator Profile</div>
               <a href="/user/<%= tip.creator_id %> "><img class="m-4 border rounded-circle shadow-md" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= tip.creator_id %>.svg"></a>
               <div id="profile-info" class="d-flex flex-column align-items-center mb-4">
                 <a href="/user/<%= tip.creator_id %> "><h5 id="profile-name"><%= tip.name %></h5></a>

@@ -65,6 +65,11 @@ textarea::placeholder {
   border-color: hsl(243, 94%, 66%)!important;
 }
 
+#navbar-form-search .form-control:focus {
+  border-color: hsl(243, 100%, 77%);
+  box-shadow: 0 0 0 0.2rem  hsla(243, 81%, 60%, 0.479);
+}
+
 a {
   color: hsl(243, 94%, 66%) !important;
 }
@@ -77,6 +82,15 @@ a {
   color: #fff !important;
   background-color: hsl(243, 94%, 66%) !important;
 }
+
+#compose-tips {
+  .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: hsl(243, 94%, 66%) !important;
+    background-color:#f4f5ff !important;
+    border-radius: 0;
+  }
+}
+
 
 .btn-primary {
   color: #fff;
@@ -92,11 +106,33 @@ a {
   margin: 0.5em;
 }
 
+#navbar-logout {
+  color: #4affb9 !important;
+  border-color: #4affb9 !important;
+}
+
+#navbar-logout:hover {
+  color: black !important;
+  background-color: #4affb9 !important;
+}
+
 .tip-avatar {
   position: absolute;
   top: -22px;
   right: -69px;
 }
+
+.tip.user .tip-avatar {
+  right: -85px;
+}
+
+.tip.user .tip-icons {
+  right: -46px;
+  top: 62px;
+  left: auto;
+}
+
+
 
 .tip-icons {
   position: absolute;
@@ -121,4 +157,27 @@ a {
   background-color: #515a63!important;
   border: 0;
   color: white;
+}
+
+div.tip div.card-body {
+  padding: 0;
+}
+
+div.tip div.card-body > :not(.code-block):not(.video):not(.image) {
+  padding: 1.25em;
+}
+
+div.tip div.video > * {
+  width: 100%;
+  object-fit: fill;
+}
+
+div.tip div.image img {
+  object-fit: cover;
+  width: 100%;
+}
+
+.comment-date-created {
+  font-size: 0.75em;
+  float:right;
 }
