@@ -13,7 +13,7 @@
     <div id="list-tips" class="container my-5">
 
         <div class="row">
-          <div class="col-3 offset-half">
+          <div class="col-lg-3 offset-half">
             <div class="card shadow-sm">
               <div class="card-header">
                 <span id="profile-name">Profile</span>
@@ -30,7 +30,7 @@
               </div>
             </div>
           </div>
-          <div class="col-8 pl-3">
+          <div class="col-lg-8 pl-3">
             <% if (data.id === user.id) { %>
             <ul class="nav nav-pills nav-usertabs">
               <li class="nav-item">
@@ -40,21 +40,52 @@
                 <a class="nav-link" href="#">Liked</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Disliked</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Saved</a>
+                <a class="nav-link" href="#">Bookmarked</a>
               </li>
             </ul>
           <% } %>
-            <div class="card shadow-sm">
-              <div class="card-header">
-                xxx
+
+            <% for (let tip of tips) { %>
+            <div class="tip user position-relative">
+              <a href="/user/14"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48"
+                  src="https://avatars.dicebear.com/4.4/api/avataaars/14.svg"></a>
+              <div class="tip-icons d-flex flex-column align-items-center">
+                <i class="far fa-thumbs-up" style="cursor: pointer" id="like-510"></i><span
+                  class="like badge badge-dark mb-2"><%= tip.num_likes %> </span>
+                <i class="far fa-bookmark" style="cursor: pointer" id="book-510"></i>
               </div>
-              <div class="card-body" style="min-height: 15em;">
-                xxx
+              <div class="card shadow-md mb-3">
+                <div class="card-header">
+                  <a href="/tip/<%= tip.resource_id %> "><%= tip.title %></a>
+                </div>
+                <div class="card-body" style="min-height: 15em;">
+                  <% if (tip.type === 'link') { %>
+                  <div class="link">
+                    <a href="<%= tip.data %>"><%= tip.description %></a>
+                  </div>
+                  <% } else if (tip.type === 'image') { %>
+                  <div class="image">
+                    <img src="<%= tip.data %>" class="mw-100" alt="<%= tip.description %>">
+                  </div>
+                  <% } else if (tip.type === 'video') { %>
+                  <div class="video">
+                    <youtube-video controls src="<%= tip.data %>"></youtube-video>
+                  </div>
+                  <% } else if (tip.type === 'markdown') { %>
+                  <div class="markdown">
+                    <pre><%= tip.data %></pre>
+                    <p><%= tip.description %></p>
+                  </div>
+                  <% } else if (tip.type === 'code') { %>
+                  <div class="code-block">
+                    <pre class="code"><%= tip.data %></pre>
+                  </div>
+                  <p><%= tip.description %></p>
+                  <% } %>
+                </div>
               </div>
             </div>
+          <% } %>
           </div>
         </div>
 
@@ -69,6 +100,9 @@
       <p>© Devtips 2020</p>
     </div>
   </footer>
+
+  <%- include('./partials/code-render') %>
+
 </body>
 
 </html>
