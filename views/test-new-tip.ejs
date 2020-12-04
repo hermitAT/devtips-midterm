@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Home Page</title>
+
+    <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+    <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+    <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+
+    <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+    <script type="text/javascript" src="/scripts/add-new-tip.js"></script>
+  </head>
+
+  <body>
+    <h1>Search</h1>
+    <form action="/" method="POST" class="form-compose">
+
+      <label for="title">Title</label>
+      <input name="title" id="title"></input>
+
+      <label for="description">Description</label>
+      <textarea name="description" id="description"></textarea>
+
+
+      <label for="data">data</label>
+      <input name="data" id="data"></input>
+
+      <label for="type">type</label>
+      <select name="type" id="type">
+        <option value="link">link</option>
+        <option value="image">image</option>
+        <option value="video">video</option>
+        <option value="markdown">markdown</option>
+        <option value="code">code</option>
+      </select>
+      <br>
+      <mark></mark>
+      <br>
+      <button type="submit">Create Tip</button>
+    </form>
+
+    <h3 id="results-header"></h3>
+    <section id="tip-feed"></section>
+    <section id="pager"></section>
+
+  </body>
+</html>

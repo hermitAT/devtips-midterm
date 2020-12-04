@@ -29,9 +29,9 @@ module.exports = (db) => {
   // Simple login form
   router.get('/login', (req, res) => {
     // Check for ID query param
-    let id = req.query.id;
+    let id = res.locals.user.id;
     if (id) {
-      res.redirect(`/user/login/${id}`)
+      res.redirect(`/`);
     }
     res.render('login');
   });
@@ -40,7 +40,7 @@ module.exports = (db) => {
   * Log user into app given the check of password/email against database, and set req.session.user_id cookie to the user's ID
   * Redirect to the index page upon successful login
   */
-  router.post('/login', (req, res) => {
+  router.post('/login/', (req, res) => {
     const { email, password } = req.body;
     return helpers.login(email, password)
       .then(data => {
@@ -65,24 +65,29 @@ module.exports = (db) => {
   });
 
   /*
-  * Given a simple input, log a user into the system and set their user_id cookie to the parameter ID
-  *
-  */
-  router.get('/login/:id', (req, res) => {
-    req.session.user_id = req.params.id;
-    res.redirect('/');
-  });
-
-  /*
-  * return the user object for the given ID, and send as JSON to client
-  *
+  * User profile page
   */
   router.get('/:id', (req, res) => {
-    const userID = req.params.id;
+    const user_id = req.params.id; //Get the page user id
 
-    helpers.findUserByID(userID)
-      .then(data => res.render('user', { data }))
-      .catch(err => {
+    //Get tips for this user
+    const tipsQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE r.creator_id = $1;';
+    // @TODO Get num_likes and is_liked, is_bookmarked and display
+
+    // If the req.param.id matches res.user.id get liked posts and bookmarked posts
+    //const likesQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE u.id = $1;';
+    //const bookmarksQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE u.id = $1;';
+    // @TODO Get num_likes and display
+
+    const userQuery = helpers.findUserByID(user_id);
+    const tipsQuery = db.query(tipsQueryString, [user_id]);
+
+    Promise.all([userQuery, tipsQuery])
+      .then(result => {
+        const data = result[0]; //Get user data of the req.param.id
+        const tips = result[1].rows;
+        res.render('user', { data, tips })
+      }).catch(err => {
         res.status(500).json({ error: err.message });
       });
   });
@@ -116,8 +121,8 @@ module.exports = (db) => {
     const userDetails = [name, hashPassword, email];
 
     helpers.newUser(userDetails)
-      .then(user => {
-        req.session.user_id = user.id;
+      .then(data => {
+        req.session.user_id = data.id;
         res.json({ user });
       })
       .catch(err => {

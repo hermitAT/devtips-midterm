@@ -17,18 +17,29 @@ body {
   }
 }
 
-#compose-textarea:focus {
+#compose-textarea-title:focus,
+#compose-textarea-data:focus,
+#compose-textarea-description:focus {
   border: none;
-    overflow: hidden !important;
-    outline: none;
-    webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    resize: none !important;
+  overflow: hidden !important;
+  outline: none;
+  webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  resize: none !important;
 }
 
-textarea, textarea::-webkit-input-placeholder, textarea:-moz-placeholder, textarea::-moz-placeholder, textarea:-ms-input-placeholder, textarea::placeholder {
-  color: red;
+textarea,
+textarea::-webkit-input-placeholder,
+textarea:-moz-placeholder,
+textarea::-moz-placeholder,
+textarea:-ms-input-placeholder,
+textarea::placeholder {
+  color: rgb(206, 206, 206);
+}
+
+.hidden {
+  display: none;
 }
 
 .offset-half {
@@ -43,23 +54,34 @@ textarea, textarea::-webkit-input-placeholder, textarea:-moz-placeholder, textar
   background-color:hsl(243, 94%, 66%)!important;
 }
 
+.btn-outline-primary {
+  color: hsl(243, 94%, 66%)!important;
+  border-color: hsl(243, 94%, 66%)!important;
+}
+
+.btn-outline-primary:hover {
+  color: #fff !important;
+  background-color: hsl(243, 94%, 66%)!important;
+  border-color: hsl(243, 94%, 66%)!important;
+}
+
 a {
-  color: hsl(243, 94%, 66%);
+  color: hsl(243, 94%, 66%) !important;
 }
 
 .text-primary {
-  color: hsl(243, 94%, 66%);
+  color: hsl(243, 94%, 66%) !important;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-  color: #fff;
-  background-color: hsl(243, 94%, 66%);
+  color: #fff !important;
+  background-color: hsl(243, 94%, 66%) !important;
 }
 
 .btn-primary {
   color: #fff;
-  background-color: hsl(243, 94%, 66%);
-  border-color: hsl(243, 94%, 66%);
+  background-color: hsl(243, 94%, 66%) !important;
+  border-color: hsl(243, 94%, 66%) !important;
 }
 
 .nav.nav-social li {
@@ -68,4 +90,35 @@ a {
 
 .nav.nav-usertabs li {
   margin: 0.5em;
+}
+
+.tip-avatar {
+  position: absolute;
+  top: -22px;
+  right: -69px;
+}
+
+.tip-icons {
+  position: absolute;
+  left: -23px;
+  top: 12px;
+  color: hsl(0, 0%, 27%);
+  i {
+    padding: 0.5rem;
+    padding-bottom: 0.75rem;
+  }
+  .badge {
+    font-size: 0.70em;
+    font-weight: normal;
+    background-color: hsl(158, 74%, 55%);
+  }
+  .badge.dislike {
+    background-color: rgb(255, 95, 95);
+  }
+}
+
+#navbar-form-search input {
+  background-color: #515a63!important;
+  border: 0;
+  color: white;
 }

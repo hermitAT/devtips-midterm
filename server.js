@@ -32,7 +32,8 @@ app.use(cookieSession({
 app.use(morgan('dev'));
 
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded({ extended: true }) );
 app.use("/styles", sass({
   src: __dirname + "/styles",
   dest: __dirname + "/public/styles",
@@ -42,12 +43,15 @@ app.use("/styles", sass({
 app.use(express.static("public"));
 
 // --------------------------------
-// Custom Middleware
+// Authentication Middleware
 // --------------------------------
 
+/**
+ * Gets user credentials from session cookie user_id and stores them
+ * in res.locals.user which is available is subsequent routes and templates
+ */
 app.use(function(req, res, next) {
   const userhelper = require('./db/helpers/user-help');
-  //res.locals.user = await userhelper.findUserByID(req.session.user_id) || {}; // Empty user object if no user
   userhelper.findUserByID(req.session.user_id)
   .then(data => {
     res.locals.user = data || {};
@@ -57,6 +61,19 @@ app.use(function(req, res, next) {
     next(err);
   });
 });
+
+/**
+ * Check the user in res.locals.user against request user id param and execute callback on failure
+ * @param {Number} checkedUserID
+ * @param {Function} err_callback
+ */
+const checkAuth = function(req, res, err_callback) {
+  if (res.locals.user.id === req.params.id) {
+    return next();
+  }
+  return err_callback();
+};
+
 
 // Separated Routes for each Resource
 // Note: Feel free to replace the example routes below with your own

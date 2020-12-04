@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Home Page</title>
+    <%- include('./partials/includes') %>
+    <!-- Local Includes -->
+    <script type="text/javascript" src="/scripts/tip-render.js"></script>
+  </head>
+
+  <body>
+    <%- include('./partials/navbar') %>
+
+    <h1>Search</h1>
+    <form action="/search/" method="POST">
+      <input name="search"></input>
+      <button type="submit">Search</button>
+      <mark></mark>
+    </form>
+    <h3 id="results-header"></h3>
+    <section id="tip-feed"></section>
+    <section id="pager"></section>
+
+  </body>
+</html>

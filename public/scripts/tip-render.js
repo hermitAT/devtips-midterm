@@ -7,6 +7,7 @@
  */
 const timeAgo = function(date) {
 
+  const datemil = new Date(date);
   const timeMap = {
     'year' : 24 * 60 * 60 * 1000 * 365,
     'month' : 24 * 60 * 60 * 1000 * 30.42,
@@ -16,7 +17,7 @@ const timeAgo = function(date) {
     'order': ['year', 'month', 'day', 'hour', 'minute']
   };
 
-  const delta = Math.floor((Date.now() - date));
+  const delta = Math.floor((Date.now() - datemil));
   for (const unit of timeMap.order) {
     const num = Math.floor(delta / timeMap[unit]);
     if (num >= 1) return `${num} ${unit}${(num === 1) ? '' : 's'} ago`;
@@ -33,18 +34,21 @@ const timeAgo = function(date) {
  * @param {*} arr
  * @param {*} offset
  */
-const pager = function(arr, offset = 10) {
+const paginator = function(arr, offset = 10) {
 
   const pages = {};
   let page = 1;
-  const lastPage = Math.ceil(arr.length / offset)
+  const lastPage = Math.ceil(arr.length / offset);
   while (page <= lastPage) {
-    pages[page] = arr.slice(offset * (page -1) ,offset * page);
+    pages[page] = arr.slice(offset * (page - 1) ,offset * page);
     page++;
   }
-  return pages;
 
-}
+  $('#paginator').empty().hide();
+  if (pages['2']) drawPaginator(pages);
+  loadTips(pages[1]);
+  //return pages;
+};
 
 
 /**
@@ -54,36 +58,13 @@ const pager = function(arr, offset = 10) {
  */
 const loadTips = function(tipsID) {
 
-  $.ajax(`/tips`, { method: 'POST', data: { tipsID } })
-    .then(tips => {
-      console.log(tips)
+  $.ajax(`/tip`, { method: 'POST', data: { tipsID } })
+    .then((tips, user) => {
+      console.log(tips, user);
       renderTips(tips);
     });
 
 };
-
-/**
- * 1. Disable standard behaviour for the search form element
- * 2. Take its content and send it to /search/ route with POST method
- * 3. Receive an array of Resource IDs which fit search parameters
- * 4. Clear pager element (buttons) and split the array to pages
- * 5. If there are more than 1 page - draw pager buttons
- * 6. Load the 1st page of results
- */
-const searchForm = function() {
-
-  $('form').on('submit', function(e) {
-    e.preventDefault();
-    const search = $(this).serialize();
-    $.ajax(`/search/`, { method: 'POST', data: search })
-      .then((tips) => {
-        $('#pager').empty();
-        const tipsPaged = pager(tips);
-        if (tipsPaged['2']) drawPager(tipsPaged);
-        loadTips(tipsPaged[1])
-      })
-  })
-}
 
 
 /**
@@ -92,16 +73,15 @@ const searchForm = function() {
  * loading its resource IDs with this button
  * @param {*} tipsPaged
  */
-const drawPager = function(tipsPaged) {
+const drawPaginator = function(tipsPaged) {
 
   for (const page in tipsPaged) {
-    $('#pager').append(`<button>${page}</button>`)
-    $('#pager button:last-child').click(() => {
-      loadTips(tipsPaged[page])
-    })
+    $('#paginator').append(`<button style="width: 2.2em" class="m-1.5 rounded text-center">${page}</button>`);
+    $('#paginator button:last-child').click(() => {
+      loadTips(tipsPaged[page]);
+    });
   }
-
-}
+};
 
 
 /**
@@ -110,13 +90,54 @@ const drawPager = function(tipsPaged) {
  * @param {*} tip
  *  */
 const createTipElement = function(tip) {
+  const { id, likes, creator_id, title, data,  description, tags, created_at, is_liked, is_bookmarked } = tip;
+  let type = tip.type;
+  let content = ``;
+  switch (type) {
+  case 'video':
+    content += `<youtube-video controls src="${data}"></youtube-video>`;
+    break;
+  case 'markdown':
+    content += `<pre>${data}</pre><p>${description}</p>`;
+    break;
+  case 'code':
+    content += `<div class="code-block"><pre class="code">${data}</pre></div><p>${description}</p>`;
+    break;
+  case 'link':
+    content += `<span>Link: </span><a href="${data}">${data}</a><p>${description}</p>`;
+    break;
+  case 'image':
+    content += `<img src="${data}" class="mw-100" alt="${title}">`;
+  }
 
-  const { user, content } = tip;
+  // @TODO this is breaking the index page
+  let tagsField = '&nbsp;';
+  if (tags) tagsField = tags.split(' ')
+    .map(tag => `<a href="/search?search%5B%5D=${tag}">&nbsp;&nbsp;#${tag}&nbsp;&nbsp;</a>`).join('');
+
+  const likeState = (is_liked) ? 'fas' : 'far';
+  const bookmarkState = (is_bookmarked) ? 'fas' : 'far';
 
   return `
-    <article>
-      <div>${tip.title} likes: ${tip.likes} created: ${timeAgo(tip.created_at)}</div>
-    </article>
+  <div class="row no-gutter justify-content-center">
+  <div class="col col-sm-10 col-md-12 col-lg-8 position-relative">
+    <a href="/user/${creator_id}"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48" src="https://avatars.dicebear.com/4.4/api/avataaars/${creator_id}.svg"></a>
+    <div class="tip-icons d-flex flex-column align-items-center">
+        <i class="${likeState} fa-thumbs-up" style="cursor: pointer" id="like-${id}"></i><span class="like badge badge-dark mb-2">${likes}</span>
+        <i class="${bookmarkState} fa-bookmark" style="cursor: pointer" id="book-${id}"></i>
+    </div>
+    <div class="card mb-3 shadow-sm">
+      <div class="card-header border-0 d-flex justify-content-between">
+        <a href="/tip/${id}">${title}</a>
+        <a>${timeAgo(created_at)}</a>
+      </div>
+      <div class="card-body" style="min-height: 10em;">
+        ${content}
+      </div>
+      <mark style="background-color: rgba(0,0,0,.03)">${tagsField}</mark>
+    </div>
+  </div>
+</div>
   `;
 };
 
@@ -126,17 +147,75 @@ const createTipElement = function(tip) {
  * @param {*} tweets - array of objects
  */
 const renderTips = function(tips) {
-  $('#tip-feed').empty()
+  $('#list-tips').empty();
   for (const tip of tips) {
-    $('#tip-feed').prepend(createTipElement(tip));
+    $('#list-tips').append(createTipElement(tip));
   }
+  EnlighterJS.init('pre.code', 'code', {
+    language : 'json',
+    theme: 'dracula',
+    indent : 2
+  });
+  $('#paginator').show();
+  likeAndBookmarkListeners();
+};
+
+
+const getAllTips = function() {
+
+  $.ajax(`/tip/all`, { method: 'GET' })
+    .then(tips => {
+      paginator(tips);
+    });
+};
+
+
+const likeAndBookmarkListeners = function() {
+
+  // Like listener
+  $('.fa-thumbs-up').on('click', function(event) {
+
+    const $likeIcon = $(this);
+    const $tip_id = $(this)[0].id.replace(/like-/, '');
+
+    const [ method, remove, add ] = ($(this).hasClass('far')) ?
+      ['POST', 'far', 'fas'] : [ 'DELETE', 'fas', 'far' ];
+
+    $.ajax(`/tip/${$tip_id}/like`, {
+      method: method,
+      data: { "tip_id": $tip_id },
+      dataType: "json"
+    })
+      .then(function() {
+        $likeIcon.removeClass(`${remove}`).addClass(`${add}`);
+      });
+  });
+
+  // Bookmark listener
+  $('.fa-bookmark').on('click', function(event) {
+
+    const $bookIcon = $(this);
+    const $tip_id = $(this)[0].id.replace(/book-/, '');
+
+    const [ method, remove, add ] = ($(this).hasClass('far')) ?
+      ['POST', 'far', 'fas'] : [ 'DELETE', 'fas', 'far' ];
+
+    $.ajax(`/tip/${$tip_id}/bookmark`, {
+      method: method,
+      data: { "tip_id": $tip_id },
+      dataType: "json"
+    })
+      .done(function() {
+        $bookIcon.removeClass(`${remove}`).addClass(`${add}`);
+      });
+  });
 };
 
 
 $(document).ready(() => {
-
-
-  loadTips([4,5]); // initial testcode, to be replaced
-  searchForm();
+  //if ($(document)[0].title === 'DevTips - Tip') changeTime();
+  if ($(document)[0].title === 'Home Page') getAllTips();
+  //loadTips([4,5]); // initial testcode, to be replaced
+  //searchFormValidateInput();
 
 });

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Home Page</title>
+  <title>DevTips - Tip #<%= tip.id %> </title>
   <%- include('./partials/includes') %>
 </head>
 
@@ -20,17 +20,16 @@
               </div>
               <div class="card-body" style="min-height: 15em;">
                 <% if (tip.type === 'link') { %>
-                  <a href="<%= tip.url %>"><%= tip.description %></a>
+                  <a href="<%= tip.data %>"><%= tip.description %></a>
                 <% } else if (tip.type === 'image') { %>
-                  <img src="<%= tip.url %>" class="mw-100" alt="<%= tip.description %>">
+                  <img src="<%= tip.data %>" class="mw-100" alt="<%= tip.description %>">
                 <% } else if (tip.type === 'video') { %>
-                  <youtube-video controls src="<%= tip.url %>"></youtube-video>
+                  <youtube-video controls src="<%= tip.data %>"></youtube-video>
                 <% } else if (tip.type === 'markdown') { %>
+                  <pre><%= tip.data %></pre>
                   <p><%= tip.description %></p>
                 <% } else if (tip.type === 'code') { %>
-                    <div class="code-block">
-                      <pre><%= JSON.stringify(tip, null, 1) %></pre>
-                    </div>
+                    <div class="code-block"><pre class="code"><%= tip.data %></pre></div><p><%= tip.description %></p>
                 <% } %>
               </div>
             </div>
@@ -54,9 +53,9 @@
                 <a href="/user/<%= tip.creator_id %> "><h5 id="profile-name"><%= tip.name %></h5></a>
                 <p class="mb-0">Freelance Web Developer</p>
                 <ul class="follow-us nav nav-social">
-                  <li><a href="#"><i class="fa fa-lg fa-facebook" aria-hidden="true"></i></a></li>
-                  <li><a href="#"><i class="fa fa-lg fa-twitter" aria-hidden="true"></i></a></li>
-                  <li><a href="#"><i class="fa fa-lg fa-linkedin" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fab fa-lg fa-facebook-f" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fab fa-lg fa-twitter" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fab fa-lg fa-linkedin" aria-hidden="true"></i></a></li>
                 </ul>
               </div>
             </div>
@@ -75,16 +74,7 @@
     </div>
   </footer>
 
-    <!-- EnlighterJS -->
-    <script type="text/javascript" src="../vendor/enlighterjs.min.js"></script>
-    <!-- Init Code -->
-    <script type="text/javascript">
-        EnlighterJS.init('pre', 'code', {
-                language : 'json',
-                theme: 'dracula',
-                indent : 2
-        });
-    </script>
+  <%- include('./partials/code-render') %>
 
 </body>
 

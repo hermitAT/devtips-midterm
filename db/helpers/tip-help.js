@@ -1,4 +1,84 @@
-const { query } = require('../index');
+
+const { query, extract } = require('../');
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ get resource/comments helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * Function receives an array of resource IDs and User ID
+ * (may be skipped, user-specific queries will just return null)
+ * Returns all fields from resources table
+ * related to each resource with their creator names,
+ * likes/dislikes, tags related to resource, comments count
+ * and user-specific information whether
+ * they liked and/or bookmarked a resource
+ * @param {*} [resource_id1,...]
+ */
+const getResourceFullData = function(arr, userID) {
+
+  return Promise.all(arr.map(resource_id => {
+    const queryString = `
+    SELECT a.*, users.name AS creator_name,
+      (SELECT COUNT(likes.id)
+      FROM likes
+      WHERE resource_id = a.id) AS likes,
+      (SELECT COUNT(comments.id)
+      FROM comments
+      WHERE resource_id = a.id) AS comments_count,
+      (SELECT STRING_AGG(tag, ' ')
+      FROM resources_tags
+      JOIN tags ON tag_id = tags.id
+      WHERE resource_id = a.id) AS tags,
+      (SELECT likes.id
+      FROM likes
+      WHERE user_id = $2 AND resource_id = a.id) AS is_liked,
+      (SELECT bookmarks.id
+      FROM bookmarks
+      WHERE user_id = $2 AND resource_id = a.id) AS is_bookmarked
+    FROM resources a
+    JOIN users ON creator_id = users.id
+    WHERE a.id = $1
+    ORDER BY created_at;
+    `;
+    return query(queryString, [resource_id, userID])
+      .then(res => res.rows[0]);
+  }));
+};
+exports.getResourceFullData = getResourceFullData;
+
+
+const getAllTipIDs = function() {
+
+  queryString = `
+  SELECT id
+  FROM resources
+  ORDER BY created_at DESC
+  LIMIT 150;
+  `;
+
+  return query(queryString)
+    .then(data => extract(data.rows, 'id'))
+    .catch(err => console.error('Query error', err.stack));
+};
+exports.getAllTipIDs = getAllTipIDs;
+
+/**
+ * Returns count of comments the resource has (just count!)
+ * for a specific post
+ * @param {*} resource_id
+ */
+const getResourceComments = function(arr) {
+
+  return Promise.all(arr.map(resource_id => {
+    const queryString = `
+      SELECT user_id, created_at, edited_at, comment
+      FROM comments
+      WHERE resource_id = $1;
+    `;
+    return query(queryString, [resource_id])
+      .then(res => res.rows[0].count);
+  }));
+};
+exports.getResourceComments = getResourceComments;
 
 let queryString;
 
@@ -13,7 +93,7 @@ const editTip = (values) => {
   queryString = `
     UPDATE resources
     SET title = $1, description = $2, edited_at = Now()
-    WHERE id = $3
+    WHERE id = $3 AND creator_id = $4
     RETURNING *;
     `;
 
@@ -31,7 +111,7 @@ const deleteTip = (values) => {
 
   queryString = `
     DELETE FROM resources
-    WHERE id = $1;
+    WHERE id = $1 AND creator_id = $2;
   `;
 
   return query(queryString, values)
@@ -49,34 +129,19 @@ exports.deleteTip = deleteTip;
 const setLike = (values) => {
 
   queryString = `
-    INSERT INTO likes (user_id, resource_id, value)
-    VALUES ($1, $2, $3)
-    RETURNING *;
+    INSERT INTO likes (user_id, resource_id)
+    VALUES ($1, $2)
+    RETURNING (SELECT COUNT(likes.id) FROM likes WHERE resource_id  = $2) AS likes;
     `;
 
   return query(queryString, values)
-    .then(data => data.rows[0])
+    .then(data => {
+      console.log("Success! Like added!");
+      return data.rows[0];
+    })
     .catch(err => console.error('Query error', err.stack));
 };
 exports.setLike = setLike;
-
-/*
-* When Tip is already 'liked' by the active user, flip the boolean value stored in the table.
-* Params are active user, Tip ID, and the boolean value (which will always be falsey)
-*/
-const flipLike = (values) => {
-
-  queryString = `
-    UPDATE likes
-    SET user_id = $1, resource_id = $2, value = $3
-    RETURNING *;
-  `;
-
-  return query(queryString, values)
-    .then(data => data.rows[0])
-    .catch(err => console.error('Query error', err.stack));
-};
-exports.flipLike = flipLike;
 
 /*
 * Removes all likes that have been set for the user/tip pair (if multiple have been created due to seeds, otherwise, etc)
@@ -87,7 +152,7 @@ const unsetLike = (values) => {
   queryString = `
     DELETE FROM likes
     WHERE user_id = $1 AND resource_id = $2
-    RETURNING (SELECT id FROM resources WHERE id = $2);
+    RETURNING (SELECT COUNT(likes.id) FROM likes WHERE resource_id  = $2) AS likes;
   `;
 
   return query(queryString, values)
@@ -110,12 +175,11 @@ const setBookmark = (values) => {
 
   queryString = `
     INSERT INTO bookmarks (user_id, resource_id)
-    VALUES ($1, $2)
-    RETURNING *;
+    VALUES ($1, $2);
   `;
 
   return query(queryString, values)
-    .then(data => data.rows[0])
+    .then(data => console.log("Success! Bookmark added!"))
     .catch(err => console.error('Query error', err.stack));
 };
 exports.setBookmark = setBookmark;
@@ -128,15 +192,11 @@ const unsetBookmark = (values) => {
 
   queryString = `
     DELETE FROM bookmarks
-    WHERE user_id = $1 AND resource_id = $2
-    RETURNING (SELECT id FROM resources WHERE id = $2);
+    WHERE user_id = $1 AND resource_id = $2;
   `;
 
   return query(queryString, values)
-    .then(data => {
-      console.log("Success! Bookmark removed!");
-      return data.rows[0];
-    })
+    .then(data => console.log("Success! Bookmark removed!"))
     .catch(err => console.error('Query error', err.stack));
 };
 exports.unsetBookmark = unsetBookmark;
@@ -170,7 +230,7 @@ const deleteComment = (values) => {
 
   queryString = `
     DELETE FROM comments
-    WHERE id = $1;
+    WHERE id = $1 AND resource_id = $2 AND user_id = $3;
   `;
 
   return query(queryString, values)
@@ -188,7 +248,7 @@ const editComment = (values) => {
   queryString = `
     UPDATE comments
     SET comment = $1, edited_at = Now()
-    WHERE id = $2
+    WHERE id = $2 AND resource_id = $3, user_id = $4
     RETURNING *;
   `;
 
@@ -197,3 +257,32 @@ const editComment = (values) => {
     .catch(err => console.error('Query error', err.stack));
 };
 exports.editComment = editComment;
+
+
+/**
+ * Calculate the time difference between the current moment and a given one.
+ * Returns result as n minutes/hours/days/months/years ago,
+ * supports singular form of units.
+ * If difference is less than a minute - returns 'now'
+ * @param {*} date - a Date (in ms) to calculate a difference with
+ */
+const timeAgo = function(date) {
+
+  const timeMap = {
+    'year' : 24 * 60 * 60 * 1000 * 365,
+    'month' : 24 * 60 * 60 * 1000 * 30.42,
+    'day' : 24 * 60 * 60 * 1000,
+    'hour' : 60 * 60 * 1000,
+    'minute' : 60 * 1000,
+    'order': ['year', 'month', 'day', 'hour', 'minute']
+  };
+
+  const delta = Math.floor((Date.now() - date));
+  for (const unit of timeMap.order) {
+    const num = Math.floor(delta / timeMap[unit]);
+    if (num >= 1) return `${num} ${unit}${(num === 1) ? '' : 's'} ago`;
+  }
+  return 'now';
+
+};
+exports.timeAgo = timeAgo;
