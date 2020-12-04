@@ -29,7 +29,8 @@ $(() => {
       url: form.attr('action'),
       data: form.serialize()
     }).done(function(data) {
-      console.log('Success! ', data);
+      //console.log('Success! ', data);
+      window.location = `${window.location.origin}/tip/${data.id}`;
     }).fail(function(err) {
       console.log('Failure. ', err);
     });
