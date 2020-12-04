@@ -6,7 +6,6 @@
 const express = require('express');
 const router  = express.Router();
 const homeHelp = require('../db/helpers/home-help');
-const user = require('./user');
 
 
 module.exports = (db) => {
