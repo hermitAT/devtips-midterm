@@ -36,6 +36,7 @@ module.exports = (db) => {
     const tip_id = req.params.tip_id;
     const tipQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE r.id = $1;';
     const commentQueryString = 'SELECT * FROM comments AS c JOIN users AS u ON u.id = c.user_id WHERE c.resource_id = $1 ORDER BY created_at DESC;';
+    // @TODO Get num_likes and is_liked, is_bookmarked and display
 
     const tip = db.query(tipQueryString, [tip_id]);
     const comments = db.query(commentQueryString, [tip_id]);
