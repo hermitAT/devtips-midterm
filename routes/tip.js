@@ -99,7 +99,7 @@ module.exports = (db) => {
 
     let values = [res.locals.user.id, req.body.tip_id];
 
-    tipHelp.setLike(values)
+    tipHelp.unsetLike(values)
       .then(data => res.json({ success: true }))
       .catch(err => res.json({ success: false, error: err }));
   });

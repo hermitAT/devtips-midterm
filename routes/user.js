@@ -9,7 +9,6 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const helpers = require('../db/helpers/user-help.js');
-const user = require('./user');
 
 module.exports = (db) => {
 
@@ -30,7 +29,7 @@ module.exports = (db) => {
   // Simple login form
   router.get('/login', (req, res) => {
     // Check for ID query param
-    let id = user.id;
+    let id = res.locals.user.id;
     if (id) {
       res.redirect(`/`);
     }
