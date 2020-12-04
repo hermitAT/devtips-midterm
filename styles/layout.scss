@@ -98,6 +98,18 @@ a {
   right: -69px;
 }
 
+.tip.user .tip-avatar {
+  right: -85px;
+}
+
+.tip.user .tip-icons {
+  right: -46px;
+  top: 62px;
+  left: auto;
+}
+
+
+
 .tip-icons {
   position: absolute;
   left: -23px;
@@ -121,4 +133,22 @@ a {
   background-color: #515a63!important;
   border: 0;
   color: white;
+}
+
+div.tip div.card-body {
+  padding: 0;
+}
+
+div.tip div.card-body > :not(.code-block):not(.video):not(.image) {
+  padding: 1.25em;
+}
+
+div.tip div.video > * {
+  width: 100%;
+  object-fit: fill;
+}
+
+div.tip div.image img {
+  object-fit: cover;
+  width: 100%;
 }

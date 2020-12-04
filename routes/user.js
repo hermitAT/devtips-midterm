@@ -68,19 +68,35 @@ module.exports = (db) => {
   * User profile page
   */
   router.get('/:id', (req, res) => {
-    const user_id = req.params.id; //Get the page user id
+    // Only authenticated user can view profiles
+    if(!res.locals.user.id){
+      throw new Error('not authorized');
+    }
+    const user_id = res.locals.user.id;
+    const profile_id = req.params.id; //Get the page user id
 
     //Get tips for this user
-    const tipsQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE r.creator_id = $1;';
-    // @TODO Get num_likes and is_liked, is_bookmarked and display
+    const tipsQueryString =
+    `SELECT *, r.id AS resource_id,
+    (
+      SELECT COUNT(*)
+      FROM likes
+      WHERE resource_id = r.id
+    ) AS num_likes
+    FROM resources AS r
+    JOIN users AS u ON u.id = r.creator_id
+    WHERE r.creator_id = $1
+    ORDER BY r.created_at DESC;
+    `;
+    // @TODO Get is_liked, is_bookmarked to display??
 
     // If the req.param.id matches res.user.id get liked posts and bookmarked posts
     //const likesQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE u.id = $1;';
     //const bookmarksQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE u.id = $1;';
     // @TODO Get num_likes and display
 
-    const userQuery = helpers.findUserByID(user_id);
-    const tipsQuery = db.query(tipsQueryString, [user_id]);
+    const userQuery = helpers.findUserByID(profile_id);
+    const tipsQuery = db.query(tipsQueryString, [profile_id]);
 
     Promise.all([userQuery, tipsQuery])
       .then(result => {
