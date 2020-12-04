@@ -15,15 +15,13 @@ const { query, extract } = require('../');
  */
 const getResourceFullData = function(arr, userID) {
 
+  console.log(userID)
   return Promise.all(arr.map(resource_id => {
     const queryString = `
     SELECT a.*, users.name AS creator_name,
       (SELECT COUNT (likes.id)
       FROM likes
-      WHERE value = true AND resource_id  = a.id) AS likes,
-      (SELECT COUNT (likes.id)
-      FROM likes
-      WHERE value = false AND resource_id  = a.id) AS dislikes,
+      WHERE resource_id  = a.id) AS likes,
       (SELECT COUNT (comments.id)
       FROM comments
       WHERE resource_id  = a.id) AS comments_count,
@@ -153,10 +151,7 @@ const unsetLike = (values) => {
   `;
 
   return query(queryString, values)
-    .then(data => {
-      console.log("Success! Like removed!");
-      return data.rows[0];
-    })
+    .then(data => console.log("Success! Like removed!"))
     .catch(err => console.error('Query error', err.stack));
 };
 exports.unsetLike = unsetLike;

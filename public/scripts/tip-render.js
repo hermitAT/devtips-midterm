@@ -90,7 +90,7 @@ const drawPaginator = function(tipsPaged) {
  * @param {*} tip
  *  */
 const createTipElement = function(tip) {
-  const { id, likes, dislikes, creator_id, title, data,  description, tags, created_at } = tip;
+  const { id, likes, dislikes, creator_id, title, data,  description, tags, created_at, is_liked, is_bookmarked } = tip;
   let type = tip.type;
   let content = ``;
   if (['markdown', 'code'].includes(type)) type = 'text';
@@ -113,19 +113,20 @@ const createTipElement = function(tip) {
   if (tags) tagsField = tags.split(' ')
     .map(tag => `<a href="/search?search%5B%5D=${tag}">&nbsp;&nbsp;#${tag}&nbsp;&nbsp;</a>`).join('')
 
+  const likeState = (is_liked) ? 'fas' : 'far';
+  const bookmarkState = (is_bookmarked) ? 'fas' : 'far';
+
   return `
   <div class="row no-gutter justify-content-center">
   <div class="col col-sm-10 col-md-12 col-lg-8 position-relative">
     <a href="/user/${creator_id}"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48" src="https://avatars.dicebear.com/4.4/api/avataaars/${creator_id}.svg"></a>
     <div class="tip-icons d-flex flex-column align-items-center">
-        <i class="far fa-thumbs-up" style="cursor: pointer" id="tip-ID"></i><span class="like badge badge-dark mb-2">${likes}</span>
-        <i class="far fa-bookmark" style="cursor: pointer" id="tip-ID"></i>
+        <i class="${likeState} fa-thumbs-up" style="cursor: pointer" id="like-${id}"></i><span class="like badge badge-dark mb-2">${likes}</span>
+        <i class="${bookmarkState} fa-bookmark" style="cursor: pointer" id="book-${id}"></i>
     </div>
     <div class="card mb-3 shadow-sm">
       <div class="card-header border-0 d-flex justify-content-between">
-        <div>
-          <a href="/tip/${id}">${title}</a>
-        <div>
+        <a href="/tip/${id}">${title}</a>
         <a>${timeAgo(created_at)}</a>
       </div>
       <div class="card-body" style="min-height: 10em;">
@@ -149,6 +150,7 @@ const renderTips = function(tips) {
     $('#list-tips').append(createTipElement(tip));
   }
   $('#paginator').show();
+  likeAndBookmarkListeners();
 };
 
 
@@ -161,9 +163,60 @@ const getAllTips = function() {
 };
 
 
-const changeTime = function() {
+const likeAndBookmarkListeners = function () {
 
-}
+  // Like listener
+  $('.fa-thumbs-up').on('click', function (event) {
+    console.log('zzzzz');
+
+    console.log(event);
+    const $likeIcon = $(this);
+    const $tip_id = $(this)[0].id.replace(/like-/, '');
+    console.log($tip_id);
+    /*
+    let method, remove, add;
+
+    if ($(this).hasClass('far')) {
+      method = 'POST';
+      remove = 'far';
+      add = 'fas';
+    } else {
+      method = 'DELETE';
+      remove = 'fas';
+      add = 'far';
+    }*/
+
+    const [ method, remove, add ] = ($(this).hasClass('far')) ?
+      ['POST', 'far', 'fas'] : [ 'DELETE', 'fas', 'far' ];
+
+    $.ajax(`/tip/${$tip_id}/like`, {
+      method: method,
+      data: { "tip_id": $tip_id },
+      dataType: "json"
+    })
+      .done(function () {
+        $likeIcon.removeClass(`${remove}`).addClass(`${add}`);
+      });
+  });
+
+
+
+  // Bookmark listener
+  $('.far fa-bookmark').on('click', function (event) {
+
+    const $bookmarkIcon = $(this);
+    const $tip_id = $(this)[0].id;
+
+    $.ajax('/tip/:tip_id/like', {
+      method: 'POST',
+      data: { "tip_id": $tip_id },
+      dataType: "json"
+    })
+      .done(function () {
+        $bookmarkIcon.removeClass('far').addClass('fas');
+      });
+  });
+};
 
 
 $(document).ready(() => {
