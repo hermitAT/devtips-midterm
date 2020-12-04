@@ -60,7 +60,7 @@ const searchByTags = function(searchTags) {
       ${ands.join(' AND ')};
       `;
       return query(queryString, res)
-        .then(res => extract(res.rows, 'resource_id'))
+        .then(res => extract(res.rows, 'resource_id'));
     });
 };
 exports.searchByTags = searchByTags;
