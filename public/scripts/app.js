@@ -18,9 +18,21 @@ $(() => {
     }
   });
 
+  $('#form-compose .type-select').data();
   // Compose box hidden radio select element via buttons
+  $('#form-compose .type-select').on('click', (e) => {
+    const thisElement = $(e.currentTarget);
+    // Get type of clicked button
+    const type = thisElement.data('type');
+    // Select corresponding input
+    $('#compose-type').val(type).change();
+    // Set button to active
+    $('#form-compose .type-select').removeClass('active');
+    thisElement.addClass('active');
+  });
 
 
+  // Compose form submit
   $('#form-compose-submit').on('click', function(event) {
     event.preventDefault();
     const form = $('#form-compose');

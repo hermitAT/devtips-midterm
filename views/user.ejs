@@ -47,8 +47,8 @@
 
             <% for (let tip of tips) { %>
             <div class="tip user position-relative">
-              <a href="/user/14"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48"
-                  src="https://avatars.dicebear.com/4.4/api/avataaars/14.svg"></a>
+              <a href="/user/<%= tip.creator_id %>"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48"
+                  src="https://avatars.dicebear.com/4.4/api/avataaars/<%= tip.creator_id %>.svg"></a>
               <div class="tip-icons d-flex flex-column align-items-center">
                 <i class="far fa-thumbs-up" style="cursor: pointer" id="like-510"></i><span
                   class="like badge badge-dark mb-2"><%= tip.num_likes %> </span>
