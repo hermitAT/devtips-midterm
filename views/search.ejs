@@ -12,48 +12,18 @@
 
     <main class="mt-5" style="min-height: 80vh;">
 
-      <% if (user.id) { // @TODO When user isn't logged in %>
-      <div id="compose-tips" class="container my-4">
+      <header id="results" class="container my-4 mb-5">
         <div class="row no-gutter justify-content-center">
           <div class="col col-sm-10 col-md-12 col-lg-8">
-            <div class="card bg-white mb-3 shadow-md">
-              <form>
-                <div class="form-group row px-3 py-2 mb-0">
-                  <div class="col-sm-2 d-flex justify-content-center align-items-center">
-                    <img class="rounded-circle img-thumbnail p-0 shadow-sm" height="64" width="64" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= user.id %>.svg">
-                  </div>
-                  <div class="form-group col-sm-10 py-2 px-0 mb-0">
-                    <textarea id="compose-textarea" class="form-control form-control-lg textarea border-0 px-0" id="exampleFormControlTextarea1" rows="2" data-min-rows='2' placeholder="Share your tips..." autofocus></textarea>
-                  </div>
-                </div>
-                <ul class="nav nav-pills nav-fill border-top">
-                  <li class="nav-item border-right">
-                    <a class="nav-link py-3" href="#">Link</a>
-                  </li>
-                  <li class="nav-item border-right">
-                    <a class="nav-link py-3" href="#">Image</a>
-                  </li>
-                  <li class="nav-item border-right">
-                    <a class="nav-link py-3" href="#">Video</a>
-                  </li>
-                  <li class="nav-item border-right">
-                    <a class="nav-link py-3" href="#">Markdown</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link py-3" href="#">Code</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link py-3 bg-primary text-white rounded-0" href="#" tabindex="-1" aria-disabled="true">Post</a>
-                  </li>
-                </ul>
-              </form>
+            <div class="card px-4 py-4 border-0 bg-dark text-white shadow-md">
+              <h3 id="results-header" class="mb-0" style="font-weight: 400;"></h3>
             </div>
           </div>
         </div>
-      </div>
-      <% } %>
+      </header>
+
       <div class="justify-content-center align-items-center" style="display: flex;">
-        <h3 id="results-header" class="mb-5" style="color:#495057; font-weight: 400;"></h3>
+
       </div>
       <div id="list-tips" class="container mb-5">
 
