@@ -30,7 +30,7 @@ module.exports = (db) => {
   */
   router.get("/:tip_id", (req, res) => {
     const tip_id = req.params.tip_id;
-    const tipQueryString = 'SELECT * FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE r.id = $1;';
+    const tipQueryString = 'SELECT * , r.id AS resource_id FROM resources AS r JOIN users AS u ON u.id = r.creator_id WHERE r.id = $1;';
     const commentQueryString = 'SELECT * FROM comments AS c JOIN users AS u ON u.id = c.user_id WHERE c.resource_id = $1 ORDER BY created_at DESC;';
     // @TODO Get num_likes and is_liked, is_bookmarked and display
 
@@ -109,10 +109,13 @@ module.exports = (db) => {
   */
   router.post('/:tip_id/comment', (req, res) => {
 
-    const values = [res.locals.user.id, req.body.tip_id, req.body.comment];
+    const values = [res.locals.user.id, req.params.tip_id, req.body.comment];
 
     tipHelp.addComment(values)
-      .then(data => res.json(data))
+      .then(data => {
+        data.name = res.locals.user.name;
+        res.json(data)
+      })
       .catch(err => res.json({ success: false, error: err }));
   });
 

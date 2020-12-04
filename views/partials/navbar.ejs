@@ -1,6 +1,6 @@
 <nav class="navbar navbar-light bg-dark p-0 shadow-md text-white">
   <a class="navbar-brand d-flex flex-row align-items-center" href="/">
-    <img class="px-2 ml-2" width="64" src="/logo/logo.svg" alt="DevTips Logo"/>
+    <img class="px-2 ml-2" width="57" src="/logo/logo.svg" alt="DevTips Logo"/>
     <h1 class="mb-0 px-1 text-white h4">
       Devtips
     </h1>
@@ -17,7 +17,7 @@
     <span id="navbar-username" class="font-weight-semibold px-2 text-light"><%= user.name %></span>
     <img class="rounded-circle border-0 img-thumbnail p-0" height="42" width="42" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= user.id %>.svg">
   </a>
-  <a href="/user/logout"><button class="btn btn-outline-primary btn-sm ml-4" type="button">Logout</button></a>
+  <a href="/user/logout"><button id="navbar-logout" class="btn btn-outline-light btn-sm ml-4" type="button">Logout</button></a>
   <% } %>
   </div>
 </nav>

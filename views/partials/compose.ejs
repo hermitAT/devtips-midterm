@@ -18,31 +18,31 @@
             </div>
           </div>
           <ul class="nav nav-pills nav-fill border-top">
-            <li class="nav-item border-right">
-              <a class="nav-link py-3" href="#">Link</a>
+            <li class="nav-item border-right" data-type="link">
+              <a class="type-select nav-link py-3 active" href="#" data-type="link">Link</a>
             </li>
             <li class="nav-item border-right">
-              <a class="nav-link py-3" href="#">Image</a>
+              <a class="type-select nav-link py-3" href="#" data-type="image">Image</a>
             </li>
             <li class="nav-item border-right">
-              <a class="nav-link py-3" href="#">Video</a>
+              <a class="type-select nav-link py-3" href="#" data-type="video">Video</a>
             </li>
             <li class="nav-item border-right">
-              <a class="nav-link py-3" href="#">Markdown</a>
+              <a class="type-select nav-link py-3" href="#" data-type="markdown">Markdown</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-3" href="#">Code</a>
+              <a class="type-select nav-link py-3" href="#" data-type="code">Code</a>
             </li>
             <li class="nav-item">
               <a id="form-compose-submit" class="nav-link py-3 bg-primary text-white rounded-0" href="#" tabindex="-1" aria-disabled="true">Post</a>
             </li>
           </ul>
-          <select name="type" id="type" style="display: none;">
-            <option value="link" >link</option>
+          <select name="type" id="compose-type" style="display: none;">
+            <option value="link" selected>link</option>
             <option value="image">image</option>
             <option value="video">video</option>
             <option value="markdown" >markdown</option>
-            <option value="code" selected>code</option>
+            <option value="code">code</option>
           </select>
         </form>
       </div>
