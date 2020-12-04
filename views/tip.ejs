@@ -14,27 +14,35 @@
 
         <div class="row">
           <div class="col-lg-8 offset-half-lg pl-2 mb-4">
-            <div class="card shadow-md rounded-0">
+            <div class="tip resource card shadow-md">
               <div class="card-header">
                 <%= tip.title %>
               </div>
               <div class="card-body" style="min-height: 15em;">
                 <% if (tip.type === 'link') { %>
-                  <a href="<%= tip.data %>"><%= tip.description %></a>
+                  <div class="link">
+                    <a href="<%= tip.data %>"><%= tip.description %></a>
+                  </div>
                 <% } else if (tip.type === 'image') { %>
-                  <img src="<%= tip.data %>" class="mw-100" alt="<%= tip.description %>">
+                  <div class="image">
+                    <img src="<%= tip.data %>" class="mw-100" alt="<%= tip.description %>">
+                  </div>
                 <% } else if (tip.type === 'video') { %>
-                  <youtube-video controls src="<%= tip.data %>"></youtube-video>
+                  <div class="video">
+                    <youtube-video controls src="<%= tip.data %>"></youtube-video>
+                  </div>
                 <% } else if (tip.type === 'markdown') { %>
-                  <pre><%= tip.data %></pre>
-                  <p><%= tip.description %></p>
+                  <div class="markdown">
+                    <pre><%= tip.data %></pre>
+                    <p><%= tip.description %></p>
+                  </div>
                 <% } else if (tip.type === 'code') { %>
                     <div class="code-block"><pre class="code"><%= tip.data %></pre></div><p><%= tip.description %></p>
                 <% } %>
               </div>
             </div>
             <% for(let comment of comments) { %>
-              <div class="card shadow-sm rounded-0 comment my-2">
+              <div class="card shadow-sm comment my-2">
                 <div class="card-body">
                   <img class="m-4 border rounded-circle shadow-md" width="42" height="42" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= comment.user_id %>.svg">
                   <a href="/user/<%= comment.user_id %> "><%= comment.name %> </a>
@@ -46,7 +54,7 @@
 
           </div>
           <div class="col-lg-3">
-            <div class="card rounded-0 shadow-md">
+            <div class="card shadow-md">
               <div class="card-header"></div>
               <a href="/user/<%= tip.creator_id %> "><img class="m-4 border rounded-circle shadow-md" src="https://avatars.dicebear.com/4.4/api/avataaars/<%= tip.creator_id %>.svg"></a>
               <div id="profile-info" class="d-flex flex-column align-items-center mb-4">
