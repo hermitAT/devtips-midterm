@@ -15,13 +15,12 @@ const { query, extract } = require('../');
  */
 const getResourceFullData = function(arr, userID) {
 
-  console.log(userID);
   return Promise.all(arr.map(resource_id => {
     const queryString = `
     SELECT a.*, users.name AS creator_name,
       (SELECT COUNT(likes.id)
       FROM likes
-      WHERE resource_id  = a.id) AS likes,
+      WHERE resource_id = a.id) AS likes,
       (SELECT COUNT(comments.id)
       FROM comments
       WHERE resource_id = a.id) AS comments_count,
@@ -37,7 +36,7 @@ const getResourceFullData = function(arr, userID) {
       WHERE user_id = $2 AND resource_id = a.id) AS is_bookmarked
     FROM resources a
     JOIN users ON creator_id = users.id
-    WHERE a.id  = $1
+    WHERE a.id = $1
     ORDER BY created_at;
     `;
     return query(queryString, [resource_id, userID])
@@ -50,7 +49,8 @@ exports.getResourceFullData = getResourceFullData;
 const getAllTipIDs = function() {
 
   queryString = `
-  SELECT id FROM resources
+  SELECT id
+  FROM resources
   ORDER BY created_at DESC
   LIMIT 150;
   `;
@@ -130,11 +130,15 @@ const setLike = (values) => {
 
   queryString = `
     INSERT INTO likes (user_id, resource_id)
-    VALUES ($1, $2);
+    VALUES ($1, $2)
+    RETURNING (SELECT COUNT(likes.id) FROM likes WHERE resource_id  = $2) AS likes;
     `;
 
   return query(queryString, values)
-    .then(data => console.log("Success! Like added!"))
+    .then(data => {
+      console.log("Success! Like added!");
+      return data.rows[0];
+    })
     .catch(err => console.error('Query error', err.stack));
 };
 exports.setLike = setLike;
@@ -147,11 +151,15 @@ const unsetLike = (values) => {
 
   queryString = `
     DELETE FROM likes
-    WHERE user_id = $1 AND resource_id = $2;
+    WHERE user_id = $1 AND resource_id = $2
+    RETURNING (SELECT COUNT(likes.id) FROM likes WHERE resource_id  = $2) AS likes;
   `;
 
   return query(queryString, values)
-    .then(data => console.log("Success! Like removed!"))
+    .then(data => {
+      console.log("Success! Like removed!");
+      return data.rows[0];
+    })
     .catch(err => console.error('Query error', err.stack));
 };
 exports.unsetLike = unsetLike;

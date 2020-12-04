@@ -179,7 +179,7 @@ const likeAndBookmarkListeners = function() {
       data: { "tip_id": $tip_id },
       dataType: "json"
     })
-      .done(function () {
+      .then(function() {
         $likeIcon.removeClass(`${remove}`).addClass(`${add}`);
       });
   });
@@ -193,7 +193,7 @@ const likeAndBookmarkListeners = function() {
     const [ method, remove, add ] = ($(this).hasClass('far')) ?
       ['POST', 'far', 'fas'] : [ 'DELETE', 'fas', 'far' ];
 
-    $.ajax(`/tip/${$tip_id}/like`, {
+    $.ajax(`/tip/${$tip_id}/bookmark`, {
       method: method,
       data: { "tip_id": $tip_id },
       dataType: "json"
