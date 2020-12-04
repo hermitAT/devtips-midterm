@@ -78,6 +78,12 @@ a {
   background-color: hsl(243, 94%, 66%) !important;
 }
 
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: hsl(243, 94%, 66%) !important;
+  background-color:#f4f5ff !important;
+  border-radius: 0;
+}
+
 .btn-primary {
   color: #fff;
   background-color: hsl(243, 94%, 66%) !important;
