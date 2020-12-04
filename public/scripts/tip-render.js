@@ -59,7 +59,8 @@ const paginator = function(arr, offset = 10) {
 const loadTips = function(tipsID) {
 
   $.ajax(`/tip`, { method: 'POST', data: { tipsID } })
-    .then(tips => {
+    .then((tips, user) => {
+      console.log(tips, user)
       renderTips(tips);
     });
 
@@ -89,7 +90,6 @@ const drawPaginator = function(tipsPaged) {
  * @param {*} tip
  *  */
 const createTipElement = function(tip) {
-  console.log(tip);
   const { id, likes, dislikes, creator_id, title, data,  description, tags, created_at } = tip;
   let type = tip.type;
   let content = ``;
@@ -118,9 +118,9 @@ const createTipElement = function(tip) {
   <div class="col col-sm-10 col-md-12 col-lg-8 position-relative">
     <a href="/user/${creator_id}"><img class="tip-avatar m-4 bg-white border rounded-circle shadow-sm" width="48" height="48" src="https://avatars.dicebear.com/4.4/api/avataaars/${creator_id}.svg"></a>
     <div class="tip-icons d-flex flex-column align-items-center">
-      <i class="far fa-thumbs-up"></i><span class="like badge badge-dark mb-2">${likes}</span>
-      <i class="fas fa-thumbs-down"></i><span class="dislike badge badge-dark mb-3">${dislikes}</span>
-      <i class="far fa-bookmark"></i>
+        <i class="far fa-thumbs-up" style="cursor: pointer"></i><span class="like badge badge-dark mb-2">${likes}</span>
+        <i class="fas fa-thumbs-down"></i><span class="dislike badge badge-dark mb-3">${dislikes}</span>
+        <i class="far fa-bookmark" style="cursor: pointer"></i>
     </div>
     <div class="card mb-3 shadow-sm">
       <div class="card-header border-0 d-flex justify-content-between">
@@ -145,7 +145,7 @@ const createTipElement = function(tip) {
 const renderTips = function(tips) {
   $('#list-tips').empty();
   for (const tip of tips) {
-    $('#list-tips').prepend(createTipElement(tip));
+    $('#list-tips').append(createTipElement(tip));
   }
   $('#paginator').show();
 };

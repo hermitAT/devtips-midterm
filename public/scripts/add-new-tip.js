@@ -22,13 +22,14 @@ const createNewTip = function() {
   $('form.form-compose').submit(function(event) {
     event.preventDefault(); // Prevent the form from submitting via the browser
     const form = $(this);
+
     $.ajax({
       type: form.attr('method'),
       url: form.attr('action'),
       data: form.serialize()
-    }).done(function(data) {
-      console.log('Success! ', data);
-    }).fail(function(err) {
+    }).done((data) => {
+      console.log('Success! ', data.id);
+    }).fail((err) => {
       console.log('Failure. ', err);
     });
   });
