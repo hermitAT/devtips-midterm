@@ -36,8 +36,7 @@ const getResourceFullData = function(arr, userID) {
       WHERE user_id = $2 AND resource_id = a.id) AS is_bookmarked
     FROM resources a
     JOIN users ON creator_id = users.id
-    WHERE a.id = $1
-    ORDER BY created_at;
+    WHERE a.id = $1;
     `;
     return query(queryString, [resource_id, userID])
       .then(res => res.rows[0])
@@ -131,15 +130,11 @@ const setLike = (values) => {
 
   queryString = `
     INSERT INTO likes (user_id, resource_id)
-    VALUES ($1, $2)
-    RETURNING (SELECT COUNT(likes.id) FROM likes WHERE resource_id  = $2) AS likes;
+    VALUES ($1, $2);
     `;
 
   return query(queryString, values)
-    .then(data => {
-      console.log("Success! Like added!");
-      return data.rows[0];
-    })
+    .then(data => console.log("Success! Like added!"))
     .catch(err => console.error('Query error', err.stack));
 };
 exports.setLike = setLike;
@@ -152,15 +147,11 @@ const unsetLike = (values) => {
 
   queryString = `
     DELETE FROM likes
-    WHERE user_id = $1 AND resource_id = $2
-    RETURNING (SELECT COUNT(likes.id) FROM likes WHERE resource_id  = $2) AS likes;
+    WHERE user_id = $1 AND resource_id = $2;
   `;
 
   return query(queryString, values)
-    .then(data => {
-      console.log("Success! Like removed!");
-      return data.rows[0];
-    })
+    .then(data => console.log("Success! Like removed!"))
     .catch(err => console.error('Query error', err.stack));
 };
 exports.unsetLike = unsetLike;

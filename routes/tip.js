@@ -6,13 +6,13 @@
 const express = require('express');
 const router = express.Router();
 const tipHelp = require('../db/helpers/tip-help');
-const user = require('./user');
+// const user = require('./user');
 
 module.exports = (db) => {
 
   // load tips data for an array of Tip IDs
   router.post("/", (req, res) => {
-    const userID = user.id;
+    const userID = res.locals.user.id;
     const { tipsID } = req.body;
     tipHelp.getResourceFullData(tipsID, userID)
       .then((tips) => res.json(tips));
