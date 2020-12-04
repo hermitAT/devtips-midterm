@@ -41,7 +41,8 @@ const getResourceFullData = function(arr, userID) {
     ORDER BY created_at;
     `;
     return query(queryString, [resource_id, userID])
-      .then(res => res.rows[0]);
+      .then(res => res.rows[0])
+      .catch(err => console.log('getResourceFullData', err))
   }));
 };
 exports.getResourceFullData = getResourceFullData;
