@@ -54,23 +54,34 @@ textarea::placeholder {
   background-color:hsl(243, 94%, 66%)!important;
 }
 
+.btn-outline-primary {
+  color: hsl(243, 94%, 66%)!important;
+  border-color: hsl(243, 94%, 66%)!important;
+}
+
+.btn-outline-primary:hover {
+  color: #fff !important;
+  background-color: hsl(243, 94%, 66%)!important;
+  border-color: hsl(243, 94%, 66%)!important;
+}
+
 a {
-  color: hsl(243, 94%, 66%);
+  color: hsl(243, 94%, 66%) !important;
 }
 
 .text-primary {
-  color: hsl(243, 94%, 66%);
+  color: hsl(243, 94%, 66%) !important;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-  color: #fff;
-  background-color: hsl(243, 94%, 66%);
+  color: #fff !important;
+  background-color: hsl(243, 94%, 66%) !important;
 }
 
 .btn-primary {
   color: #fff;
-  background-color: hsl(243, 94%, 66%);
-  border-color: hsl(243, 94%, 66%);
+  background-color: hsl(243, 94%, 66%) !important;
+  border-color: hsl(243, 94%, 66%) !important;
 }
 
 .nav.nav-social li {
@@ -104,4 +115,9 @@ a {
   .badge.dislike {
     background-color: rgb(255, 95, 95);
   }
+}
+
+#navbar-form-search input {
+  background-color: #515a63!important;
+  border: 0;
 }
