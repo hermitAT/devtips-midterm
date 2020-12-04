@@ -98,6 +98,16 @@ a {
   margin: 0.5em;
 }
 
+#navbar-logout {
+  color: #4affb9 !important;
+  border-color: #4affb9 !important;
+}
+
+#navbar-logout:hover {
+  color: black !important;
+  background-color: #4affb9 !important;
+}
+
 .tip-avatar {
   position: absolute;
   top: -22px;
