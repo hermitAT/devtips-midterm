@@ -93,13 +93,15 @@ const createTipElement = function(tip) {
   const { id, likes, dislikes, creator_id, title, data,  description, tags, created_at, is_liked, is_bookmarked } = tip;
   let type = tip.type;
   let content = ``;
-  if (['markdown', 'code'].includes(type)) type = 'text';
   switch (type) {
   case 'video':
     content += `<youtube-video controls src="${data}"></youtube-video>`;
     break;
-  case 'text':
-    content += `<a href="${data}">${data}</a><p>${description}</p>`;
+  case 'markdown':
+    content += `<pre>${data}</pre><p>${description}</p>`;
+    break;
+  case 'code':
+    content += `<div class="code-block"><pre class="code">${data}</pre></div><p>${description}</p>`;
     break;
   case 'link':
     content += `<span>Link: </span><a href="${data}">${data}</a><p>${description}</p>`;
@@ -149,6 +151,11 @@ const renderTips = function(tips) {
   for (const tip of tips) {
     $('#list-tips').append(createTipElement(tip));
   }
+  EnlighterJS.init('pre.code', 'code', {
+    language : 'json',
+    theme: 'dracula',
+    indent : 2
+  });
   $('#paginator').show();
   likeAndBookmarkListeners();
 };

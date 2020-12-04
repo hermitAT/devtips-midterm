@@ -26,11 +26,10 @@
                 <% } else if (tip.type === 'video') { %>
                   <youtube-video controls src="<%= tip.data %>"></youtube-video>
                 <% } else if (tip.type === 'markdown') { %>
-                  <pre><%= tip.description %></pre>
+                  <pre><%= tip.data %></pre>
+                  <p><%= tip.description %></p>
                 <% } else if (tip.type === 'code') { %>
-                    <div class="code-block">
-                      <pre class="code"><%= JSON.stringify(tip, null, 2) %></pre>
-                    </div>
+                    <div class="code-block"><pre class="code"><%= tip.data %></pre></div><p><%= tip.description %></p>
                 <% } %>
               </div>
             </div>
@@ -75,16 +74,7 @@
     </div>
   </footer>
 
-    <!-- EnlighterJS -->
-    <script type="text/javascript" src="../vendor/enlighterjs.min.js"></script>
-    <!-- Init Code -->
-    <script type="text/javascript">
-        EnlighterJS.init('pre.code', 'code', {
-                language : 'json',
-                theme: 'dracula',
-                indent : 2
-        });
-    </script>
+  <%- include('./partials/code-render') %>
 
 </body>
 
