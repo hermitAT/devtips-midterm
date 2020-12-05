@@ -4,13 +4,20 @@ Midterm Resource Wall Project "DevTips"
 
 # DevTips Project
 
-Tweeter is a single-page application which aimed to help people exchange short messages.
+DevTips is a website where everybody can share code snippets or links to articles, blogs, videos. 
 
 ## Main features
-- Follow up other people tweets in the feed
-- Write your own tweet, the only limit for your thoughts is 140 characters per tweet
-- Use Tweeter on any screen - it automatically adapts to desktop or mobile device presentation
-- And all this nicely animated
+1. Home
+- For a user who is logged in, compose a new tip, applying different types of rendering to different types of data. Select the data of your choice and app will redirect you to page for newly created tip.
+- Like and bookmark tips, allowing you to return to view those tips later!
+- Pagination functionality includes buttons at bottom of page allows a single webpage to store many pages of tips, limited to 150 and paginated in sets of 10.
+- Titles and other elements of tips contain hyperlinks to redirect to the stored URL in question.
+2. User
+- Stores all tips created by the user in question on one page.
+- Contains specific data, links, pertaining to the user in question.
+3. Tip
+- Contains a render of the singular tip in question, with information on the creator of the tip to the side.
+- Comments are displayed below for each tip, and a comment form is available to a user who is logged to add a comment for the tip in question.
 
 ## Final Product
 
